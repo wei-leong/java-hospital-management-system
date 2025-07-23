@@ -5,9 +5,9 @@ import java.awt.*;
 
 public class loginForm extends JFrame {
     private final JTextField emailField  = new JTextField(30);
-    private final JPasswordField passField = new JPasswordField(30);
-    private final JButton btnToggle = new JButton("View"); // Eye Icon Button
-    private final JButton btnLogin  = new JButton("Login");// Login Button
+    private final JPasswordField passField = new JPasswordField(30);    
+    private final JButton btnLogin  = new JButton("Login");// Login Button    
+    private final JButton btnToggle = new JButton(); // Eye Icon Button
 
     public loginForm() {
         super("Login");        // window title
@@ -50,6 +50,14 @@ public class loginForm extends JFrame {
         form.add(new JLabel("Email"), gbc);
         gbc.gridx=1;
         form.add(emailField, gbc);
+        
+        ImageIcon iconView = new ImageIcon(getClass().getResource("/image/view_password.png"));
+        Image scaleView = iconView.getImage().getScaledInstance(24, 24, Image.SCALE_SMOOTH);
+        ImageIcon scaledViewIcon = new ImageIcon(scaleView);
+        
+        ImageIcon iconHide = new ImageIcon(getClass().getResource("/image/hide_password.png"));
+        Image scaleHide = iconHide.getImage().getScaledInstance(24, 24, Image.SCALE_SMOOTH);
+        ImageIcon scaledHideIcon = new ImageIcon(scaleHide);
 
         // Password Label+TextField+View Password
         gbc.gridy=2; gbc.gridx=0;
@@ -58,6 +66,7 @@ public class loginForm extends JFrame {
         JPanel passPane = new JPanel(new BorderLayout());
         passField.setEchoChar('*');
         passPane.add(passField, BorderLayout.CENTER);
+        btnToggle.setIcon(scaledViewIcon);
         btnToggle.setFocusable(false);
         btnToggle.setBorder(null);
         btnToggle.setContentAreaFilled(false);
@@ -66,8 +75,13 @@ public class loginForm extends JFrame {
 
         // Toggle password visibility
         btnToggle.addActionListener(e -> {
-            char echo = passField.getEchoChar()==0 ? '*' : (char)0;
-            passField.setEchoChar(echo);
+            if(passField.getEchoChar()== (char)0){
+                passField.setEchoChar('*');
+                btnToggle.setIcon(scaledViewIcon);
+            }else{
+                passField.setEchoChar((char)0);
+                btnToggle.setIcon(scaledHideIcon);
+            }
         });
 
         // Login button
