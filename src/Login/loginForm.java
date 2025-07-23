@@ -24,8 +24,7 @@ public class loginForm extends JFrame {
             getClass().getResource("/image/APU_Med_Cen_Assignment.png")
         );
         // Scale to 200x200
-        Image logoImg = rawIcon.getImage()
-                              .getScaledInstance(200, 200, Image.SCALE_SMOOTH);
+        Image logoImg = rawIcon.getImage().getScaledInstance(200, 200, Image.SCALE_SMOOTH);
         JLabel lblLogo = new JLabel(new ImageIcon(logoImg));
         lblLogo.setBorder(BorderFactory.createEmptyBorder(20,20,20,20));
         root.add(lblLogo, BorderLayout.WEST);
@@ -46,9 +45,11 @@ public class loginForm extends JFrame {
         form.add(lblTitle, gbc);
 
         // Email Label+TextField
+        gbc.gridx=0;
         gbc.gridy=1; gbc.gridwidth=1;
         form.add(new JLabel("Email"), gbc);
-        gbc.gridx=1;
+        gbc.gridx=0;
+        gbc.gridy=2;
         form.add(emailField, gbc);
         
         ImageIcon iconView = new ImageIcon(getClass().getResource("/image/view_password.png"));
@@ -60,9 +61,9 @@ public class loginForm extends JFrame {
         ImageIcon scaledHideIcon = new ImageIcon(scaleHide);
 
         // Password Label+TextField+View Password
-        gbc.gridy=2; gbc.gridx=0;
+        gbc.gridy=3; gbc.gridx=0;
         form.add(new JLabel("Password"), gbc);
-        gbc.gridx=1;
+        gbc.gridy=4;
         JPanel passPane = new JPanel(new BorderLayout());
         passField.setEchoChar('*');
         passPane.add(passField, BorderLayout.CENTER);
