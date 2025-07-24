@@ -10,10 +10,17 @@ public class loginForm extends JFrame {
     private final JButton btnToggle = new JButton(); // Eye Icon Button
 
     public loginForm() {
-        super("Login");        // window title
+        super("Login");       // window title
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setResizable(false);                    // no maximize
-        setType(Window.Type.UTILITY);           // utility style (no minimize)
+        
+        
+        ImageIcon frameIcon = new ImageIcon(
+            getClass().getResource("/image/APU_Med_Cen_Assignment.png")
+        );
+        Image scaledIcon = frameIcon.getImage().getScaledInstance(128, 128, Image.SCALE_SMOOTH);
+        setIconImage(scaledIcon);
+       
 
         // Panel for APU Medical Centre Image Logo ( Left )
         JPanel root = new JPanel(new BorderLayout());
@@ -97,6 +104,7 @@ public class loginForm extends JFrame {
         setContentPane(root);
         pack();
         setLocationRelativeTo(null);
+        setVisible(true);
     }
 }
 
