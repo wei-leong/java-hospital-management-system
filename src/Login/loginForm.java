@@ -10,17 +10,19 @@ public class loginForm extends JFrame {
     private final JButton btnToggle = new JButton(); // Eye Icon Button
 
     public loginForm() {
-        super("Login");       // window title
+        // Window Title
+        super("Login");       
         setDefaultCloseOperation(EXIT_ON_CLOSE);
-        setResizable(false);                    // no maximize
         
+        // Disable Maximize
+        setResizable(false);                    
         
+        // Windows Title Icon 
         ImageIcon frameIcon = new ImageIcon(
             getClass().getResource("/image/APU_Med_Cen_Assignment.png")
         );
         Image scaledIcon = frameIcon.getImage().getScaledInstance(128, 128, Image.SCALE_SMOOTH);
         setIconImage(scaledIcon);
-       
 
         // Panel for APU Medical Centre Image Logo ( Left )
         JPanel root = new JPanel(new BorderLayout());
@@ -30,13 +32,14 @@ public class loginForm extends JFrame {
         ImageIcon rawIcon = new ImageIcon(
             getClass().getResource("/image/APU_Med_Cen_Assignment.png")
         );
-        // Scale to 200x200
+        
+        // Scale APU Medical Centre Image to 200x200
         Image logoImg = rawIcon.getImage().getScaledInstance(200, 200, Image.SCALE_SMOOTH);
         JLabel lblLogo = new JLabel(new ImageIcon(logoImg));
         lblLogo.setBorder(BorderFactory.createEmptyBorder(20,20,20,20));
         root.add(lblLogo, BorderLayout.WEST);
 
-        // Panel for Email and Password TextBox ( Right ) 
+        // Panel for TextBox Input ( Right ) 
         JPanel form = new JPanel(new GridBagLayout());
         form.setBackground(Color.WHITE);
         GridBagConstraints gbc = new GridBagConstraints();
@@ -51,7 +54,7 @@ public class loginForm extends JFrame {
         gbc.gridx=0; gbc.gridy=0; gbc.gridwidth=2;
         form.add(lblTitle, gbc);
 
-        // Email Label+TextField
+        // Email Label , TextField
         gbc.gridx=0;
         gbc.gridy=1; gbc.gridwidth=1;
         form.add(new JLabel("Email"), gbc);
@@ -59,6 +62,7 @@ public class loginForm extends JFrame {
         gbc.gridy=2;
         form.add(emailField, gbc);
         
+        // Image Icon for Hide and View Password
         ImageIcon iconView = new ImageIcon(getClass().getResource("/image/view_password.png"));
         Image scaleView = iconView.getImage().getScaledInstance(24, 24, Image.SCALE_SMOOTH);
         ImageIcon scaledViewIcon = new ImageIcon(scaleView);
@@ -67,7 +71,7 @@ public class loginForm extends JFrame {
         Image scaleHide = iconHide.getImage().getScaledInstance(24, 24, Image.SCALE_SMOOTH);
         ImageIcon scaledHideIcon = new ImageIcon(scaleHide);
 
-        // Password Label+TextField+View Password
+        // Password Label , TextField , View Password Button
         gbc.gridy=3; gbc.gridx=0;
         form.add(new JLabel("Password"), gbc);
         gbc.gridy=4;
@@ -81,7 +85,7 @@ public class loginForm extends JFrame {
         passPane.add(btnToggle, BorderLayout.EAST);
         form.add(passPane, gbc);
 
-        // Toggle password visibility
+        // Toggle password visibility Function
         btnToggle.addActionListener(e -> {
             if(passField.getEchoChar()== (char)0){
                 passField.setEchoChar('*');
