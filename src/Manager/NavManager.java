@@ -136,7 +136,7 @@ public class NavManager extends JFrame {
             // 1. Close Current Form
             SwingUtilities.getWindowAncestor(bar).dispose();
             // 2. Open the login form:
-            login.loginForm login = new login.loginForm();
+            login.LoginForm login = new login.LoginForm();
             login.setVisible(true);
         }));
 
@@ -194,7 +194,7 @@ public class NavManager extends JFrame {
         
         btnEdit.addActionListener(e -> {
             dlg.dispose();
-            new login.loginForm().setVisible(true);
+            new login.LoginForm().setVisible(true);
         });
         
         bottom.add(btnEdit,BorderLayout.CENTER);
