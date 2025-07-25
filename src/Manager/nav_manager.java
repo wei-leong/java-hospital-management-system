@@ -9,7 +9,6 @@
 package Manager;
 
 import javax.swing.*;
-import javax.swing.border.TitledBorder;
 import java.awt.*;
 import java.awt.event.*;
 import static javax.swing.WindowConstants.EXIT_ON_CLOSE;
@@ -46,7 +45,7 @@ public class nav_manager extends JFrame {
                 .getScaledInstance(24, 24, Image.SCALE_SMOOTH);
         ImageIcon toggleIcon = new ImageIcon(togImg);
 
-        // 1) Hamburger toggle
+        // Hamburger Button Toggle
         JButton btnToggle = new JButton(toggleIcon);
         btnToggle.setFocusable(false);
         titleBar.add(btnToggle);
@@ -57,14 +56,14 @@ public class nav_manager extends JFrame {
         btnToggle.setOpaque(false);
         btnToggle.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 
-        // 2) Title label
+        // Title - APU Medical Centre
         JLabel lblTitle = new JLabel("Dashboard");
         lblTitle.setFont(lblTitle.getFont().deriveFont(Font.BOLD, 16f));
         titleBar.add(lblTitle);
 
         titleBar.add(Box.createHorizontalGlue());
 
-        // 3) Profile icon
+        // Profile Picture
         JButton btnProfile = new JButton(new ImageIcon(new ImageIcon(
                 getClass().getResource("/image/profile-user.png")
         ).getImage().getScaledInstance(32, 32, Image.SCALE_SMOOTH)));
@@ -74,11 +73,11 @@ public class nav_manager extends JFrame {
 
         add(titleBar, BorderLayout.NORTH);
 
-        // ─── Sidebar ─────────────────────────────────────────────────
+        // Sidebar
         sidebar = buildSidebar();
         add(sidebar, BorderLayout.WEST);
 
-        // Toggle sidebar
+        // Toggle Sidebar Visibility
         btnToggle.addActionListener(e
                 -> sidebar.setVisible(!sidebar.isVisible())
         );
@@ -89,7 +88,7 @@ public class nav_manager extends JFrame {
         // ─── Content area with CardLayout ────────────────────────────
         content = new JPanel(cards);
         content.add(new dashboard(), "Dashboard");
-        content.add(new JLabel("Staff Management", SwingConstants.CENTER), "Staff");
+        content.add(new staff_management(), "Staff Management");
         content.add(new JLabel("View Feedback", SwingConstants.CENTER), "Feedback");
         add(content, BorderLayout.CENTER);
 
