@@ -2,14 +2,15 @@ package login;
 
 import javax.swing.*;
 import java.awt.*;
+import static javax.swing.WindowConstants.EXIT_ON_CLOSE;
 
-public class loginForm extends JFrame {
+public class LoginForm extends JFrame {
     private final JTextField emailField  = new JTextField(30);
     private final JPasswordField passField = new JPasswordField(30);    
     private final JButton btnLogin  = new JButton("Login");// Login Button    
     private final JButton btnToggle = new JButton(); // Eye Icon Button
 
-    public loginForm() {
+    public LoginForm() {
         // Window Title
         super("Login");       
         setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -111,4 +112,3 @@ public class loginForm extends JFrame {
         setVisible(true);
     }
 }
-

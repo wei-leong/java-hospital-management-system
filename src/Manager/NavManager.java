@@ -13,13 +13,13 @@ import java.awt.*;
 import java.awt.event.*;
 import static javax.swing.WindowConstants.EXIT_ON_CLOSE;
 
-public class nav_manager extends JFrame {
+public class NavManager extends JFrame {
 
     private final JPanel sidebar;
     private final CardLayout cards = new CardLayout();
     private final JPanel content;
 
-    public nav_manager() {
+    public NavManager() {
         super("APU Medical Centre");
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setSize(1000, 600);
@@ -85,11 +85,11 @@ public class nav_manager extends JFrame {
         // Profile dialog
         btnProfile.addActionListener(e -> showProfileDialog());
 
-        // ─── Content area with CardLayout ────────────────────────────
+        // Content area with CardLayout 
         content = new JPanel(cards);
-        content.add(new dashboard(), "Dashboard");
-        content.add(new staff_management(), "Staff Management");
-        content.add(new JLabel("View Feedback", SwingConstants.CENTER), "Feedback");
+        content.add(new Dashboard(), "Dashboard");
+        content.add(new StaffManagement(), "Staff Management");
+        content.add(new Feedback(), "Feedback");
         add(content, BorderLayout.CENTER);
 
         setVisible(true);
@@ -128,7 +128,7 @@ public class nav_manager extends JFrame {
 
         // Menu buttons
         bar.add(makeSidebarButton("Dashboard", e -> cards.show(content, "Dashboard")));
-        bar.add(makeSidebarButton("Staff Management", e -> cards.show(content, "Staff")));
+        bar.add(makeSidebarButton("Staff Management", e -> cards.show(content, "Staff Management")));
         bar.add(makeSidebarButton("View Feedback", e -> cards.show(content, "Feedback")));
 
         bar.add(Box.createVerticalGlue());
@@ -156,12 +156,12 @@ public class nav_manager extends JFrame {
     }
 
     private void showProfileDialog() {
-        // 1) Create dialog
+        // Create dialog
         JDialog dlg = new JDialog(this, "Profile", true);
         dlg.setLayout(new BorderLayout(10, 10));
         dlg.setResizable(false);
 
-        // 2) Header (picture + ID/Role)
+        // Header (Profile Picture + ID/Role)
         ImageIcon raw = new ImageIcon(
                 getClass().getResource("/image/profile-user.png")
         );
@@ -179,7 +179,7 @@ public class nav_manager extends JFrame {
         header.add(idRole, BorderLayout.CENTER);
         dlg.add(header, BorderLayout.NORTH);
 
-        // 3) Details (in the CENTER so it expands naturally)
+        // Details (in the CENTER so it expands naturally)
         JPanel details = new JPanel(new GridLayout(0, 1, 5, 5));
         details.setBorder(BorderFactory.createEmptyBorder(0, 20, 0, 20));
         details.add(new JLabel("Name"));
@@ -188,13 +188,15 @@ public class nav_manager extends JFrame {
         details.add(new JLabel("Age"));
         dlg.add(details, BorderLayout.CENTER);
 
-        // 4) Button in SOUTH, left‑aligned
+        // Edit Profile Button 
+        JPanel bottom = new JPanel(new BorderLayout(10, 10));
         JButton btnEdit = new JButton("Edit Profile");
+        
         btnEdit.addActionListener(e -> {
             dlg.dispose();
             new login.loginForm().setVisible(true);
         });
-        JPanel bottom = new JPanel(new BorderLayout(10, 10));
+        
         bottom.add(btnEdit,BorderLayout.CENTER);
         bottom.setBorder(BorderFactory.createEmptyBorder(0, 20, 20, 20));
         dlg.add(bottom, BorderLayout.SOUTH);
@@ -206,7 +208,7 @@ public class nav_manager extends JFrame {
         btnEdit.setContentAreaFilled(true);
         btnEdit.setFocusPainted(false);
 
-        // 5) Finalize size & position
+        // Finalize size & position
         dlg.setSize(300, 250);  // fixed size you prefer
         Point loc = this.getLocationOnScreen();
         dlg.setLocation(loc.x + this.getWidth() - dlg.getWidth() - 10, loc.y + 10);

@@ -12,15 +12,15 @@ import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import java.awt.*;
 
-public class staff_management extends JPanel {
+public class Feedback extends JPanel{
 
-    public staff_management() {
+    public Feedback() {
                 setLayout(new BorderLayout(10,10));
         setBorder(BorderFactory.createEmptyBorder(10,10,10,10));
 
         JPanel revenue = new JPanel();
-        revenue.setBorder(new TitledBorder("Revenue"));
-        revenue.add(new JLabel("<< Revenue Chart Here >>"));
+        revenue.setBorder(new TitledBorder("Feedback"));
+        revenue.add(new JLabel("<< Gafasdfasdfasdf>>"));
         add(revenue, BorderLayout.NORTH);
 
         JPanel bottom = new JPanel(new GridLayout(1,2,10,0));
@@ -37,3 +37,4 @@ public class staff_management extends JPanel {
         add(bottom, BorderLayout.CENTER);
     }
 }
+
