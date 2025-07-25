@@ -83,6 +83,7 @@ public class LoginForm extends JFrame {
         btnToggle.setFocusable(false);
         btnToggle.setBorder(null);
         btnToggle.setContentAreaFilled(false);
+        btnToggle.setCursor(new Cursor(Cursor.HAND_CURSOR));
         passPane.add(btnToggle, BorderLayout.EAST);
         form.add(passPane, gbc);
 
