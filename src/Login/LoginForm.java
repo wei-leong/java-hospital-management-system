@@ -1,5 +1,7 @@
 package login;
 
+import Class.Person;
+import Manager.NavManager;
 import javax.swing.*;
 import java.awt.*;
 import static javax.swing.WindowConstants.EXIT_ON_CLOSE;
@@ -151,6 +153,27 @@ public class LoginForm extends JFrame {
         btnLogin.setPreferredSize(new Dimension(100, 25));
         btnLogin.setCursor(new Cursor(Cursor.HAND_CURSOR));
         btnLogin.setBackground(Color.WHITE);
+        
+        btnLogin.addActionListener(e -> {
+            String userEmail = emailField.getText();
+            String userPassword  = new String(passField.getPassword());
+            
+            Person authenticate = new Person();
+            String staffRole = authenticate.login(userEmail,userPassword);
+            switch(staffRole){
+                case"Manager":
+                    SwingUtilities.invokeLater(() -> {
+                        new NavManager().setVisible(true);
+                    });
+                    break;
+                case"Staff":
+                case"Doctor":
+                case"Customer":
+                default:
+                    System.out.println("No Role Found");
+                    break;
+            }
+        });
 
         bottom.add(btnLogin, BorderLayout.CENTER);
         form.add(bottom, gbc);
