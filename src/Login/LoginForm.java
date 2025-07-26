@@ -6,8 +6,8 @@ import static javax.swing.WindowConstants.EXIT_ON_CLOSE;
 
 public class LoginForm extends JFrame {
 
-    private final JTextField emailField = new JTextField(30);
-    private final JPasswordField passField = new JPasswordField(30);
+    private final JTextField emailField = new JTextField(20);
+    private final JPasswordField passField = new JPasswordField(20);
     private final JButton btnLogin = new JButton("Login");// Login Button    
     private final JButton btnToggle = new JButton(); // Eye Icon Button
 
