@@ -11,10 +11,11 @@ package Manager;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
-import java.awt.image.BufferedImage;
 import static javax.swing.WindowConstants.EXIT_ON_CLOSE;
 
 public class NavManager extends JFrame {
+    // Staff Details
+    private final String[] _staffDetails;
 
     private final JPanel sidebar;
     private final CardLayout cards = new CardLayout();
@@ -22,7 +23,9 @@ public class NavManager extends JFrame {
     private String currentPage = "Dashboard";
     private final JLabel lblTitle;
 
-    public NavManager() {
+    public NavManager(String[] staffDetails) {
+        this._staffDetails = staffDetails;
+        
         // Window Title
         super("APU Medical Centre");
         setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -193,8 +196,8 @@ public class NavManager extends JFrame {
         picLabel.setBorder(BorderFactory.createEmptyBorder(0, 10, 0, 0));
 
         JPanel idRole = new JPanel(new GridLayout(0, 1, 5, 5));
-        idRole.add(new JLabel("Staff ID"));
-        idRole.add(new JLabel("Staff Role"));
+        idRole.add(new JLabel(_staffDetails[0]));
+        idRole.add(new JLabel(_staffDetails[1]));
 
         JPanel header = new JPanel(new BorderLayout(10, 10));
         header.add(picLabel, BorderLayout.WEST);
@@ -204,10 +207,10 @@ public class NavManager extends JFrame {
         // Details (in the CENTER so it expands naturally)
         JPanel details = new JPanel(new GridLayout(0, 1, 5, 5));
         details.setBorder(BorderFactory.createEmptyBorder(0, 20, 0, 20));
-        details.add(new JLabel("Name"));
-        details.add(new JLabel("Email"));
-        details.add(new JLabel("Phone Number"));
-        details.add(new JLabel("Age"));
+        details.add(new JLabel(_staffDetails[2]));
+        details.add(new JLabel(_staffDetails[5]));
+        details.add(new JLabel(_staffDetails[6]));
+        details.add(new JLabel(_staffDetails[7]));
         dlg.add(details, BorderLayout.CENTER);
 
         // Edit Profile Button 

@@ -25,19 +25,19 @@ public class Person implements Login{
     }
     
     @Override
-    public String login(){
+    public String[] login(){
         Path staffData = Paths.get("src","txt", "profile.txt");
         try{
             List<String> lines = Files.readAllLines(staffData);
             for(String line : lines){
                 String[] parts = line.trim().split(",",8);
                 if(parts.length == 8 && parts[5].equals(_email.trim()) && parts[3].equals(_password.trim())){
-                    return parts[1];
+                    return parts;
                 }
             }
         } catch(IOException e){
             System.err.println("Error reading profile.txt: " + e.getMessage());
         }
-        return "None";
+        return null;
     }
 }

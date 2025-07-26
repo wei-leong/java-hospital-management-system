@@ -159,11 +159,12 @@ public class LoginForm extends JFrame {
             String userPassword = new String(passField.getPassword());
 
             Person newUser = new Person(userEmail,userPassword);
-            String staffRole = newUser.login();
+            String[] staffDetails = newUser.login();
+            String staffRole = staffDetails[1];
             switch (staffRole) {
                 case "Manager":
                     SwingUtilities.invokeLater(() -> {
-                        new NavManager().setVisible(true);
+                        new NavManager(staffDetails).setVisible(true);
                     });
                     break;
                 case "Staff":

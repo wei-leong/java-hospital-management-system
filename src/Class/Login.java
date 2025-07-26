@@ -11,9 +11,7 @@ package Class;
 public interface Login {
     /**
      * Check whether the given credentials are valid.
-     * @param email the user’s name
-     * @param password the user’s password
-     * @return the staff id if login succeeds
+     * @return the staff details if login succeeds
      */
-    String login();
+    String[] login();
 }
