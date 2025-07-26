@@ -15,5 +15,5 @@ public interface Login {
      * @param password the user’s password
      * @return the staff id if login succeeds
      */
-    String login(String email, String password);
+    String login();
 }

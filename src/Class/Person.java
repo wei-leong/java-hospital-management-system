@@ -16,17 +16,22 @@ import java.util.List;
  */
 // Person has the ability to Login ( Abstraction ) 
 public class Person implements Login{
-    public Person(){
+    private final String _email;
+    private final String _password;
+    
+    public Person(String email , String password ){
+        this._email = email;
+        this._password = password;
     }
     
     @Override
-    public String login(String email, String password){
+    public String login(){
         Path staffData = Paths.get("src","txt", "profile.txt");
         try{
             List<String> lines = Files.readAllLines(staffData);
             for(String line : lines){
                 String[] parts = line.trim().split(",",8);
-                if(parts.length == 8 && parts[5].equals(email.trim()) && parts[3].equals(password.trim())){
+                if(parts.length == 8 && parts[5].equals(_email.trim()) && parts[3].equals(_password.trim())){
                     return parts[1];
                 }
             }

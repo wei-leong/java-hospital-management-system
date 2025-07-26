@@ -158,8 +158,8 @@ public class LoginForm extends JFrame {
             String userEmail = emailField.getText();
             String userPassword = new String(passField.getPassword());
 
-            Person authenticate = new Person();
-            String staffRole = authenticate.login(userEmail, userPassword);
+            Person newUser = new Person(userEmail,userPassword);
+            String staffRole = newUser.login();
             switch (staffRole) {
                 case "Manager":
                     SwingUtilities.invokeLater(() -> {
