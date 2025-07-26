@@ -16,12 +16,12 @@ public class LoginForm extends JFrame {
     public LoginForm() {
         // Window Title
         super("Login");
-        
+
         // Styling Options
         float titleSize = 25;
         float labelSize = 12;
         float inputSize = 18;
-        
+
         // Windows Settings
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setResizable(false);// Disable Maximize                 
@@ -75,7 +75,7 @@ public class LoginForm extends JFrame {
         JLabel lblEmail = new JLabel("Email");
         lblEmail.setFont(lblEmail.getFont().deriveFont(Font.BOLD, labelSize));
         form.add(lblEmail, gbc);
-        
+
         // Email Text Field
         gbc.gridx = 0;
         gbc.gridy = 2;
@@ -84,7 +84,7 @@ public class LoginForm extends JFrame {
                 0, 0, 1, 0, // top, left, bottom, right
                 Color.GRAY // line color
         )); // Add a 1px bottom border (gray underline)
-        emailField.setFont(emailField .getFont().deriveFont(inputSize));
+        emailField.setFont(emailField.getFont().deriveFont(inputSize));
         form.add(emailField, gbc);
 
         // Image Icon for Hide and View Password
@@ -118,7 +118,7 @@ public class LoginForm extends JFrame {
         )); // Add a 1px bottom border (gray underline)
         passField.setFont(passField.getFont().deriveFont(inputSize));
         passPane.add(passField, BorderLayout.CENTER);
-        
+
         // Toggle View / Hide Button for Password
         btnToggle.setIcon(scaledViewIcon);
         btnToggle.setFocusable(false);
@@ -153,24 +153,30 @@ public class LoginForm extends JFrame {
         btnLogin.setPreferredSize(new Dimension(100, 25));
         btnLogin.setCursor(new Cursor(Cursor.HAND_CURSOR));
         btnLogin.setBackground(Color.WHITE);
-        
+
         btnLogin.addActionListener(e -> {
             String userEmail = emailField.getText();
-            String userPassword  = new String(passField.getPassword());
-            
+            String userPassword = new String(passField.getPassword());
+
             Person authenticate = new Person();
-            String staffRole = authenticate.login(userEmail,userPassword);
-            switch(staffRole){
-                case"Manager":
+            String staffRole = authenticate.login(userEmail, userPassword);
+            switch (staffRole) {
+                case "Manager":
                     SwingUtilities.invokeLater(() -> {
                         new NavManager().setVisible(true);
                     });
                     break;
-                case"Staff":
-                case"Doctor":
-                case"Customer":
+                case "Staff":
+                case "Doctor":
+                case "Customer":
                 default:
-                    System.out.println("No Role Found");
+                    JOptionPane.showMessageDialog(
+                            null,
+                            "Login Failed, Please Try Again",
+                            "Login Error",
+                            JOptionPane.ERROR_MESSAGE
+                    );
+
                     break;
             }
         });
