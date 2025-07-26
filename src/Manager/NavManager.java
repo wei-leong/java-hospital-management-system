@@ -11,6 +11,7 @@ package Manager;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.awt.image.BufferedImage;
 import static javax.swing.WindowConstants.EXIT_ON_CLOSE;
 
 public class NavManager extends JFrame {
@@ -20,6 +21,7 @@ public class NavManager extends JFrame {
     private final JPanel content;
 
     public NavManager() {
+        // Window Title
         super("APU Medical Centre");
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setSize(1000, 600);
@@ -27,10 +29,10 @@ public class NavManager extends JFrame {
         setLayout(new BorderLayout());
 
         // Windows Title Icon 
-        ImageIcon frameIcon = new ImageIcon(
+        ImageIcon frameLogo = new ImageIcon(
                 getClass().getResource("/image/APU_Med_Cen_Assignment.png")
         );
-        Image scaledIcon = frameIcon.getImage().getScaledInstance(128, 128, Image.SCALE_SMOOTH);
+        Image scaledIcon = frameLogo.getImage().getScaledInstance(128, 128, Image.SCALE_SMOOTH);
         setIconImage(scaledIcon);
 
         // Title Bar 
@@ -96,61 +98,65 @@ public class NavManager extends JFrame {
     }
 
     private JPanel buildSidebar() {
+        // Styling Options
+        int iconSize = 25;
+        
         JPanel bar = new JPanel();
         bar.setPreferredSize(new Dimension(200, getHeight()));
         bar.setBackground(Color.BLACK);
         bar.setLayout(new BoxLayout(bar, BoxLayout.Y_AXIS));
 
-        // Logo + title
-        JLabel lblLogo = new JLabel("APU Medical Centre", JLabel.LEFT);
-        lblLogo.setForeground(Color.WHITE);
-        lblLogo.setFont(lblLogo.getFont().deriveFont(Font.BOLD, 18f));
-
-        ImageIcon raw = new ImageIcon(
-                getClass().getResource("/image/APU_Med_Cen_Assignment.png")
-        );
-
-        Image iconImg = raw.getImage().getScaledInstance(25, 25, Image.SCALE_SMOOTH);
-        lblLogo.setIcon(new ImageIcon(iconImg));
-
-        lblLogo.setHorizontalAlignment(SwingConstants.LEFT);
-        lblLogo.setHorizontalTextPosition(SwingConstants.RIGHT);
-        lblLogo.setIconTextGap(5); // Gap between Logo and Text
-
-        lblLogo.setAlignmentX(Component.LEFT_ALIGNMENT);
-        lblLogo.setMaximumSize(new Dimension(
-                Integer.MAX_VALUE,
-                lblLogo.getPreferredSize().height
-        ));
-
-        lblLogo.setBorder(BorderFactory.createEmptyBorder(10, 10, 20, 10));
-        bar.add(lblLogo);
+        Icon iconDashboard = loadIcon("/image/dashboard.png", iconSize);
+        Icon iconStaffManagement = loadIcon("/image/staff_management.png", iconSize);
+        Icon iconFeedback = loadIcon("/image/view_feedback.png", iconSize);
 
         // Menu buttons
-        bar.add(makeSidebarButton("Dashboard", e -> cards.show(content, "Dashboard")));
-        bar.add(makeSidebarButton("Staff Management", e -> cards.show(content, "Staff Management")));
-        bar.add(makeSidebarButton("View Feedback", e -> cards.show(content, "Feedback")));
+        bar.add(makeSidebarButton("Dashboard", iconDashboard, e -> cards.show(content, "Dashboard")));
+        bar.add(makeSidebarButton("Staff Management", iconStaffManagement, e -> cards.show(content, "Staff Management")));
+        bar.add(makeSidebarButton("View Feedback", iconFeedback, e -> cards.show(content, "Feedback")));
 
-        bar.add(Box.createVerticalGlue());
-        bar.add(makeSidebarButton("Logout", e -> {
-            // 1. Close Current Form
+        JPanel bottom = new JPanel(new BorderLayout(10, 10));
+        JButton btnLogout = new JButton("Logout");
+
+        btnLogout.addActionListener(e -> {
             SwingUtilities.getWindowAncestor(bar).dispose();
             // 2. Open the login form:
             login.LoginForm login = new login.LoginForm();
             login.setVisible(true);
-        }));
+        });
+
+        bottom.setBackground(Color.BLACK);
+        bottom.add(btnLogout, BorderLayout.SOUTH);
+        bottom.setBorder(BorderFactory.createEmptyBorder(0, 20, 20, 20));
+        bar.add(bottom, BorderLayout.SOUTH);
+        btnLogout.setBackground(Color.WHITE);
+        btnLogout.setForeground(Color.BLACK);
+        btnLogout.setPreferredSize(new Dimension(150, 35));
+        btnLogout.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+        btnLogout.setOpaque(true);
+        btnLogout.setContentAreaFilled(true);
+        btnLogout.setFocusPainted(false);
 
         return bar;
     }
 
-    private JButton makeSidebarButton(String text, ActionListener act) {
-        JButton b = new JButton(text);
+    private Icon loadIcon(String path, int size) {
+        ImageIcon raw = new ImageIcon(getClass().getResource(path));
+        Image scaled = raw.getImage().getScaledInstance(size, size, Image.SCALE_SMOOTH);
+        return new ImageIcon(scaled);
+    }
+
+    private JButton makeSidebarButton(String text, Icon icon, ActionListener act) {
+        JButton b = new JButton(text, icon);
         b.setMaximumSize(new Dimension(Integer.MAX_VALUE, 40));
         b.setAlignmentX(Component.CENTER_ALIGNMENT);
         b.setForeground(Color.WHITE);
         b.setBackground(Color.DARK_GRAY);
         b.setBorderPainted(false);
         b.setFocusPainted(false);
+        b.setHorizontalAlignment(SwingConstants.LEFT);        // puts icon+text at left edge
+        b.setHorizontalTextPosition(SwingConstants.RIGHT);   // text sits to the RIGHT of the icon
+        b.setIconTextGap(8);
         b.addActionListener(act);
         return b;
     }
@@ -191,13 +197,13 @@ public class NavManager extends JFrame {
         // Edit Profile Button 
         JPanel bottom = new JPanel(new BorderLayout(10, 10));
         JButton btnEdit = new JButton("Edit Profile");
-        
+
         btnEdit.addActionListener(e -> {
             dlg.dispose();
             new login.LoginForm().setVisible(true);
         });
-        
-        bottom.add(btnEdit,BorderLayout.CENTER);
+
+        bottom.add(btnEdit, BorderLayout.CENTER);
         bottom.setBorder(BorderFactory.createEmptyBorder(0, 20, 20, 20));
         dlg.add(bottom, BorderLayout.SOUTH);
         btnEdit.setBackground(Color.white);
