@@ -19,6 +19,8 @@ public class NavManager extends JFrame {
     private final JPanel sidebar;
     private final CardLayout cards = new CardLayout();
     private final JPanel content;
+    private String currentPage = "Dashboard";
+    private final JLabel lblTitle;
 
     public NavManager() {
         // Window Title
@@ -59,7 +61,7 @@ public class NavManager extends JFrame {
         btnToggle.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 
         // Title - APU Medical Centre
-        JLabel lblTitle = new JLabel("Dashboard");
+        lblTitle = new JLabel(currentPage);
         lblTitle.setFont(lblTitle.getFont().deriveFont(Font.BOLD, 16f));
         titleBar.add(lblTitle);
 
@@ -96,6 +98,11 @@ public class NavManager extends JFrame {
 
         setVisible(true);
     }
+    
+    private void titleChanger(String newTitle){
+        currentPage = newTitle;
+        lblTitle.setText(newTitle);
+    }
 
     private JPanel buildSidebar() {
         // Styling Options
@@ -111,9 +118,18 @@ public class NavManager extends JFrame {
         Icon iconFeedback = loadIcon("/image/view_feedback.png", iconSize);
 
         // Menu buttons
-        bar.add(makeSidebarButton("Dashboard", iconDashboard, e -> cards.show(content, "Dashboard")));
-        bar.add(makeSidebarButton("Staff Management", iconStaffManagement, e -> cards.show(content, "Staff Management")));
-        bar.add(makeSidebarButton("View Feedback", iconFeedback, e -> cards.show(content, "Feedback")));
+        bar.add(makeSidebarButton("Dashboard", iconDashboard, e -> {
+            cards.show(content, "Dashboard");
+            titleChanger("Dasbboard");
+        }));
+        bar.add(makeSidebarButton("Staff Management", iconStaffManagement, e -> {
+            cards.show(content, "Staff Management");
+            titleChanger("Staff Management");
+        }));
+        bar.add(makeSidebarButton("View Feedback", iconFeedback, e -> {
+            cards.show(content, "Feedback");
+            titleChanger("View Feedback");
+        }));
 
         JPanel bottom = new JPanel(new BorderLayout(10, 10));
         JButton btnLogout = new JButton("Logout");
