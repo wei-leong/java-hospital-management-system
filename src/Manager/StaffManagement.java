@@ -16,11 +16,16 @@ public class StaffManagement extends JPanel {
         setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         setBackground(Color.WHITE);
 
-        // 1) Tag bar
+        // Checkbox ( All, Staff, Doctor, Inactive
         List<JCheckBox> boxes = new ArrayList<>();
-        JPanel tagBar = new JPanel(new FlowLayout(FlowLayout.LEFT, 8, 0));
+        JPanel tagBar = new JPanel(new BorderLayout(8,0));
         tagBar.setBackground(Color.WHITE);
         tagBar.setBorder(BorderFactory.createEmptyBorder());
+        
+        JPanel filters = new JPanel(new FlowLayout(FlowLayout.LEFT, 8, 0));
+        filters.setBackground(Color.WHITE);
+        filters.setBorder(BorderFactory.createEmptyBorder());
+
         String[] tags = {
             "All", "Staff", "Doctor", "Inactive"
         };
@@ -31,13 +36,14 @@ public class StaffManagement extends JPanel {
             checkBox.setForeground(Color.BLACK);
             checkBox.setOpaque(true);
             checkBox.setFocusPainted(false);
-            tagBar.add(checkBox);
+            filters.add(checkBox);
             boxes.add(checkBox);
         }
 
         for (JCheckBox chb : boxes) {
             chb.addItemListener(e -> {
                 if (e.getStateChange() == ItemEvent.SELECTED) {
+                    System.out.println(chb.getText());
                     for (JCheckBox otherRole : boxes) {
                         if (otherRole != chb) {
                             otherRole.setSelected(false);
@@ -46,6 +52,18 @@ public class StaffManagement extends JPanel {
                 }
             });
         }
+        tagBar.add(filters, BorderLayout.WEST);
+       
+        // Add Staff Button
+        JButton btnAdd = new JButton("+ Add Staff");
+        btnAdd.setBackground(Color.WHITE);
+        btnAdd.setForeground(Color.BLACK);
+        btnAdd.setFocusPainted(false);
+        btnAdd.setBorder(BorderFactory.createEmptyBorder(4, 8, 4, 8));
+        btnAdd.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+
+        tagBar.add(btnAdd, BorderLayout.EAST);
+        
         add(tagBar, BorderLayout.NORTH);
 
         // 2) Column headers
