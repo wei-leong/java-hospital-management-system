@@ -136,14 +136,23 @@ public class AddStaff extends JFrame {
             int age = (int) ageField.getValue();
             
             String staffId;
-            if ( "Manager".equals(roleField.toString())){
+            String staffRole = roleField.getSelectedItem().toString();
+            if ( "Manager".equals(staffRole)){
                 staffId = "M";
-            }else if ( "Staff".equals(roleField.toString())){
+            }else if ( "Staff".equals(staffRole)){
                 staffId = "S";
-            }else {
+            }else if ( "Doctor".equals(staffRole)){
                 staffId = "D";
+            }else {
+                staffId = "N";
             }
-            newStaff.AddNewProfile(nameField.toString(), emailField.toString(), age, roleField.toString(), phoneField.toString(), staffId, gender);
+            
+            String staffName = nameField.getText().trim();
+            String staffEmail = emailField.getText().trim();
+            String staffPhone = phoneField.getText().trim();
+            newStaff.AddNewProfile(staffName, staffEmail, age, staffRole, staffPhone, staffId, gender);
+            
+            this.dispose();
         });
 
         pack();

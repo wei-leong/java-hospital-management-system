@@ -39,15 +39,15 @@ public class AddProfile {
             String newId = id + (maxId + 1);
 
             List<String> linesToAdd = List.of(
-                    String.join(",",
+                    "\n" + String.join(",",
                             newId, // e.g., "M4"
                             newRole,
                             newName,
-                            newPhone + newName, // Password based on Phone Number and Name
+                            newId + String.valueOf(newAge), // Password based on Phone Number and Name
                             newGender,
                             newEmail,
-                            String.valueOf(newAge),
-                            "" // 8th field placeholder if needed
+                            newPhone,
+                            String.valueOf(newAge) // 8th field placeholder if needed
                     )
             );
             Files.write(
