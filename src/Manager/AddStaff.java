@@ -1,5 +1,6 @@
 package Manager;
 
+import Class.AddProfile;
 import javax.swing.*;
 import java.awt.*;
 
@@ -128,8 +129,22 @@ public class AddStaff extends JFrame {
         bottom.setBackground(Color.WHITE);
         bottom.add(btnAdd);
         add(bottom, BorderLayout.SOUTH);
-        
-        btnAdd.addActionListener(e -> {});
+        btnAdd.addActionListener(e -> {
+            AddProfile newStaff = new AddProfile();
+            
+            String gender = rbM.isSelected() ? "Male" : "Female";
+            int age = (int) ageField.getValue();
+            
+            String staffId;
+            if ( "Manager".equals(roleField.toString())){
+                staffId = "M";
+            }else if ( "Staff".equals(roleField.toString())){
+                staffId = "S";
+            }else {
+                staffId = "D";
+            }
+            newStaff.AddNewProfile(nameField.toString(), emailField.toString(), age, roleField.toString(), phoneField.toString(), staffId, gender);
+        });
 
         pack();
         setSize(600, 500);
