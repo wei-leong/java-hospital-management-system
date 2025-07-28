@@ -2,6 +2,7 @@ package login;
 
 import Class.Person;
 import Manager.NavManager;
+import Staff.NavStaff;
 import javax.swing.*;
 import java.awt.*;
 import static javax.swing.WindowConstants.EXIT_ON_CLOSE;
@@ -168,6 +169,10 @@ public class LoginForm extends JFrame {
                     });
                     break;
                 case "Staff":
+                    SwingUtilities.invokeLater(() -> {
+                        new NavStaff(staffDetails).setVisible(true);
+                    });
+                    break;
                 case "Doctor":
                 case "Customer":
                 default:
