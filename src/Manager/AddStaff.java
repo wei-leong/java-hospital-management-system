@@ -4,21 +4,28 @@ import javax.swing.*;
 import java.awt.*;
 
 public class AddStaff extends JFrame {
+    
+    private final JTextField nameField = new JTextField(20);
+    private final JTextField emailField = new JTextField(20);
+    private final JSpinner ageField = new JSpinner(new SpinnerNumberModel(18,16,100,1));
+    private final JComboBox roleField = new JComboBox<>(new String[]{"Manager","Staff","Doctor"});
+    private final JTextField phoneField = new JTextField(20);
+    
     public AddStaff() {
         super("Add Staff");
 
-        // 1) Window settings
-        setDefaultCloseOperation(EXIT_ON_CLOSE);
-        setResizable(true);
-        setMinimumSize(new Dimension(400, 400));
+        // Window settings
+        setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+        setResizable(false);
+        setMinimumSize(new Dimension(500, 500)); // Fixed Width and Height
         getContentPane().setBackground(Color.WHITE);
         setLayout(new BorderLayout(10,10));
 
-        // ─── Top Bar ───────────────────────────────────────────────
+        // Top Bar Panel for Return Button
         JPanel topBar = new JPanel(new FlowLayout(FlowLayout.LEFT, 8, 8));
         topBar.setBackground(Color.WHITE);
 
-        // Back button (icon) + listener
+        // Return Button
         ImageIcon backIcon = new ImageIcon(
             getClass().getResource("/image/back.png")
         );
@@ -29,16 +36,17 @@ public class AddStaff extends JFrame {
         btnBack.setBorder(null);
         btnBack.setContentAreaFilled(false);
         btnBack.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-        btnBack.addActionListener(e -> this.dispose());
+        btnBack.addActionListener(e -> this.dispose()); // Dispose Add Staff page and return to StaffManagement
         topBar.add(btnBack);
-
+        
+        // Top Bar Label
         JLabel lblTitle = new JLabel("Add Staff");
         lblTitle.setFont(lblTitle.getFont().deriveFont(Font.BOLD, 18f));
         topBar.add(lblTitle);
 
         add(topBar, BorderLayout.NORTH);
 
-        // ─── Main Form ──────────────────────────────────────────────
+        // Form
         JPanel form = new JPanel(new GridBagLayout());
         form.setBackground(Color.WHITE);
         GridBagConstraints gbc = new GridBagConstraints();
@@ -49,13 +57,13 @@ public class AddStaff extends JFrame {
 
         int row = 0;
 
-        // Name
+        // Name Title
         gbc.gridx = 0; gbc.gridy = row++;
         form.add(new JLabel("Name"), gbc);
         gbc.gridy = row++;
-        form.add(new JTextField(), gbc);
+        form.add(nameField, gbc);
 
-        // Age + Role
+        // Age + Role Grid Layout
         gbc.gridy = row++;
         JPanel ageRole = new JPanel(new GridLayout(1,2,10,0));
         ageRole.setBackground(Color.WHITE);
@@ -64,16 +72,14 @@ public class AddStaff extends JFrame {
         JPanel agePanel = new JPanel(new BorderLayout());
         agePanel.setBackground(Color.WHITE);
         agePanel.add(new JLabel("Age"), BorderLayout.NORTH);
-        agePanel.add(new JSpinner(new SpinnerNumberModel(18,16,100,1)),
-                     BorderLayout.CENTER);
+        agePanel.add(ageField,BorderLayout.CENTER);
         ageRole.add(agePanel);
 
         // Role
         JPanel rolePanel = new JPanel(new BorderLayout());
         rolePanel.setBackground(Color.WHITE);
         rolePanel.add(new JLabel("Role"), BorderLayout.NORTH);
-        rolePanel.add(new JComboBox<>(new String[]{"Manager","Staff","Doctor"}),
-                      BorderLayout.CENTER);
+        rolePanel.add(roleField,BorderLayout.CENTER);
         ageRole.add(rolePanel);
 
         form.add(ageRole, gbc);
@@ -82,13 +88,13 @@ public class AddStaff extends JFrame {
         gbc.gridy = row++;
         form.add(new JLabel("Email Address"), gbc);
         gbc.gridy = row++;
-        form.add(new JTextField(), gbc);
+        form.add(emailField, gbc);
 
         // Phone
         gbc.gridy = row++;
         form.add(new JLabel("Phone Number"), gbc);
         gbc.gridy = row++;
-        form.add(new JTextField(), gbc);
+        form.add(phoneField, gbc);
 
         // Gender
         gbc.gridy = row++;
@@ -108,10 +114,10 @@ public class AddStaff extends JFrame {
 
         add(form, BorderLayout.CENTER);
 
-        // ─── Bottom Bar ─────────────────────────────────────────────
+        // Bottom Bar with Add Staff Button
         JButton btnAdd = new JButton("+ Add Staff");
         btnAdd.setFont(btnAdd.getFont().deriveFont(Font.BOLD, 14f));
-        btnAdd.setPreferredSize(new Dimension(120, 36));
+        btnAdd.setPreferredSize(new Dimension(300, 40));
         btnAdd.setBackground(Color.WHITE);
         btnAdd.setForeground(Color.BLACK);
         btnAdd.setBorder(BorderFactory.createLineBorder(Color.BLACK));
@@ -122,8 +128,9 @@ public class AddStaff extends JFrame {
         bottom.setBackground(Color.WHITE);
         bottom.add(btnAdd);
         add(bottom, BorderLayout.SOUTH);
+        
+        btnAdd.addActionListener(e -> {});
 
-        // 2) Pack then enforce default size
         pack();
         setSize(600, 500);
         setLocationRelativeTo(null);
