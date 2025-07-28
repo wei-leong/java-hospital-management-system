@@ -15,7 +15,7 @@ import java.util.List;
  *
  * @author Wlhoe
  */
-public class AddProfile {
+public class ProfileActions {
 
     public void AddNewProfile(String newName, String newEmail, int newAge, String newRole, String newPhone, String id, String newGender) {
         Path file = Paths.get("src", "txt", "profile.txt");

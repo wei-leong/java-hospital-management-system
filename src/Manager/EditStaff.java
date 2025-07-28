@@ -3,16 +3,19 @@ package Manager;
 import Class.Manager;
 import javax.swing.*;
 import java.awt.*;
+import static javax.swing.WindowConstants.DISPOSE_ON_CLOSE;
 
-public class AddStaff extends JFrame {
+public class EditStaff extends JFrame {
     
     private final JTextField nameField = new JTextField(20);
     private final JTextField emailField = new JTextField(20);
+    private final JTextField passField = new JTextField(20);
     private final JSpinner ageField = new JSpinner(new SpinnerNumberModel(18,16,100,1));
     private final JComboBox roleField = new JComboBox<>(new String[]{"Manager","Staff","Doctor"});
     private final JTextField phoneField = new JTextField(20);
     
-    public AddStaff() {
+    // Add attributes here
+    public EditStaff() {
         super("Add Staff");
 
         // Window settings
@@ -162,4 +165,3 @@ public class AddStaff extends JFrame {
         setLocationRelativeTo(null);
     }
 }
-

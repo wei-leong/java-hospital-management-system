@@ -16,12 +16,16 @@ import java.util.List;
  */
 // Person has the ability to Login ( Abstraction ) 
 public class Person implements Login{
-    private final String _email;
-    private final String _password;
+    private String _email;
+    private String _password;
     
     public Person(String email , String password ){
         this._email = email;
         this._password = password;
+    }
+    
+    public Person(){
+        
     }
     
     @Override
