@@ -18,10 +18,10 @@ public class StaffManagement extends JPanel {
 
         // Checkbox ( All, Staff, Doctor, Inactive
         List<JCheckBox> boxes = new ArrayList<>();
-        JPanel tagBar = new JPanel(new BorderLayout(8,0));
+        JPanel tagBar = new JPanel(new BorderLayout(8, 0));
         tagBar.setBackground(Color.WHITE);
         tagBar.setBorder(BorderFactory.createEmptyBorder());
-        
+
         JPanel filters = new JPanel(new FlowLayout(FlowLayout.LEFT, 8, 0));
         filters.setBackground(Color.WHITE);
         filters.setBorder(BorderFactory.createEmptyBorder());
@@ -53,7 +53,7 @@ public class StaffManagement extends JPanel {
             });
         }
         tagBar.add(filters, BorderLayout.WEST);
-       
+
         // Add Staff Button
         JButton btnAdd = new JButton("+ Add Staff");
         btnAdd.setBackground(Color.WHITE);
@@ -62,8 +62,14 @@ public class StaffManagement extends JPanel {
         btnAdd.setBorder(BorderFactory.createEmptyBorder(4, 8, 4, 8));
         btnAdd.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 
+        btnAdd.addActionListener(e -> {
+            SwingUtilities.invokeLater(() -> {
+                new AddStaff().setVisible(true);
+            });
+        });
+
         tagBar.add(btnAdd, BorderLayout.EAST);
-        
+
         add(tagBar, BorderLayout.NORTH);
 
         // 2) Column headers
