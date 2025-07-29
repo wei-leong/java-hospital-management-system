@@ -4,6 +4,8 @@
  */
 package Class;
 
+import java.util.List;
+
 /**
  *
  * @author Wlhoe
@@ -19,5 +21,9 @@ public class Manager extends Person{
     
     public void addStaff(String name, String email, int age, String role, String phone, String idPrefix, String gender) {
         profileHelper.AddNewProfile(name, email, age, role, phone, idPrefix, gender);
+    }
+    
+    public List<String[]> returnStaffData(String filterRole){
+        return profileHelper.ShowProfile(filterRole);
     }
 }

@@ -9,6 +9,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -59,5 +60,26 @@ public class ProfileActions {
         } catch (IOException e) {
             System.err.println("Error reading profile.txt: " + e.getMessage());
         }
+    }
+    
+    public List<String[]> ShowProfile(String filterRole){
+        Path staffData = Paths.get("src","txt", "profile.txt");
+        List<String[]> results = new ArrayList<>();
+        try{
+            List<String> lines = Files.readAllLines(staffData);
+            for(String line : lines){
+                String[] parts = line.trim().split(",",8);
+                if (parts.length == 8) {
+                    // if "All" or matches the role
+                    if (filterRole.equalsIgnoreCase("All")
+                     || parts[1].equals(filterRole)) {
+                        results.add(parts);
+                    }
+                }
+            }
+        } catch(IOException e){
+            System.err.println("Error reading profile.txt: " + e.getMessage());
+        }
+        return results;
     }
 }

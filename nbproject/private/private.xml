@@ -10,9 +10,10 @@
             <file>file:/D:/1.Projects/OOP%20with%20Java/ApuMedicalCentre/src/Class/Login.java</file>
             <file>file:/D:/1.Projects/OOP%20with%20Java/ApuMedicalCentre/src/Class/Person.java</file>
             <file>file:/D:/1.Projects/OOP%20with%20Java/ApuMedicalCentre/src/Class/Manager.java</file>
-            <file>file:/D:/1.Projects/OOP%20with%20Java/ApuMedicalCentre/src/txt/profile.txt</file>
             <file>file:/D:/1.Projects/OOP%20with%20Java/ApuMedicalCentre/src/Manager/AddStaff.java</file>
-            <file>file:/D:/1.Projects/OOP%20with%20Java/ApuMedicalCentre/src/Class/AddProfile.java</file>
+            <file>file:/D:/1.Projects/OOP%20with%20Java/ApuMedicalCentre/src/txt/profile.txt</file>
+            <file>file:/D:/1.Projects/OOP%20with%20Java/ApuMedicalCentre/src/Class/ProfileActions.java</file>
+            <file>file:/D:/1.Projects/OOP%20with%20Java/ApuMedicalCentre/src/Manager/EditStaff.java</file>
         </group>
     </open-files>
 </project-private>

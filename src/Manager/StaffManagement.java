@@ -1,17 +1,25 @@
 package Manager;
 
+import Class.Manager;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ItemEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.List;
 import java.util.ArrayList;
 import javax.swing.border.Border;
 import javax.swing.table.DefaultTableCellRenderer;
 
 public class StaffManagement extends JPanel {
+    
+    private String _selectedRole = "All";
+    private final DefaultTableModel model;
+    Manager managerActions = new Manager();
 
     public StaffManagement() {
+        
         setLayout(new BorderLayout(10, 10));
         setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         setBackground(Color.WHITE);
@@ -43,7 +51,8 @@ public class StaffManagement extends JPanel {
         for (JCheckBox chb : boxes) {
             chb.addItemListener(e -> {
                 if (e.getStateChange() == ItemEvent.SELECTED) {
-                    System.out.println(chb.getText());
+                    _selectedRole = chb.getText();
+                    refreshTable();
                     for (JCheckBox otherRole : boxes) {
                         if (otherRole != chb) {
                             otherRole.setSelected(false);
@@ -94,42 +103,83 @@ public class StaffManagement extends JPanel {
         add(northWrapper, BorderLayout.NORTH);
 
         // 3) Data table area
-        Object[][] sampleData = {
-            {"C1", "Alice Tan", "012-3456789", "alice@apumed.edu"},
-            {"M2", "Bob Lee", "013-9876543", "bob@apumed.edu"}
+        List<String[]> staffData = managerActions.returnStaffData(_selectedRole);
+        
+        // 1) Build your table model from staffData:
+        model = new DefaultTableModel(cols, 0) {
+            @Override public boolean isCellEditable(int r, int c) { return false; }
         };
-        DefaultTableModel model = new DefaultTableModel(sampleData, cols) {
-            @Override
-            public boolean isCellEditable(int r, int c) {
-                return false;
-            }
-        };
+        
+        for (String[] row : staffData) {
+            model.addRow(row);
+        }
+
+        // 2) Create the JTable
         JTable table = new JTable(model);
         table.setTableHeader(null);
         table.setFont(table.getFont().deriveFont(20f));
         table.setShowGrid(false);
+        table.setIntercellSpacing(new Dimension(0,10));
+        table.setRowHeight(table.getRowHeight()+10);
 
-        table.setIntercellSpacing(new Dimension(0, 10));
-
+        // 3) Cell renderer (as you already have)
         DefaultTableCellRenderer cellRend = new DefaultTableCellRenderer() {
             @Override
             public Component getTableCellRendererComponent(JTable table,
                     Object value, boolean isSelected, boolean hasFocus,
                     int row, int column) {
-                JLabel lbl = (JLabel) super.getTableCellRendererComponent(
-                        table, value, isSelected, false, row, column);
-                // Outer border: 1px black. Inner border: 5px padding.
-                Border outer = BorderFactory.createLineBorder(Color.BLACK, 1);
-                Border inner = BorderFactory.createEmptyBorder(5, 5, 5, 5);
-                lbl.setBorder(BorderFactory.createCompoundBorder(outer, inner));
+                JLabel lbl = (JLabel)super.getTableCellRendererComponent(
+                    table,value,isSelected,false,row,column);
+                Border outer = BorderFactory.createLineBorder(Color.BLACK,1);
+                Border inner = BorderFactory.createEmptyBorder(5,5,5,5);
+                lbl.setBorder(BorderFactory.createCompoundBorder(outer,inner));
                 return lbl;
             }
         };
         table.setDefaultRenderer(Object.class, cellRend);
 
-        table.setRowHeight(table.getRowHeight() + 10);
+        // 4) Context menu on right‑click
+        JPopupMenu popup = new JPopupMenu();
+        JMenuItem miEdit   = new JMenuItem("Edit");
+        JMenuItem miInact  = new JMenuItem("Inactive User");
+        popup.add(miEdit);
+        popup.add(miInact);
 
+        table.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent e) {
+                // for Windows/Linux
+                if (e.isPopupTrigger()) showMenu(e);
+            }
+            private void showMenu(MouseEvent e) {
+                int row = table.rowAtPoint(e.getPoint());
+                if (row >= 0 && row < table.getRowCount()) {
+                    table.setRowSelectionInterval(row,row);
+                    popup.show(table, e.getX(), e.getY());
+                }
+            }
+        });
+
+        // 5) Wire menu items
+        miEdit.addActionListener(evt -> {
+            int row = table.getSelectedRow();
+            String[] staff = staffData.get(row);
+            // open your edit dialog passing staff[]
+        });
+        miInact.addActionListener(evt -> {
+            int row = table.getSelectedRow();
+            String[] staff = staffData.get(row);
+            // call your "inactivate" logic here using staff[0] as ID
+        });
+
+        // 6) Finally add to your scroll pane & container
         JScrollPane scroll = new JScrollPane(table);
         add(scroll, BorderLayout.CENTER);
+    }
+    
+    private void refreshTable(){
+        model.setRowCount(0);
+        List<String[]> staffData = managerActions.returnStaffData(_selectedRole);
+        staffData.forEach(model::addRow);
     }
 }
