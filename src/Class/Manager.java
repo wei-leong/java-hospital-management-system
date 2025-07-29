@@ -26,4 +26,8 @@ public class Manager extends Person{
     public List<String[]> returnStaffData(String filterRole){
         return profileHelper.ShowProfile(filterRole);
     }
+    
+    public void editStaff(String[] oldData, String[] newData){
+        profileHelper.EditProfile(oldData, newData);
+    }
 }

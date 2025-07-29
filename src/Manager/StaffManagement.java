@@ -16,8 +16,9 @@ public class StaffManagement extends JPanel {
     
     private String _selectedRole = "All";
     private final DefaultTableModel model;
+    private List<String[]> staffData = List.of();
     Manager managerActions = new Manager();
-
+    
     public StaffManagement() {
         
         setLayout(new BorderLayout(10, 10));
@@ -72,9 +73,15 @@ public class StaffManagement extends JPanel {
         btnAdd.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 
         btnAdd.addActionListener(e -> {
-            SwingUtilities.invokeLater(() -> {
-                new AddStaff().setVisible(true);
+            AddStaff add = new AddStaff();
+            add.addWindowListener(new java.awt.event.WindowAdapter() {
+                @Override
+                public void windowClosed(java.awt.event.WindowEvent we) {
+                    // 2) Once it’s closed, refresh your table
+                    refreshTable();
+                }
             });
+            SwingUtilities.invokeLater(() -> add.setVisible(true));
         });
 
         tagBar.add(btnAdd, BorderLayout.EAST);
@@ -101,9 +108,6 @@ public class StaffManagement extends JPanel {
         northWrapper.add(headerBar);
 
         add(northWrapper, BorderLayout.NORTH);
-
-        // 3) Data table area
-        List<String[]> staffData = managerActions.returnStaffData(_selectedRole);
         
         // 1) Build your table model from staffData:
         model = new DefaultTableModel(cols, 0) {
@@ -140,8 +144,8 @@ public class StaffManagement extends JPanel {
 
         // 4) Context menu on right‑click
         JPopupMenu popup = new JPopupMenu();
-        JMenuItem miEdit   = new JMenuItem("Edit");
-        JMenuItem miInact  = new JMenuItem("Inactive User");
+        JMenuItem miEdit = new JMenuItem("Edit");
+        JMenuItem miInact = new JMenuItem("Inactive User");
         popup.add(miEdit);
         popup.add(miInact);
 
@@ -150,6 +154,10 @@ public class StaffManagement extends JPanel {
             public void mousePressed(MouseEvent e) {
                 // for Windows/Linux
                 if (e.isPopupTrigger()) showMenu(e);
+            }
+            @Override
+            public void mouseReleased(MouseEvent e) {
+              if (e.isPopupTrigger()) showMenu(e);
             }
             private void showMenu(MouseEvent e) {
                 int row = table.rowAtPoint(e.getPoint());
@@ -164,7 +172,20 @@ public class StaffManagement extends JPanel {
         miEdit.addActionListener(evt -> {
             int row = table.getSelectedRow();
             String[] staff = staffData.get(row);
-            // open your edit dialog passing staff[]
+
+            // 1) Create the EditStaff window
+            EditStaff edit = new EditStaff(staff);
+
+            // 2) When it closes, refresh this panel’s table
+            edit.addWindowListener(new java.awt.event.WindowAdapter() {
+                @Override
+                public void windowClosed(java.awt.event.WindowEvent e) {
+                    refreshTable();
+                }
+            });
+
+            // 3) Show it
+            SwingUtilities.invokeLater(() -> edit.setVisible(true));
         });
         miInact.addActionListener(evt -> {
             int row = table.getSelectedRow();
@@ -179,7 +200,7 @@ public class StaffManagement extends JPanel {
     
     private void refreshTable(){
         model.setRowCount(0);
-        List<String[]> staffData = managerActions.returnStaffData(_selectedRole);
+        staffData = managerActions.returnStaffData(_selectedRole);
         staffData.forEach(model::addRow);
     }
 }

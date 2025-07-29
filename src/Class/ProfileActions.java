@@ -48,7 +48,8 @@ public class ProfileActions {
                             newGender,
                             newEmail,
                             newPhone,
-                            String.valueOf(newAge) // 8th field placeholder if needed
+                            String.valueOf(newAge), // 8th field placeholder if needed
+                            "Active"
                     )
             );
             Files.write(
@@ -68,8 +69,8 @@ public class ProfileActions {
         try{
             List<String> lines = Files.readAllLines(staffData);
             for(String line : lines){
-                String[] parts = line.trim().split(",",8);
-                if (parts.length == 8) {
+                String[] parts = line.trim().split(",",9);
+                if (parts.length == 9 && parts[8].equals("Active")) {
                     // if "All" or matches the role
                     if (filterRole.equalsIgnoreCase("All")
                      || parts[1].equals(filterRole)) {
@@ -81,5 +82,58 @@ public class ProfileActions {
             System.err.println("Error reading profile.txt: " + e.getMessage());
         }
         return results;
+    }
+    
+    public void EditProfile(String[] oldData, String[] newData){
+        Path staffData = Paths.get("src","txt", "profile.txt");
+        String oldId = oldData[0];
+        try{
+            // Remove Old Staff Data
+            List<String> lines = Files.readAllLines(staffData);
+            List<String> updatedLines = new ArrayList<>();
+            
+            for(String line : lines){
+                String[] parts = line.trim().split(",",8);
+                if(parts.length == 8 && !parts[0].equals(oldId.trim())){
+                    updatedLines.add(line);
+                }
+            }
+            
+            Files.write(staffData, updatedLines);
+            
+            String id = newData[0];
+            String newRole = newData[1];
+            String newName = newData[2];
+            String newPass = newData[3];
+            String newGender = newData[4];
+            String newEmail = newData[5];
+            String newPhone = newData[6];
+            String newAge = newData[7];
+            
+
+            List<String> linesToAdd = List.of(
+                    "\n" + String.join(",",
+                            id, // e.g., "M4"
+                            newRole,
+                            newName,
+                            newPass, // Password
+                            newGender,
+                            newEmail,
+                            newPhone,
+                            newAge, // 8th field placeholder if needed
+                            "Active"
+                    )
+            );
+            Files.write(
+                    staffData,
+                    linesToAdd,
+                    StandardOpenOption.CREATE,
+                    StandardOpenOption.APPEND
+            );
+            
+            
+        } catch(IOException e){
+            System.err.println("Error reading profile.txt: " + e.getMessage());
+        }
     }
 }
