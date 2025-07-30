@@ -34,8 +34,8 @@ public class Person implements Login{
         try{
             List<String> lines = Files.readAllLines(staffData);
             for(String line : lines){
-                String[] parts = line.trim().split(",",8);
-                if(parts.length == 8 && parts[5].equals(_email.trim()) && parts[3].equals(_password.trim())){
+                String[] parts = line.trim().split(",",9);
+                if(parts.length == 9 && parts[5].equals(_email.trim()) && parts[3].equals(_password.trim())){
                     return parts;
                 }
             }
