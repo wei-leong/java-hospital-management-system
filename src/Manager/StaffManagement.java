@@ -13,16 +13,15 @@ import javax.swing.border.Border;
 import javax.swing.table.DefaultTableCellRenderer;
 
 public class StaffManagement extends JPanel {
-    
-    // When We need to Active Staff, we just need to Edit the Inactive Staff
-    
+
+    // When We need to Reactive Staff, we just need to Edit the Inactive Staff
     private String _selectedRole = "All";
     private final DefaultTableModel model;
     private List<String[]> staffData = List.of();
     Manager managerActions = new Manager();
-    
+
     public StaffManagement() {
-        
+
         setLayout(new BorderLayout(10, 10));
         setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         setBackground(Color.WHITE);
@@ -38,7 +37,7 @@ public class StaffManagement extends JPanel {
         filters.setBorder(BorderFactory.createEmptyBorder());
 
         String[] tags = {
-            "All", "Staff", "Manager","Doctor", "Inactive"
+            "All", "Staff", "Manager", "Doctor", "Inactive"
         };
 
         for (String t : tags) {
@@ -110,23 +109,33 @@ public class StaffManagement extends JPanel {
         northWrapper.add(headerBar);
 
         add(northWrapper, BorderLayout.NORTH);
-        
+
         // 1) Build your table model from staffData:
         model = new DefaultTableModel(cols, 0) {
-            @Override public boolean isCellEditable(int r, int c) { return false; }
+            @Override
+            public boolean isCellEditable(int r, int c) {
+                return false;
+            }
         };
         
-        for (String[] row : staffData) {
-            model.addRow(row);
+        for (JCheckBox chb : boxes) {
+            if ("All".equals(chb.getText())) {
+                chb.setSelected(true);    // fires your ItemListener → calls refreshTable()
+                break;
+            }
         }
+
+//        for (String[] row : staffData) {
+//            model.addRow(row);
+//        }
 
         // 2) Create the JTable
         JTable table = new JTable(model);
         table.setTableHeader(null);
         table.setFont(table.getFont().deriveFont(20f));
         table.setShowGrid(false);
-        table.setIntercellSpacing(new Dimension(0,10));
-        table.setRowHeight(table.getRowHeight()+10);
+        table.setIntercellSpacing(new Dimension(0, 10));
+        table.setRowHeight(table.getRowHeight() + 10);
 
         // 3) Cell renderer (as you already have)
         DefaultTableCellRenderer cellRend = new DefaultTableCellRenderer() {
@@ -134,17 +143,17 @@ public class StaffManagement extends JPanel {
             public Component getTableCellRendererComponent(JTable table,
                     Object value, boolean isSelected, boolean hasFocus,
                     int row, int column) {
-                JLabel lbl = (JLabel)super.getTableCellRendererComponent(
-                    table,value,isSelected,false,row,column);
-                Border outer = BorderFactory.createLineBorder(Color.BLACK,1);
-                Border inner = BorderFactory.createEmptyBorder(5,5,5,5);
-                lbl.setBorder(BorderFactory.createCompoundBorder(outer,inner));
+                JLabel lbl = (JLabel) super.getTableCellRendererComponent(
+                        table, value, isSelected, false, row, column);
+                Border outer = BorderFactory.createLineBorder(Color.BLACK, 1);
+                Border inner = BorderFactory.createEmptyBorder(5, 5, 5, 5);
+                lbl.setBorder(BorderFactory.createCompoundBorder(outer, inner));
                 return lbl;
             }
         };
         table.setDefaultRenderer(Object.class, cellRend);
 
-        // 4) Context menu on right‑click
+        // Context Menu ( Right Click ) 
         JPopupMenu popup = new JPopupMenu();
         JMenuItem miEdit = new JMenuItem("Edit");
         JMenuItem miInact = new JMenuItem("Inactive User");
@@ -155,22 +164,28 @@ public class StaffManagement extends JPanel {
             @Override
             public void mousePressed(MouseEvent e) {
                 // for Windows/Linux
-                if (e.isPopupTrigger()) showMenu(e);
+                if (e.isPopupTrigger()) {
+                    showMenu(e);
+                }
             }
+
             @Override
             public void mouseReleased(MouseEvent e) {
-              if (e.isPopupTrigger()) showMenu(e);
+                if (e.isPopupTrigger()) {
+                    showMenu(e);
+                }
             }
+
             private void showMenu(MouseEvent e) {
                 int row = table.rowAtPoint(e.getPoint());
                 if (row >= 0 && row < table.getRowCount()) {
-                    table.setRowSelectionInterval(row,row);
+                    table.setRowSelectionInterval(row, row);
                     popup.show(table, e.getX(), e.getY());
                 }
             }
         });
 
-        // 5) Wire menu items
+        // Edit Profile
         miEdit.addActionListener(evt -> {
             int row = table.getSelectedRow();
             String[] staff = staffData.get(row);
@@ -189,6 +204,8 @@ public class StaffManagement extends JPanel {
             // 3) Show it
             SwingUtilities.invokeLater(() -> edit.setVisible(true));
         });
+        
+        // Inactive User
         miInact.addActionListener(evt -> {
             int row = table.getSelectedRow();
             String[] staff = staffData.get(row);
@@ -201,8 +218,8 @@ public class StaffManagement extends JPanel {
         JScrollPane scroll = new JScrollPane(table);
         add(scroll, BorderLayout.CENTER);
     }
-    
-    private void refreshTable(){
+
+    private void refreshTable() {
         model.setRowCount(0);
         staffData = managerActions.returnStaffData(_selectedRole);
         staffData.forEach(model::addRow);
