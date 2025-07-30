@@ -36,7 +36,7 @@ public class StaffManagement extends JPanel {
         filters.setBorder(BorderFactory.createEmptyBorder());
 
         String[] tags = {
-            "All", "Staff", "Doctor", "Inactive"
+            "All", "Staff", "Manager","Doctor", "Inactive"
         };
 
         for (String t : tags) {
@@ -190,7 +190,8 @@ public class StaffManagement extends JPanel {
         miInact.addActionListener(evt -> {
             int row = table.getSelectedRow();
             String[] staff = staffData.get(row);
-            // call your "inactivate" logic here using staff[0] as ID
+
+            managerActions.InactiveStaff(staff);
         });
 
         // 6) Finally add to your scroll pane & container

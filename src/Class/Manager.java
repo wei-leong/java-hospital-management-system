@@ -30,4 +30,8 @@ public class Manager extends Person{
     public void editStaff(String[] oldData, String[] newData){
         profileHelper.EditProfile(oldData, newData);
     }
+    
+    public void InactiveStaff(String[] staffDetails){
+        profileHelper.InactiveProfile(staffDetails);
+    }
 }

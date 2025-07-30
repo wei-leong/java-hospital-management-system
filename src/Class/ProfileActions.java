@@ -136,4 +136,56 @@ public class ProfileActions {
             System.err.println("Error reading profile.txt: " + e.getMessage());
         }
     }
+    
+    public void InactiveProfile(String[] staffProfile){
+        Path staffData = Paths.get("src","txt", "profile.txt");
+        String staffId = staffProfile[0];
+        try{
+            // Remove Old Staff Data
+            List<String> lines = Files.readAllLines(staffData);
+            List<String> updatedLines = new ArrayList<>();
+            
+            for(String line : lines){
+                String[] parts = line.trim().split(",",8);
+                if(parts.length == 8 && !parts[0].equals(staffId.trim())){
+                    updatedLines.add(line);
+                }
+            }
+            
+            Files.write(staffData, updatedLines);
+            
+            String staffRole = staffProfile[1];
+            String staffName = staffProfile[2];
+            String staffPass = staffProfile[3];
+            String staffGender = staffProfile[4];
+            String staffEmail = staffProfile[5];
+            String staffPhone = staffProfile[6];
+            String staffAge = staffProfile[7];
+            
+
+            List<String> linesToAdd = List.of(
+                    "\n" + String.join(",",
+                            staffId, // e.g., "M4"
+                            staffRole,
+                            staffName,
+                            staffPass, // Password
+                            staffGender,
+                            staffEmail,
+                            staffPhone,
+                            staffAge, // 8th field placeholder if needed
+                            "Inactive"
+                    )
+            );
+            Files.write(
+                    staffData,
+                    linesToAdd,
+                    StandardOpenOption.CREATE,
+                    StandardOpenOption.APPEND
+            );
+            
+            
+        } catch(IOException e){
+            System.err.println("Error reading profile.txt: " + e.getMessage());
+        }
+    }
 }
