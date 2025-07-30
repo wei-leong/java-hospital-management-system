@@ -14,6 +14,8 @@ import javax.swing.table.DefaultTableCellRenderer;
 
 public class StaffManagement extends JPanel {
     
+    // When We need to Active Staff, we just need to Edit the Inactive Staff
+    
     private String _selectedRole = "All";
     private final DefaultTableModel model;
     private List<String[]> staffData = List.of();
@@ -192,6 +194,7 @@ public class StaffManagement extends JPanel {
             String[] staff = staffData.get(row);
 
             managerActions.InactiveStaff(staff);
+            refreshTable();
         });
 
         // 6) Finally add to your scroll pane & container
