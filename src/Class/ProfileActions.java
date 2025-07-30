@@ -62,45 +62,48 @@ public class ProfileActions {
             System.err.println("Error reading profile.txt: " + e.getMessage());
         }
     }
-    
-    public List<String[]> ShowProfile(String filterRole){
-        Path staffData = Paths.get("src","txt", "profile.txt");
+
+    public List<String[]> ShowProfile(String filterRole) {
+        Path staffData = Paths.get("src", "txt", "profile.txt");
         List<String[]> results = new ArrayList<>();
-        try{
+        try {
             List<String> lines = Files.readAllLines(staffData);
-            for(String line : lines){
-                String[] parts = line.trim().split(",",9);
+            for (String line : lines) {
+                String[] parts = line.trim().split(",", 9);
                 if (parts.length == 9 && parts[8].equals("Active")) {
                     // if "All" or matches the role
                     if (filterRole.equalsIgnoreCase("All")
-                     || parts[1].equals(filterRole)) {
+                            || parts[1].equals(filterRole)) {
                         results.add(parts);
                     }
+                } else if (parts.length == 9 && filterRole.equalsIgnoreCase("Inactive")){
+                    if (parts[8].equalsIgnoreCase("Inactive"))
+                    results.add(parts);
                 }
             }
-        } catch(IOException e){
+        } catch (IOException e) {
             System.err.println("Error reading profile.txt: " + e.getMessage());
         }
         return results;
     }
-    
-    public void EditProfile(String[] oldData, String[] newData){
-        Path staffData = Paths.get("src","txt", "profile.txt");
+
+    public void EditProfile(String[] oldData, String[] newData) {
+        Path staffData = Paths.get("src", "txt", "profile.txt");
         String oldId = oldData[0];
-        try{
+        try {
             // Remove Old Staff Data
             List<String> lines = Files.readAllLines(staffData);
             List<String> updatedLines = new ArrayList<>();
-            
-            for(String line : lines){
-                String[] parts = line.trim().split(",",8);
-                if(parts.length == 8 && !parts[0].equals(oldId.trim())){
+
+            for (String line : lines) {
+                String[] parts = line.trim().split(",", 8);
+                if (parts.length == 8 && !parts[0].equals(oldId.trim())) {
                     updatedLines.add(line);
                 }
             }
-            
+
             Files.write(staffData, updatedLines);
-            
+
             String id = newData[0];
             String newRole = newData[1];
             String newName = newData[2];
@@ -109,7 +112,6 @@ public class ProfileActions {
             String newEmail = newData[5];
             String newPhone = newData[6];
             String newAge = newData[7];
-            
 
             List<String> linesToAdd = List.of(
                     "\n" + String.join(",",
@@ -130,30 +132,29 @@ public class ProfileActions {
                     StandardOpenOption.CREATE,
                     StandardOpenOption.APPEND
             );
-            
-            
-        } catch(IOException e){
+
+        } catch (IOException e) {
             System.err.println("Error reading profile.txt: " + e.getMessage());
         }
     }
-    
-    public void InactiveProfile(String[] staffProfile){
-        Path staffData = Paths.get("src","txt", "profile.txt");
+
+    public void InactiveProfile(String[] staffProfile) {
+        Path staffData = Paths.get("src", "txt", "profile.txt");
         String staffId = staffProfile[0];
-        try{
+        try {
             // Remove Old Staff Data
             List<String> lines = Files.readAllLines(staffData);
             List<String> updatedLines = new ArrayList<>();
-            
-            for(String line : lines){
-                String[] parts = line.trim().split(",",8);
-                if(parts.length == 8 && !parts[0].equals(staffId.trim())){
+
+            for (String line : lines) {
+                String[] parts = line.trim().split(",", 8);
+                if (parts.length == 8 && !parts[0].equals(staffId.trim())) {
                     updatedLines.add(line);
                 }
             }
-            
+
             Files.write(staffData, updatedLines);
-            
+
             String staffRole = staffProfile[1];
             String staffName = staffProfile[2];
             String staffPass = staffProfile[3];
@@ -161,7 +162,6 @@ public class ProfileActions {
             String staffEmail = staffProfile[5];
             String staffPhone = staffProfile[6];
             String staffAge = staffProfile[7];
-            
 
             List<String> linesToAdd = List.of(
                     "\n" + String.join(",",
@@ -182,9 +182,8 @@ public class ProfileActions {
                     StandardOpenOption.CREATE,
                     StandardOpenOption.APPEND
             );
-            
-            
-        } catch(IOException e){
+
+        } catch (IOException e) {
             System.err.println("Error reading profile.txt: " + e.getMessage());
         }
     }
