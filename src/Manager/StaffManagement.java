@@ -90,7 +90,7 @@ public class StaffManagement extends JPanel {
         add(tagBar, BorderLayout.NORTH);
 
         // COlumn Headers
-        String[] cols = {"Staff ID", "Staff Name", "Phone Number", "Email"};
+        String[] cols = {"Staff ID", "Staff Role", "Staff Name", "Password","Gender", "Email","Phone Number","Age"};
         JPanel headerBar = new JPanel(new GridLayout(1, cols.length, 8, 0));
         headerBar.setBackground(Color.WHITE);
         headerBar.setBorder(BorderFactory.createEmptyBorder());  // no panel border
@@ -128,8 +128,10 @@ public class StaffManagement extends JPanel {
         // Create the JTable
         JTable table = new JTable(model);
         table.setTableHeader(null);
+        table.setBackground(Color.WHITE);
         table.setFont(table.getFont().deriveFont(20f));
         table.setShowGrid(false);
+        table.setRowHeight(40);
         table.setIntercellSpacing(new Dimension(0, 10));
         table.setRowHeight(table.getRowHeight() + 10);
 
@@ -142,7 +144,7 @@ public class StaffManagement extends JPanel {
                 JLabel lbl = (JLabel) super.getTableCellRendererComponent(
                         table, value, isSelected, false, row, column);
                 Border outer = BorderFactory.createLineBorder(Color.BLACK, 1);
-                Border inner = BorderFactory.createEmptyBorder(5, 5, 5, 5);
+                Border inner = BorderFactory.createEmptyBorder(0, 0, 0, 0);
                 lbl.setBorder(BorderFactory.createCompoundBorder(outer, inner));
                 return lbl;
             }
@@ -212,6 +214,7 @@ public class StaffManagement extends JPanel {
 
         // 6) Finally add to your scroll pane & container
         JScrollPane scroll = new JScrollPane(table);
+        scroll.setBackground(Color.WHITE);
         add(scroll, BorderLayout.CENTER);
     }
 
