@@ -1,28 +1,44 @@
 package Manager;
 
+import Class.Manager;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ItemEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.List;
 import java.util.ArrayList;
 import javax.swing.border.Border;
 import javax.swing.table.DefaultTableCellRenderer;
 
 public class StaffManagement extends JPanel {
-
+    
+    // When We need to Active Staff, we just need to Edit the Inactive Staff
+    
+    private String _selectedRole = "All";
+    private final DefaultTableModel model;
+    private List<String[]> staffData = List.of();
+    Manager managerActions = new Manager();
+    
     public StaffManagement() {
+        
         setLayout(new BorderLayout(10, 10));
         setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         setBackground(Color.WHITE);
 
-        // 1) Tag bar
+        // Checkbox ( All, Staff, Doctor, Inactive
         List<JCheckBox> boxes = new ArrayList<>();
-        JPanel tagBar = new JPanel(new FlowLayout(FlowLayout.LEFT, 8, 0));
+        JPanel tagBar = new JPanel(new BorderLayout(8, 0));
         tagBar.setBackground(Color.WHITE);
         tagBar.setBorder(BorderFactory.createEmptyBorder());
+
+        JPanel filters = new JPanel(new FlowLayout(FlowLayout.LEFT, 8, 0));
+        filters.setBackground(Color.WHITE);
+        filters.setBorder(BorderFactory.createEmptyBorder());
+
         String[] tags = {
-            "All", "Staff", "Doctor", "Inactive"
+            "All", "Staff", "Manager","Doctor", "Inactive"
         };
 
         for (String t : tags) {
@@ -31,13 +47,15 @@ public class StaffManagement extends JPanel {
             checkBox.setForeground(Color.BLACK);
             checkBox.setOpaque(true);
             checkBox.setFocusPainted(false);
-            tagBar.add(checkBox);
+            filters.add(checkBox);
             boxes.add(checkBox);
         }
 
         for (JCheckBox chb : boxes) {
             chb.addItemListener(e -> {
                 if (e.getStateChange() == ItemEvent.SELECTED) {
+                    _selectedRole = chb.getText();
+                    refreshTable();
                     for (JCheckBox otherRole : boxes) {
                         if (otherRole != chb) {
                             otherRole.setSelected(false);
@@ -46,6 +64,30 @@ public class StaffManagement extends JPanel {
                 }
             });
         }
+        tagBar.add(filters, BorderLayout.WEST);
+
+        // Add Staff Button
+        JButton btnAdd = new JButton("+ Add Staff");
+        btnAdd.setBackground(Color.WHITE);
+        btnAdd.setForeground(Color.BLACK);
+        btnAdd.setFocusPainted(false);
+        btnAdd.setBorder(BorderFactory.createEmptyBorder(4, 8, 4, 8));
+        btnAdd.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+
+        btnAdd.addActionListener(e -> {
+            AddStaff add = new AddStaff();
+            add.addWindowListener(new java.awt.event.WindowAdapter() {
+                @Override
+                public void windowClosed(java.awt.event.WindowEvent we) {
+                    // 2) Once it’s closed, refresh your table
+                    refreshTable();
+                }
+            });
+            SwingUtilities.invokeLater(() -> add.setVisible(true));
+        });
+
+        tagBar.add(btnAdd, BorderLayout.EAST);
+
         add(tagBar, BorderLayout.NORTH);
 
         // 2) Column headers
@@ -68,44 +110,101 @@ public class StaffManagement extends JPanel {
         northWrapper.add(headerBar);
 
         add(northWrapper, BorderLayout.NORTH);
+        
+        // 1) Build your table model from staffData:
+        model = new DefaultTableModel(cols, 0) {
+            @Override public boolean isCellEditable(int r, int c) { return false; }
+        };
+        
+        for (String[] row : staffData) {
+            model.addRow(row);
+        }
 
-        // 3) Data table area
-        Object[][] sampleData = {
-            {"C1", "Alice Tan", "012-3456789", "alice@apumed.edu"},
-            {"M2", "Bob Lee", "013-9876543", "bob@apumed.edu"}
-        };
-        DefaultTableModel model = new DefaultTableModel(sampleData, cols) {
-            @Override
-            public boolean isCellEditable(int r, int c) {
-                return false;
-            }
-        };
+        // 2) Create the JTable
         JTable table = new JTable(model);
         table.setTableHeader(null);
         table.setFont(table.getFont().deriveFont(20f));
         table.setShowGrid(false);
+        table.setIntercellSpacing(new Dimension(0,10));
+        table.setRowHeight(table.getRowHeight()+10);
 
-        table.setIntercellSpacing(new Dimension(0, 10));
-
+        // 3) Cell renderer (as you already have)
         DefaultTableCellRenderer cellRend = new DefaultTableCellRenderer() {
             @Override
             public Component getTableCellRendererComponent(JTable table,
                     Object value, boolean isSelected, boolean hasFocus,
                     int row, int column) {
-                JLabel lbl = (JLabel) super.getTableCellRendererComponent(
-                        table, value, isSelected, false, row, column);
-                // Outer border: 1px black. Inner border: 5px padding.
-                Border outer = BorderFactory.createLineBorder(Color.BLACK, 1);
-                Border inner = BorderFactory.createEmptyBorder(5, 5, 5, 5);
-                lbl.setBorder(BorderFactory.createCompoundBorder(outer, inner));
+                JLabel lbl = (JLabel)super.getTableCellRendererComponent(
+                    table,value,isSelected,false,row,column);
+                Border outer = BorderFactory.createLineBorder(Color.BLACK,1);
+                Border inner = BorderFactory.createEmptyBorder(5,5,5,5);
+                lbl.setBorder(BorderFactory.createCompoundBorder(outer,inner));
                 return lbl;
             }
         };
         table.setDefaultRenderer(Object.class, cellRend);
 
-        table.setRowHeight(table.getRowHeight() + 10);
+        // 4) Context menu on right‑click
+        JPopupMenu popup = new JPopupMenu();
+        JMenuItem miEdit = new JMenuItem("Edit");
+        JMenuItem miInact = new JMenuItem("Inactive User");
+        popup.add(miEdit);
+        popup.add(miInact);
 
+        table.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent e) {
+                // for Windows/Linux
+                if (e.isPopupTrigger()) showMenu(e);
+            }
+            @Override
+            public void mouseReleased(MouseEvent e) {
+              if (e.isPopupTrigger()) showMenu(e);
+            }
+            private void showMenu(MouseEvent e) {
+                int row = table.rowAtPoint(e.getPoint());
+                if (row >= 0 && row < table.getRowCount()) {
+                    table.setRowSelectionInterval(row,row);
+                    popup.show(table, e.getX(), e.getY());
+                }
+            }
+        });
+
+        // 5) Wire menu items
+        miEdit.addActionListener(evt -> {
+            int row = table.getSelectedRow();
+            String[] staff = staffData.get(row);
+
+            // 1) Create the EditStaff window
+            EditStaff edit = new EditStaff(staff);
+
+            // 2) When it closes, refresh this panel’s table
+            edit.addWindowListener(new java.awt.event.WindowAdapter() {
+                @Override
+                public void windowClosed(java.awt.event.WindowEvent e) {
+                    refreshTable();
+                }
+            });
+
+            // 3) Show it
+            SwingUtilities.invokeLater(() -> edit.setVisible(true));
+        });
+        miInact.addActionListener(evt -> {
+            int row = table.getSelectedRow();
+            String[] staff = staffData.get(row);
+
+            managerActions.InactiveStaff(staff);
+            refreshTable();
+        });
+
+        // 6) Finally add to your scroll pane & container
         JScrollPane scroll = new JScrollPane(table);
         add(scroll, BorderLayout.CENTER);
+    }
+    
+    private void refreshTable(){
+        model.setRowCount(0);
+        staffData = managerActions.returnStaffData(_selectedRole);
+        staffData.forEach(model::addRow);
     }
 }
