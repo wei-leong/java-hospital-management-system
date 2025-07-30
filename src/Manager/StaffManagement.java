@@ -89,7 +89,7 @@ public class StaffManagement extends JPanel {
 
         add(tagBar, BorderLayout.NORTH);
 
-        // 2) Column headers
+        // COlumn Headers
         String[] cols = {"Staff ID", "Staff Name", "Phone Number", "Email"};
         JPanel headerBar = new JPanel(new GridLayout(1, cols.length, 8, 0));
         headerBar.setBackground(Color.WHITE);
@@ -110,7 +110,7 @@ public class StaffManagement extends JPanel {
 
         add(northWrapper, BorderLayout.NORTH);
 
-        // 1) Build your table model from staffData:
+        // Build Table 
         model = new DefaultTableModel(cols, 0) {
             @Override
             public boolean isCellEditable(int r, int c) {
@@ -125,11 +125,7 @@ public class StaffManagement extends JPanel {
             }
         }
 
-//        for (String[] row : staffData) {
-//            model.addRow(row);
-//        }
-
-        // 2) Create the JTable
+        // Create the JTable
         JTable table = new JTable(model);
         table.setTableHeader(null);
         table.setFont(table.getFont().deriveFont(20f));
@@ -137,7 +133,7 @@ public class StaffManagement extends JPanel {
         table.setIntercellSpacing(new Dimension(0, 10));
         table.setRowHeight(table.getRowHeight() + 10);
 
-        // 3) Cell renderer (as you already have)
+        // Call Renderer for Table Data 
         DefaultTableCellRenderer cellRend = new DefaultTableCellRenderer() {
             @Override
             public Component getTableCellRendererComponent(JTable table,
