@@ -158,27 +158,56 @@ public class LoginForm extends JFrame {
             String userEmail = emailField.getText();
             String userPassword = new String(passField.getPassword());
 
-            Person newUser = new Person(userEmail,userPassword);
+            Person newUser = new Person(userEmail, userPassword);
             String[] staffDetails = newUser.login();
-            String staffRole = staffDetails[1];
-            switch (staffRole) {
-                case "Manager":
-                    SwingUtilities.invokeLater(() -> {
-                        new NavManager(staffDetails).setVisible(true);
-                    });
-                    break;
-                case "Staff":
-                case "Doctor":
-                case "Customer":
-                default:
-                    JOptionPane.showMessageDialog(
-                            null,
-                            "Login Failed, Please Try Again",
-                            "Login Error",
-                            JOptionPane.ERROR_MESSAGE
-                    );
+            // Check if Account is Logged In
+            if (staffDetails == null) {
+                JOptionPane.showMessageDialog(
+                        this,
+                        "Login failed: incorrect email or password.",
+                        "Login Error",
+                        JOptionPane.ERROR_MESSAGE
+                );
+                return;
+            }
 
-                    break;
+            // Check id Account is Active
+            if (!"Active".equalsIgnoreCase(staffDetails[8])) {
+                JOptionPane.showMessageDialog(
+                        this,
+                        "Login failed: inactive staff are not allowed to login.",
+                        "Login Error",
+                        JOptionPane.ERROR_MESSAGE
+                );
+                return;
+            }
+            
+            String role = staffDetails[1];
+            switch (role) {
+              case "Manager":
+                SwingUtilities.invokeLater(() -> {
+                  new NavManager(staffDetails).setVisible(true);
+                });
+                dispose();  // close login window
+                break;
+
+              case "Staff":
+                break;
+
+              case "Doctor":
+                break;
+
+              case "Customer":
+                break;
+
+              default:
+                JOptionPane.showMessageDialog(
+                  this,
+                  "Login failed: your role (“" + role + "”) is not recognized.",
+                  "Login Error",
+                  JOptionPane.ERROR_MESSAGE
+                );
+                break;
             }
         });
 
