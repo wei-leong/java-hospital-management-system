@@ -162,52 +162,37 @@ public class LoginForm extends JFrame {
             String[] staffDetails = newUser.login();
             // Check if Account is Logged In
             if (staffDetails == null) {
-                JOptionPane.showMessageDialog(
-                        this,
-                        "Login failed: incorrect email or password.",
-                        "Login Error",
-                        JOptionPane.ERROR_MESSAGE
-                );
+                ErrorDialog("Login failed: incorrect email or password.");
                 return;
             }
 
             // Check id Account is Active
             if (!"Active".equalsIgnoreCase(staffDetails[8])) {
-                JOptionPane.showMessageDialog(
-                        this,
-                        "Login failed: inactive staff are not allowed to login.",
-                        "Login Error",
-                        JOptionPane.ERROR_MESSAGE
-                );
+                ErrorDialog("Login failed: inactive staff are not allowed to login.");
                 return;
             }
-            
+
             String role = staffDetails[1];
             switch (role) {
-              case "Manager":
-                SwingUtilities.invokeLater(() -> {
-                  new NavManager(staffDetails).setVisible(true);
-                });
-                dispose();  // close login window
-                break;
+                case "Manager":
+                    SwingUtilities.invokeLater(() -> {
+                        new NavManager(staffDetails).setVisible(true);
+                    });
+                    dispose();  // close login window
+                    break;
 
-              case "Staff":
-                break;
+                case "Staff":
+                    break;
 
-              case "Doctor":
-                break;
+                case "Doctor":
+                    break;
 
-              case "Customer":
-                break;
+                case "Customer":
+                    break;
 
-              default:
-                JOptionPane.showMessageDialog(
-                  this,
-                  "Login failed: your role (“" + role + "”) is not recognized.",
-                  "Login Error",
-                  JOptionPane.ERROR_MESSAGE
-                );
-                break;
+                default:
+                    ErrorDialog("Login failed: your role (“" + role + "”) is not recognized.");
+                    break;
             }
         });
 
@@ -220,5 +205,14 @@ public class LoginForm extends JFrame {
         pack();
         setLocationRelativeTo(null);
         setVisible(true);
+    }
+
+    private void ErrorDialog(String msg) {
+        JOptionPane.showMessageDialog(
+                this,
+                msg,
+                "Login Error",
+                JOptionPane.ERROR_MESSAGE
+        );
     }
 }
