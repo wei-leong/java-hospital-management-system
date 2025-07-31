@@ -62,7 +62,8 @@ public class ProfileActions {
             System.err.println("Error reading profile.txt: " + e.getMessage());
         }
     }
-
+    
+    // I would also need to filter out staff role Customer
     public List<String[]> ShowProfile(String filterRole, String[] ownProfile) {
         Path staffData = Paths.get("src", "txt", "profile.txt");
         List<String[]> results = new ArrayList<>();
@@ -71,7 +72,11 @@ public class ProfileActions {
             for (String line : lines) {
                 String[] parts = line.trim().split(",", 9);
                 
-                if(parts.length ==9 && parts[0].equals(ownProfile[0])){
+                if(parts.length == 9 && parts[0].equals(ownProfile[0])){
+                    continue;
+                }
+                
+                if(parts.length == 9 && parts[1].equals("Customer")){
                     continue;
                 }
                 
