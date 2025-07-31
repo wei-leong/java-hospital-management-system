@@ -90,7 +90,7 @@ public class NavStaff extends JFrame{
         // Content area with CardLayout 
         content = new JPanel(cards);
         content.add(new Dashboard(), "Dashboard");
-        content.add(new StaffManagement(), "Staff Management");
+        content.add(new CustomerManagement(), "Customer Management");
         content.add(new Feedback(), "Feedback");
         add(content, BorderLayout.CENTER);
 
@@ -120,9 +120,9 @@ public class NavStaff extends JFrame{
             cards.show(content, "Dashboard");
             titleChanger("Dasbboard");
         }));
-        bar.add(makeSidebarButton("Staff Management", iconStaffManagement, e -> {
-            cards.show(content, "Staff Management");
-            titleChanger("Staff Management");
+        bar.add(makeSidebarButton("Customer Management", iconStaffManagement, e -> {
+            cards.show(content, "Customer Management");
+            titleChanger("Customer Management");
         }));
         bar.add(makeSidebarButton("View Feedback", iconFeedback, e -> {
             cards.show(content, "Feedback");

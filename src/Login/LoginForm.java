@@ -161,29 +161,7 @@ public class LoginForm extends JFrame {
 
             Person newUser = new Person(userEmail, userPassword);
             String[] staffDetails = newUser.login();
-<<<<<<< HEAD
-            String staffRole = staffDetails[1];
-            switch (staffRole) {
-                case "Manager":
-                    SwingUtilities.invokeLater(() -> {
-                        new NavManager(staffDetails).setVisible(true);
-                    });
-                    break;
-                case "Staff":
-                    SwingUtilities.invokeLater(() -> {
-                        new NavStaff(staffDetails).setVisible(true);
-                    });
-                    break;
-                case "Doctor":
-                case "Customer":
-                default:
-                    JOptionPane.showMessageDialog(
-                            null,
-                            "Login Failed, Please Try Again",
-                            "Login Error",
-                            JOptionPane.ERROR_MESSAGE
-                    );
-=======
+            
             // Check if Account is Logged In
             if (staffDetails == null) {
                 JOptionPane.showMessageDialog(
@@ -194,7 +172,6 @@ public class LoginForm extends JFrame {
                 );
                 return;
             }
->>>>>>> origin/main
 
             // Check id Account is Active
             if (!"Active".equalsIgnoreCase(staffDetails[8])) {
@@ -217,6 +194,10 @@ public class LoginForm extends JFrame {
                 break;
 
               case "Staff":
+                  SwingUtilities.invokeLater(() -> {
+                  new NavStaff(staffDetails).setVisible(true);
+                });
+                dispose();
                 break;
 
               case "Doctor":
