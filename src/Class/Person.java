@@ -18,6 +18,7 @@ import java.util.List;
 public class Person implements Login{
     private String _email;
     private String _password;
+    private String[] _userDetails;
     
     public Person(String email , String password ){
         this._email = email;

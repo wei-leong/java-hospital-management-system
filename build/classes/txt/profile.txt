@@ -1,7 +1,7 @@
-M1,Manager,manager,1234,Male,manager@mail.apu.com,0111111111,20,Active
-S1,Staff,staff,1234,Male,staff@mail.apu.com,0111111111,20,Active
 D1,Doctor,doctor,1234,Male,doctor@mail.apu.com,0111111111,20,Active
 C1,Customer,customer,1234,Male,customer@mail.apu.com,0111111111,20,Active
 D2,Doctor,Wilson Tee Xing Yang,D2100,Male,wilson@mail.apu.com,0188888883,100,Inactive
-
 M2,Manager,Tan Jia Jie,M222,Male,tjj@mail.apu.com,0188888886,22,Inactive
+M1,Manager,manager,1234,Male,manager@mail.apu.com,0111111111,20,Active
+
+S1,Staff,staff,1234,Male,staff@mail.apu.com,0111111111,20,Active

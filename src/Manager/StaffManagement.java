@@ -18,10 +18,12 @@ public class StaffManagement extends JPanel {
     private String _selectedRole = "All";
     private final DefaultTableModel model;
     private List<String[]> staffData = List.of();
-    Manager managerActions = new Manager();
-
-    public StaffManagement() {
-
+    private final Manager managerActions ;
+    
+    public StaffManagement(String[] ownProfile) {
+        
+        managerActions = new Manager(ownProfile);
+        
         setLayout(new BorderLayout(10, 10));
         setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         setBackground(Color.WHITE);

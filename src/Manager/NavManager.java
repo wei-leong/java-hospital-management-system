@@ -95,7 +95,7 @@ public class NavManager extends JFrame {
         // Content area with CardLayout 
         content = new JPanel(cards);
         content.add(new Dashboard(), "Dashboard");
-        content.add(new StaffManagement(), "Staff Management");
+        content.add(new StaffManagement(staffDetails), "Staff Management");
         content.add(new Feedback(), "Feedback");
         add(content, BorderLayout.CENTER);
 
