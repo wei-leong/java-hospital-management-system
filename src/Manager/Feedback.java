@@ -1,5 +1,6 @@
 package Manager;
 
+import Class.Manager;
 import java.awt.*;
 import java.awt.event.ItemEvent;
 import java.util.List;
@@ -12,6 +13,8 @@ public class Feedback extends JPanel {
     public Feedback() {
         setLayout(new BorderLayout(10, 10));
         setBackground(Color.WHITE);
+        
+        Manager managerActions = new Manager();
 
         // ——— 1) Review Summary ———
         JLabel lblSummaryTitle = new JLabel("Review Summary");
@@ -22,8 +25,11 @@ public class Feedback extends JPanel {
         JPanel summary = new JPanel(new FlowLayout(FlowLayout.CENTER, 50, 0));
         summary.setBackground(Color.WHITE);
         summary.setAlignmentX(Component.LEFT_ALIGNMENT);
-        summary.add(makeAverageBlock("4.0", "To Doctor"));
-        summary.add(makeAverageBlock("5.0", "To Staff"));
+        int staffAvg = managerActions.FeedbackSummary("S");        
+        int doctorAvg = managerActions.FeedbackSummary("D");
+
+        summary.add(makeAverageBlock(String.valueOf(staffAvg), "To Doctor"));
+        summary.add(makeAverageBlock(String.valueOf(doctorAvg), "To Staff"));
 
         // wrap title + summary in a left‐aligned Box
         JPanel summaryPanel = new JPanel();

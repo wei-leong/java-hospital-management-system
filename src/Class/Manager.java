@@ -4,6 +4,11 @@
  */
 package Class;
 
+import Class.FeedbackActions;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -12,6 +17,7 @@ import java.util.List;
  */
 public class Manager extends Person{
     private final ProfileActions profileHelper = new ProfileActions();
+    private final FeedbackActions feedbackHelper = new FeedbackActions();
     private final String[] _ownProfile;   
     
     public Manager(String email,String password){
@@ -39,5 +45,9 @@ public class Manager extends Person{
     
     public void InactiveStaff(String[] staffDetails){
         profileHelper.InactiveProfile(staffDetails);
+    }
+    
+    public int FeedbackSummary(String staffRole){
+        return feedbackHelper.returnAverageRating(staffRole);
     }
 }

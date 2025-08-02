@@ -6,7 +6,7 @@ import login.LoginForm;
 
 public class ApuMedicalCentre extends JFrame {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) { 
         SwingUtilities.invokeLater(() -> {
             new LoginForm().setVisible(true);
         });
