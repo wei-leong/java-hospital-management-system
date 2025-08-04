@@ -14,6 +14,7 @@ import java.awt.event.*;
 import static javax.swing.WindowConstants.EXIT_ON_CLOSE;
 
 public class NavManager extends JFrame {
+
     // Staff Details
     private final String[] _staffDetails;
 
@@ -25,7 +26,7 @@ public class NavManager extends JFrame {
 
     public NavManager(String[] staffDetails) {
         this._staffDetails = staffDetails;
-        
+
         // Window Title
         super("APU Medical Centre");
         setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -97,12 +98,13 @@ public class NavManager extends JFrame {
         content.add(new Dashboard(), "Dashboard");
         content.add(new StaffManagement(staffDetails), "Staff Management");
         content.add(new Feedback(), "Feedback");
+        content.add(new ViewAppointment(), "View Appointment");
         add(content, BorderLayout.CENTER);
 
         setVisible(true);
     }
-    
-    private void titleChanger(String newTitle){
+
+    private void titleChanger(String newTitle) {
         currentPage = newTitle;
         lblTitle.setText(newTitle);
     }
@@ -110,7 +112,7 @@ public class NavManager extends JFrame {
     private JPanel buildSidebar() {
         // Styling Options
         int iconSize = 25;
-        
+
         JPanel bar = new JPanel();
         bar.setPreferredSize(new Dimension(200, getHeight()));
         bar.setBackground(Color.BLACK);
@@ -132,6 +134,10 @@ public class NavManager extends JFrame {
         bar.add(makeSidebarButton("View Feedback", iconFeedback, e -> {
             cards.show(content, "Feedback");
             titleChanger("View Feedback");
+        }));
+        bar.add(makeSidebarButton("View Appointment", iconFeedback, e -> {
+            cards.show(content, "View Appointment");
+            titleChanger("View Appointment");
         }));
 
         JPanel bottom = new JPanel(new BorderLayout(10, 10));
