@@ -8,110 +8,100 @@ import javax.swing.*;
 
 public class Feedback extends JPanel {
 
-    // Made the feedback JPanel scrollable
-    // Made the feedback JPanel fixed height
+    private final JPanel commentList;
+    private String currentFilter = "All";
+    private final Manager managerActions = new Manager();
+
     public Feedback() {
         setLayout(new BorderLayout(10, 10));
         setBackground(Color.WHITE);
-        
-        Manager managerActions = new Manager();
 
-        // ——— 1) Review Summary ———
+        // NORTH JPanel to add Review Summary
+        JPanel north = new JPanel();
+        north.setLayout(new BoxLayout(north, BoxLayout.Y_AXIS));
+        north.setBackground(Color.WHITE);
+
+        // 1) Review Summary title
         JLabel lblSummaryTitle = new JLabel("Review Summary");
         lblSummaryTitle.setFont(lblSummaryTitle.getFont().deriveFont(Font.BOLD, 18f));
         lblSummaryTitle.setBorder(BorderFactory.createEmptyBorder(0, 10, 8, 0));
         lblSummaryTitle.setAlignmentX(Component.LEFT_ALIGNMENT);
+        north.add(lblSummaryTitle);
 
-        JPanel summary = new JPanel(new FlowLayout(FlowLayout.CENTER, 50, 0));
-        summary.setBackground(Color.WHITE);
-        summary.setAlignmentX(Component.LEFT_ALIGNMENT);
-        int staffAvg = managerActions.FeedbackSummary("S");        
+        // 2) Average-rating blocks, left aligned
+        JPanel summaryBlocks = new JPanel(new FlowLayout(FlowLayout.CENTER, 50, 0));
+        summaryBlocks.setBackground(Color.WHITE);
+        summaryBlocks.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+        int staffAvg = managerActions.FeedbackSummary("S");
         int doctorAvg = managerActions.FeedbackSummary("D");
+        summaryBlocks.add(makeAverageBlock(String.valueOf(staffAvg), "To Doctor"));
+        summaryBlocks.add(makeAverageBlock(String.valueOf(doctorAvg), "To Staff"));
 
-        summary.add(makeAverageBlock(String.valueOf(staffAvg), "To Doctor"));
-        summary.add(makeAverageBlock(String.valueOf(doctorAvg), "To Staff"));
+        north.add(summaryBlocks);
+        add(north, BorderLayout.NORTH);
 
-        // wrap title + summary in a left‐aligned Box
-        JPanel summaryPanel = new JPanel();
-        summaryPanel.setBackground(Color.WHITE);
-        summaryPanel.setLayout(new BoxLayout(summaryPanel, BoxLayout.Y_AXIS));
-        summaryPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
-        summaryPanel.add(lblSummaryTitle);
-        summaryPanel.add(summary);
+        // CENTER: Feedback title, then tags, then scrollable comments
+        JPanel center = new JPanel();
+        center.setLayout(new BoxLayout(center, BoxLayout.Y_AXIS));
+        center.setBackground(Color.WHITE);
 
-        // ——— 2) Tag filters ———
-        JPanel tags = new JPanel(new FlowLayout(FlowLayout.LEFT, 20, 10));
+        // 1) “Feedback” heading
+        JLabel lblFeedbackTitle = new JLabel("Feedback");
+        lblFeedbackTitle.setFont(lblFeedbackTitle.getFont().deriveFont(Font.BOLD, 18f));
+        lblFeedbackTitle.setBorder(BorderFactory.createEmptyBorder(8, 10, 8, 0));
+        lblFeedbackTitle.setAlignmentX(Component.LEFT_ALIGNMENT);
+        center.add(lblFeedbackTitle);
+
+        // 2) Tag filters just below the title
+        JPanel tags = new JPanel(new FlowLayout(FlowLayout.LEFT, 20, 0));
         tags.setBackground(Color.WHITE);
         tags.setAlignmentX(Component.LEFT_ALIGNMENT);
-        JCheckBox cbDoc = new JCheckBox("Doctor");
-        JCheckBox cbStaff = new JCheckBox("Staff");
-        for (JCheckBox cb : List.of(cbDoc, cbStaff)) {
+        JCheckBox cbAll = new JCheckBox("All", true);
+        JCheckBox cbStaff = new JCheckBox("Staff", false);
+        JCheckBox cbDoc = new JCheckBox("Doctor", false);
+        for (JCheckBox cb : List.of(cbAll, cbStaff, cbDoc)) {
             cb.setBackground(Color.WHITE);
-            cb.setFocusPainted(false);
             tags.add(cb);
             cb.addItemListener(e -> {
                 if (e.getStateChange() == ItemEvent.SELECTED) {
-                    for (JCheckBox other : List.of(cbDoc, cbStaff)) {
+                    for (JCheckBox other : List.of(cbAll, cbStaff, cbDoc)) {
                         if (other != cb) {
                             other.setSelected(false);
                         }
                     }
+                    currentFilter = cb.getText().equals("All") ? "All"
+                            : cb.getText().equals("Staff") ? "S"
+                            : "D";
+                    refreshComments();
                 }
             });
         }
+        center.add(tags);
 
-        // put summaryPanel + tags into a single NORTH container
-        JPanel north = new JPanel();
-        north.setBackground(Color.WHITE);
-        north.setLayout(new BoxLayout(north, BoxLayout.Y_AXIS));
-        north.add(summaryPanel);
-        north.add(tags);
-        add(north, BorderLayout.NORTH);
-
-        // ——— 3) Feedback title + scrollable comments ———
-        JLabel lblFeedbackTitle = new JLabel("Feedback");
-        lblFeedbackTitle.setFont(lblFeedbackTitle.getFont().deriveFont(Font.BOLD, 18f));
-        lblFeedbackTitle.setBorder(BorderFactory.createEmptyBorder(10, 10, 8, 0));
-        lblFeedbackTitle.setAlignmentX(Component.LEFT_ALIGNMENT);
-
-        JPanel commentList = new JPanel();
-        commentList.setBackground(Color.WHITE);
+        // 3) Scrollable list of comments
+        commentList = new JPanel();
         commentList.setLayout(new BoxLayout(commentList, BoxLayout.Y_AXIS));
+        commentList.setBackground(Color.WHITE);
         commentList.setAlignmentX(Component.LEFT_ALIGNMENT);
 
-        // sample data…
-        List<Review> reviews = List.of(
-                new Review("Alice", "alice@mail", "12/03/2025", "Great job", "Doctor", "DOC001", "5"),
-                new Review("Bob", "bob@mail", "11/03/2025", "Okay", "Staff", "STF002", "3"),
-                new Review("Alice", "alice@mail", "12/03/2025", "Great job", "Doctor", "DOC001", "5"),
-                new Review("Bob", "bob@mail", "11/03/2025", "Okay", "Staff", "STF002", "3"),
-                new Review("Alice", "alice@mail", "12/03/2025", "Great job", "Doctor", "DOC001", "5"),
-                new Review("Bob", "bob@mail", "11/03/2025", "Okay", "Staff", "STF002", "3")
-        );
-        for (Review r : reviews) {
-            JPanel card = makeCommentCard(r);
-            card.setAlignmentX(Component.LEFT_ALIGNMENT);
-            card.setMaximumSize(new Dimension(Integer.MAX_VALUE, 200));
-            commentList.add(card);
-            commentList.add(Box.createRigidArea(new Dimension(0, 10)));
-        }
-
-        JScrollPane scroll = new JScrollPane(commentList,
+        JScrollPane scroll = new JScrollPane(
+                commentList,
                 JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
-                JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+                JScrollPane.HORIZONTAL_SCROLLBAR_NEVER
+        );
         scroll.getViewport().setBackground(Color.WHITE);
         scroll.setAlignmentX(Component.LEFT_ALIGNMENT);
+        scroll.setPreferredSize(new Dimension(0, 400));
 
-        // put feedback title + scroll into center box
-        JPanel center = new JPanel();
-        center.setBackground(Color.WHITE);
-        center.setLayout(new BoxLayout(center, BoxLayout.Y_AXIS));
-        center.add(lblFeedbackTitle);
         center.add(scroll);
         add(center, BorderLayout.CENTER);
+
+        // initial population
+        refreshComments();
     }
 
-    // ─── builds one “average rating” block ─────────────────────────
+    // Average Rating Block
     private JComponent makeAverageBlock(String avg, String title) {
         JPanel p = new JPanel(new BorderLayout(0, 4));
         p.setBackground(Color.WHITE);
@@ -131,88 +121,67 @@ public class Feedback extends JPanel {
             stars.add(new JLabel(i <= r ? on16 : off16));
         }
         p.add(stars, BorderLayout.CENTER);
-        
+
         JLabel lblTitle = new JLabel(title, SwingConstants.CENTER);
         lblTitle.setFont(lblTitle.getFont().deriveFont(Font.PLAIN, 15f));
-        p.add(lblTitle,BorderLayout.SOUTH);
-        
+        p.add(lblTitle, BorderLayout.SOUTH);
+
         return p;
     }
 
-    private JPanel makeCommentCard(Review r) {
+    private JPanel makeCommentCard(String[] r) {
         JPanel card = new JPanel(new BorderLayout(8, 8));
         card.setBackground(Color.WHITE);
         card.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, Color.LIGHT_GRAY));
+        card.setMaximumSize(new Dimension(Integer.MAX_VALUE, 120));
 
-        JPanel content = new JPanel();
-        content.setLayout(new BoxLayout(content, BoxLayout.Y_AXIS));
-        content.setBackground(Color.WHITE);
+        JLabel name = new JLabel(r[0] + " → " + r[4] + " (" + r[5] + ")");
+        name.setFont(name.getFont().deriveFont(Font.BOLD, 14f));
 
-        // 1) name + role + id
-        JPanel pName = new JPanel(new FlowLayout(FlowLayout.LEFT, 4, 0));
-        JLabel name = new JLabel(r.name + " → " + r.targetRole + " (" + r.id + ")");
-        name.setFont(name.getFont().deriveFont(Font.BOLD, 20f));
-        pName.setBackground(Color.WHITE);
-        pName.add(name);
-        content.add(pName);
+        JLabel email = new JLabel(r[1]);
+        email.setFont(email.getFont().deriveFont(Font.PLAIN, 12f));
 
-        // 2) email
-        JPanel pEmail = new JPanel(new FlowLayout(FlowLayout.LEFT, 4, 0));
-        JLabel email = new JLabel(r.email);
-        email.setFont(email.getFont().deriveFont(Font.PLAIN, 18f));
-        pEmail.setBackground(Color.WHITE);
-        pEmail.add(email);
-        content.add(pEmail);
-
-        // 3) rating + date
+        // stars + date
         JPanel rd = new JPanel(new FlowLayout(FlowLayout.LEFT, 4, 0));
         rd.setBackground(Color.WHITE);
-
-        // load and scale stars
-        ImageIcon rawOn = new ImageIcon(getClass().getResource("/image/star-glow.png"));
-        ImageIcon on16 = new ImageIcon(rawOn.getImage().getScaledInstance(20, 20, Image.SCALE_SMOOTH));
-        ImageIcon rawOff = new ImageIcon(getClass().getResource("/image/star.png"));
-        ImageIcon off16 = new ImageIcon(rawOff.getImage().getScaledInstance(20, 20, Image.SCALE_SMOOTH));
-
-        int rating = Integer.parseInt(r.rating);
+        ImageIcon on16 = new ImageIcon(new ImageIcon(
+                getClass().getResource("/image/star-glow.png"))
+                .getImage().getScaledInstance(16, 16, Image.SCALE_SMOOTH));
+        ImageIcon off16 = new ImageIcon(new ImageIcon(
+                getClass().getResource("/image/star.png"))
+                .getImage().getScaledInstance(16, 16, Image.SCALE_SMOOTH));
+        int rating = Integer.parseInt(r[6]);
         for (int i = 1; i <= 5; i++) {
             rd.add(new JLabel(i <= rating ? on16 : off16));
         }
         rd.add(Box.createHorizontalStrut(8));
-       
-        JLabel date = new JLabel(r.date);
-        date.setFont(date.getFont().deriveFont(Font.PLAIN, 18f));
+        JLabel date = new JLabel(r[2]);
+        date.setFont(date.getFont().deriveFont(Font.PLAIN, 12f));
         rd.add(date);
 
-        content.add(Box.createRigidArea(new Dimension(0, 4)));
-        content.add(rd);
+        JLabel text = new JLabel("<html><body style='width:400px'>" + r[3] + "</body></html>");
+        text.setFont(text.getFont().deriveFont(Font.PLAIN, 12f));
 
-        // 4) the feedback text (wrap at ~400px)
-        JPanel pComment = new JPanel(new FlowLayout(FlowLayout.LEFT, 4, 0));
-        JLabel comment = new JLabel(r.text);
-        comment.setFont(comment.getFont().deriveFont(Font.PLAIN, 20f));
-        comment.setBorder(BorderFactory.createEmptyBorder(4, 0, 0, 0));
-        pComment.setBackground(Color.WHITE);
-        pComment.add(comment);
-        content.add(pComment);
+        // assemble
+        Box box = Box.createVerticalBox();
+        box.add(name);
+        box.add(email);
+        box.add(rd);
+        box.add(text);
 
-        // now add content to the card
-        card.add(content, BorderLayout.WEST);
+        card.add(box, BorderLayout.WEST);
         return card;
     }
 
-    private static class Review {
-
-        String name, email, date, text, targetRole, id, rating;
-
-        Review(String n, String e, String d, String t, String role, String id, String r) {
-            name = n;
-            email = e;
-            date = d;
-            text = t;
-            targetRole = role;
-            this.id = id;
-            rating = r;
+    private void refreshComments() {
+        commentList.removeAll();
+        // pull each feedback row: {custName, custEmail, date, text, staffName, staffId, rating}
+        List<String[]> rows = managerActions.returnFeedbackList(currentFilter);
+        for (String[] r : rows) {
+            commentList.add(makeCommentCard(r));
+            commentList.add(Box.createRigidArea(new Dimension(0, 10)));
         }
+        commentList.revalidate();
+        commentList.repaint();
     }
 }

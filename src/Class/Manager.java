@@ -50,4 +50,8 @@ public class Manager extends Person{
     public int FeedbackSummary(String staffRole){
         return feedbackHelper.returnAverageRating(staffRole);
     }
+    
+    public List<String[]> returnFeedbackList(String staffId){
+        return feedbackHelper.returnRatingList(staffId);
+    }
 }

@@ -62,7 +62,7 @@ public class ProfileActions {
             System.err.println("Error reading profile.txt: " + e.getMessage());
         }
     }
-    
+
     // I would also need to filter out staff role Customer
     public List<String[]> ShowProfile(String filterRole, String[] ownProfile) {
         Path staffData = Paths.get("src", "txt", "profile.txt");
@@ -71,24 +71,25 @@ public class ProfileActions {
             List<String> lines = Files.readAllLines(staffData);
             for (String line : lines) {
                 String[] parts = line.trim().split(",", 9);
-                
-                if(parts.length == 9 && parts[0].equals(ownProfile[0])){
+
+                if (parts.length == 9 && parts[0].equals(ownProfile[0])) {
                     continue;
                 }
-                
-                if(parts.length == 9 && parts[1].equals("Customer")){
+
+                if (parts.length == 9 && parts[1].equals("Customer")) {
                     continue;
                 }
-                
+
                 if (parts.length == 9 && parts[8].equals("Active")) {
                     // if "All" or matches the role
                     if (filterRole.equalsIgnoreCase("All")
                             || parts[1].equals(filterRole)) {
                         results.add(parts);
                     }
-                }else if (parts.length == 9 && filterRole.equalsIgnoreCase("Inactive")){
-                    if (parts[8].equalsIgnoreCase("Inactive"))
-                    results.add(parts);
+                } else if (parts.length == 9 && filterRole.equalsIgnoreCase("Inactive")) {
+                    if (parts[8].equalsIgnoreCase("Inactive")) {
+                        results.add(parts);
+                    }
                 }
             }
         } catch (IOException e) {
@@ -196,5 +197,37 @@ public class ProfileActions {
         } catch (IOException e) {
             System.err.println("Error reading profile.txt: " + e.getMessage());
         }
+    }
+
+    public String[] returnStaffProfile(String staffId) {
+        Path staffData = Paths.get("src", "txt", "profile.txt");
+        try {
+            List<String> lines = Files.readAllLines(staffData);
+            for (String line : lines) {
+                String[] parts = line.trim().split(",", 9);
+                if (parts.length == 9 && parts[0].equals(staffId)) {
+                    return new String[]{parts[0], parts[2]};
+                }
+            }
+        } catch (IOException e) {
+            System.err.println("Error reading profile.txt: " + e.getMessage());
+        }
+        return null; // or return new String[0]; if you prefer empty instead of null
+    }
+    
+    public String[] returnCustomerProfile(String customerId) {
+        Path staffData = Paths.get("src", "txt", "profile.txt");
+        try {
+            List<String> lines = Files.readAllLines(staffData);
+            for (String line : lines) {
+                String[] parts = line.trim().split(",", 9);
+                if (parts.length == 9 && parts[0].equals(customerId)) {
+                    return new String[]{parts[2], parts[5]};
+                }
+            }
+        } catch (IOException e) {
+            System.err.println("Error reading profile.txt: " + e.getMessage());
+        }
+        return null; // or return new String[0]; if you prefer empty instead of null
     }
 }
