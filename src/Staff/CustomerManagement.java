@@ -15,6 +15,7 @@ public class CustomerManagement extends JPanel{
     private String _selectedRole = "All";
     private List<String[]> CustomerData = List.of();
     private DefaultTableModel model;
+    private JTable table;
     Staff CustomerDetails = new Staff();
 
     
@@ -48,15 +49,19 @@ public class CustomerManagement extends JPanel{
             chb.addItemListener(e -> {
                 if (e.getStateChange() == ItemEvent.SELECTED) {
                     _selectedRole = chb.getText();
-                    refreshTable();
+                    // 取消其他
                     for (JCheckBox otherRole : boxes) {
                         if (otherRole != chb) {
                             otherRole.setSelected(false);
                         }
                     }
+                    refreshTable();
                 }
             });
         }
+
+        boxes.get(0).setSelected(true);
+
         tagBar.add(filters, BorderLayout.WEST);
         
         // 2) Add and Edit customer Button
@@ -67,7 +72,7 @@ public class CustomerManagement extends JPanel{
         Button1.setOpaque(true); 
         
         JButton btnAdd = new JButton("Create");
-        JButton btnEdit = new JButton("Edit/Delete");
+        JButton btnEdit = new JButton("Edit");
         
         //Set button Color
         for (JButton btn : new JButton[]{btnAdd, btnEdit}) {
@@ -114,27 +119,25 @@ public class CustomerManagement extends JPanel{
             {"C1", "Alice Tan", "012-3456789", "alice@apumed.edu"},
             {"M2", "Bob Lee", "013-9876543", "bob@apumed.edu"}
         };
-        DefaultTableModel model = new DefaultTableModel(sampleData, cols) {
+ model = new DefaultTableModel(cols, 0) {
             @Override
             public boolean isCellEditable(int r, int c) {
                 return false;
             }
         };
-        JTable table = new JTable(model);
+        table = new JTable(model);
         table.setTableHeader(null);
         table.setFont(table.getFont().deriveFont(20f));
         table.setShowGrid(false);
-
         table.setIntercellSpacing(new Dimension(0, 10));
 
         DefaultTableCellRenderer cellRend = new DefaultTableCellRenderer() {
             @Override
             public Component getTableCellRendererComponent(JTable table,
-                    Object value, boolean isSelected, boolean hasFocus,
-                    int row, int column) {
+                                                           Object value, boolean isSelected, boolean hasFocus,
+                                                           int row, int column) {
                 JLabel lbl = (JLabel) super.getTableCellRendererComponent(
                         table, value, isSelected, false, row, column);
-                // Outer border: 1px black. Inner border: 5px padding.
                 Border outer = BorderFactory.createLineBorder(Color.BLACK, 1);
                 Border inner = BorderFactory.createEmptyBorder(5, 5, 5, 5);
                 lbl.setBorder(BorderFactory.createCompoundBorder(outer, inner));
@@ -142,16 +145,21 @@ public class CustomerManagement extends JPanel{
             }
         };
         table.setDefaultRenderer(Object.class, cellRend);
-
         table.setRowHeight(table.getRowHeight() + 10);
 
         JScrollPane scroll = new JScrollPane(table);
         add(scroll, BorderLayout.CENTER);
+
+        // 初始加载一次（因为默认 All 被选中）
+        refreshTable();
     }
     
        private void refreshTable() {
+        if (model == null) return; // 保险
         model.setRowCount(0);
         CustomerData = CustomerDetails.returnCustomerData(_selectedRole);
-        CustomerData.forEach(model::addRow);
+        if (CustomerData != null) {
+            CustomerData.forEach(model::addRow);
+        }
     }
 }
