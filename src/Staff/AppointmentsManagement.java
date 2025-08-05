@@ -1,4 +1,7 @@
 package Staff;
-public class AppointmentsManagement {
+
+import javax.swing.JPanel;
+
+public class AppointmentsManagement extends JPanel{
     
 }

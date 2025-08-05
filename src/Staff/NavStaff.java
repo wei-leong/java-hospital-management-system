@@ -1,7 +1,8 @@
 package Staff;
 
-import Manager.Feedback;
-import Manager.StaffManagement;
+import Staff.AppointmentsManagement;
+import Staff.CustomerManagement;
+import Staff.FinanceReport;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
@@ -91,7 +92,8 @@ public class NavStaff extends JFrame{
         content = new JPanel(cards);
         content.add(new Dashboard(), "Dashboard");
         content.add(new CustomerManagement(), "Customer Management");
-        content.add(new Feedback(), "Feedback");
+        content.add(new AppointmentsManagement(), "Appointments");
+        content.add(new FinanceReport(), "Finance Report");
         add(content, BorderLayout.CENTER);
 
         setVisible(true);
@@ -112,21 +114,26 @@ public class NavStaff extends JFrame{
         bar.setLayout(new BoxLayout(bar, BoxLayout.Y_AXIS));
 
         Icon iconDashboard = loadIcon("/image/dashboard.png", iconSize);
-        Icon iconStaffManagement = loadIcon("/image/staff_management.png", iconSize);
-        Icon iconFeedback = loadIcon("/image/view_feedback.png", iconSize);
+        Icon iconCustomerManagement = loadIcon("/image/staff_management.png", iconSize);
+        Icon iconAppointments = loadIcon("/image/Appoinments.png", iconSize);
+        Icon iconFinanceReport = loadIcon("/image/FinanceReport.png", iconSize);
 
         // Menu buttons
         bar.add(makeSidebarButton("Dashboard", iconDashboard, e -> {
             cards.show(content, "Dashboard");
-            titleChanger("Dasbboard");
+            titleChanger("Dashboard");
         }));
-        bar.add(makeSidebarButton("Customer Management", iconStaffManagement, e -> {
+        bar.add(makeSidebarButton("Customer Management", iconCustomerManagement, e -> {
             cards.show(content, "Customer Management");
             titleChanger("Customer Management");
         }));
-        bar.add(makeSidebarButton("View Feedback", iconFeedback, e -> {
-            cards.show(content, "Feedback");
-            titleChanger("View Feedback");
+        bar.add(makeSidebarButton("Appointments", iconAppointments, e -> {
+            cards.show(content, "Appointments");
+            titleChanger("Appointments Management");
+        }));
+        bar.add(makeSidebarButton("Appointments", iconFinanceReport, e -> {
+            cards.show(content, "Finance Report");
+            titleChanger("Finance Report");
         }));
 
         JPanel bottom = new JPanel(new BorderLayout(10, 10));

@@ -17,8 +17,8 @@ public class CustomerManagement extends JPanel{
     private DefaultTableModel model;
     private JTable table;
     Staff CustomerDetails = new Staff();
-
-    
+    private JButton AddCustomerbtn;
+            
     public CustomerManagement() {
     setLayout(new BorderLayout());
        //Checkbox
@@ -49,7 +49,7 @@ public class CustomerManagement extends JPanel{
             chb.addItemListener(e -> {
                 if (e.getStateChange() == ItemEvent.SELECTED) {
                     _selectedRole = chb.getText();
-                    // 取消其他
+   
                     for (JCheckBox otherRole : boxes) {
                         if (otherRole != chb) {
                             otherRole.setSelected(false);
@@ -82,11 +82,19 @@ public class CustomerManagement extends JPanel{
         btn.setFocusPainted(false);                               
 
 }
-
-        
         Button1.add(btnAdd);
         Button1.add(btnEdit);
-        
+        btnAdd.addActionListener(e -> {
+        AddCustomer dialog = new AddCustomer(); // 创建 AddCustomer 对话框
+        dialog.setLocationRelativeTo(this);     // 设置弹窗居中
+        dialog.setVisible(true);                // 显示对话框
+
+        // 如果 AddCustomer 有提供 getCustomerData() 之类的方法，你可以在这里添加到 table：
+        if (dialog.isSaved()) {
+            String[] newCustomer = dialog.getCustomerData(); // 示例方法，自己定义
+            model.addRow(newCustomer); // 加入表格
+        }
+    });
         // 2) Column headers
         String[] cols = {"Staff ID", "Staff Name", "Phone Number", "Email"};
         JPanel headerBar = new JPanel(new GridLayout(1, cols.length, 8, 0));
@@ -119,7 +127,7 @@ public class CustomerManagement extends JPanel{
             {"C1", "Alice Tan", "012-3456789", "alice@apumed.edu"},
             {"M2", "Bob Lee", "013-9876543", "bob@apumed.edu"}
         };
- model = new DefaultTableModel(cols, 0) {
+        model = new DefaultTableModel(cols, 0) {
             @Override
             public boolean isCellEditable(int r, int c) {
                 return false;
