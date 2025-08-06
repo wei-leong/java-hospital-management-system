@@ -64,11 +64,11 @@ public class Manager extends Person {
         return feedbackHelper.returnRatingList(staffId);
     }
     
-    public boolean isEmailUnqiue(String email){
+    public boolean isEmailUnique(String email){
         return profileHelper.isEmailUnique(email);
     }
     
-    public boolean isPhoneUnqiue(String phone){
+    public boolean isPhoneUnique(String phone){
         return profileHelper.isPhoneUnique(phone);
     }
     

@@ -254,7 +254,7 @@ public class ProfileActions {
             List<String> lines = Files.readAllLines(staffData);
             for (String line : lines) {
                 String[] parts = line.trim().split(",", 9);
-                if (parts.length == 9 && parts[7].equals(phone)) {
+                if (parts.length == 9 && parts[6].equals(phone)) {
                     return false;
                 }
             }
