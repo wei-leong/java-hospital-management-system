@@ -230,4 +230,42 @@ public class ProfileActions {
         }
         return null; // or return new String[0]; if you prefer empty instead of null
     }
+    
+    public boolean isEmailUnique(String email){
+        Path staffData = Paths.get("src", "txt", "profile.txt");
+        try {
+            List<String> lines = Files.readAllLines(staffData);
+            for (String line : lines) {
+                String[] parts = line.trim().split(",", 9);
+                if (parts.length == 9 && parts[5].equals(email)) {
+                    return false;
+                }
+            }
+        } catch (IOException e) {
+            System.err.println("Error reading profile.txt: " + e.getMessage());
+            return false;
+        }
+        return true;
+    }
+    
+    public boolean isPhoneUnique(String phone){
+        Path staffData = Paths.get("src", "txt", "profile.txt");
+        try {
+            List<String> lines = Files.readAllLines(staffData);
+            for (String line : lines) {
+                String[] parts = line.trim().split(",", 9);
+                if (parts.length == 9 && parts[7].equals(phone)) {
+                    return false;
+                }
+            }
+        } catch (IOException e) {
+            System.err.println("Error reading profile.txt: " + e.getMessage());
+            return false;
+        }
+        return true;
+    }
+    
+    public boolean checkPhoneLength(String phone){
+        return phone!= null && phone.length() == 10 && phone.chars().allMatch(Character::isDigit);
+    }
 }
