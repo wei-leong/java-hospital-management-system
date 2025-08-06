@@ -63,6 +63,18 @@ public class Manager extends Person {
     public List<String[]> returnFeedbackList(String staffId) {
         return feedbackHelper.returnRatingList(staffId);
     }
+    
+    public boolean isEmailUnqiue(String email){
+        return profileHelper.isEmailUnique(email);
+    }
+    
+    public boolean isPhoneUnqiue(String phone){
+        return profileHelper.isPhoneUnique(phone);
+    }
+    
+    public boolean isPhoneValid(String phone){
+        return profileHelper.checkPhone(phone);
+    }
 
     public List<String[]> returnAppointmentsList(String range) {
         Path appointmentData = Paths.get("src", "txt", "appointment.txt");

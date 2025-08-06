@@ -265,7 +265,7 @@ public class ProfileActions {
         return true;
     }
     
-    public boolean checkPhoneLength(String phone){
+    public boolean checkPhone(String phone){
         return phone!= null && phone.length() == 10 && phone.chars().allMatch(Character::isDigit);
     }
 }
