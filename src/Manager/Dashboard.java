@@ -8,8 +8,10 @@
  */
 package Manager;
 
+import Class.Manager;
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
@@ -18,6 +20,7 @@ import java.awt.Graphics2D;
 import java.awt.GridLayout;
 import java.awt.Image;
 import java.awt.RenderingHints;
+import java.util.function.Consumer;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
@@ -36,14 +39,17 @@ import javax.swing.table.DefaultTableModel;
 
 public class Dashboard extends JPanel {
 
+    private String apptFilter = "Today";
+
     public Dashboard() {
+        Manager managerActions = new Manager();
         setLayout(new BorderLayout(20, 20));
         setBackground(Color.WHITE);
 
         // 1) Revenue Chart panel with filter
         JPanel revenuePanel = new JPanel(new BorderLayout());
         revenuePanel.setBackground(Color.WHITE);
-        revenuePanel.add(createFilterButton("Revenue", new String[]{"Weekly", "Monthly", "Yearly"}), BorderLayout.NORTH);
+//        revenuePanel.add(createFilterButton("Revenue", new String[]{"Weekly", "Monthly", "Yearly"}), BorderLayout.NORTH);
         revenuePanel.add(new RevenueChartPanel(), BorderLayout.CENTER);
         add(revenuePanel, BorderLayout.NORTH);
 
@@ -60,11 +66,23 @@ public class Dashboard extends JPanel {
         // filter button north-right
         JPanel header = new JPanel(new BorderLayout());
         header.setBackground(Color.WHITE);
+        
+        JLabel lblCountNum = new JLabel("", SwingConstants.CENTER);
+        int firstTotal = managerActions.returnTotalAppointment(apptFilter);
+        lblCountNum.setText(String.valueOf(firstTotal));
 
-// the filter button on the right
+        // the filter button on the right
         header.add(
-                createFilterButton("Appointments", new String[]{"Today", "This Week", "This Month", "This Year"}),
-                BorderLayout.EAST
+                createFilterButton(
+                        "Appointments",
+                        new String[]{"Today", "This Week", "This Month", "This Year"},
+                        sel -> {
+                            apptFilter = sel;                                    // store filter
+                            int total = managerActions.returnTotalAppointment(apptFilter);
+                            lblCountNum.setText(String.valueOf(total));          // update display
+                        }
+                ),
+            BorderLayout.EAST
         );
 
 // the “Appointments Count” title in the center (or WEST if you’d like it left-aligned)
@@ -76,7 +94,6 @@ public class Dashboard extends JPanel {
         apptCard.add(header, BorderLayout.NORTH);
 
 // now the big number in the middle
-        JLabel lblCountNum = new JLabel("100", SwingConstants.CENTER);
         lblCountNum.setFont(lblCountNum.getFont().deriveFont(Font.BOLD, 25f));
         apptCard.add(lblCountNum, BorderLayout.CENTER);
 
@@ -137,7 +154,7 @@ public class Dashboard extends JPanel {
         northBox.setLayout(new BoxLayout(northBox, BoxLayout.Y_AXIS));
 
 // add filter button first (top)
-        northBox.add(createFilterButton("Feedback", new String[]{"To Staff", "To Doctor"}));
+//        northBox.add(createFilterButton("Feedback", new String[]{"To Staff", "To Doctor"}));
 
 // then your custom column‐header row
         northBox.add(customHeader);
@@ -153,31 +170,32 @@ public class Dashboard extends JPanel {
         add(middleRow, BorderLayout.CENTER);
     }
 
-    private JPanel createFilterButton(String title, String[] options) {
+    private JButton createFilterButton(String title, String[] options, Consumer<String> onSelect) {
         JButton btn = new JButton();
-        ImageIcon frameLogo = new ImageIcon(
-                getClass().getResource("/image/filter.png")
-        );
-        Image scaledIcon = frameLogo.getImage().getScaledInstance(20, 20, Image.SCALE_SMOOTH);
-        btn.setIcon(new ImageIcon(scaledIcon));
-        btn.setFont(btn.getFont().deriveFont(12f));
         btn.setBackground(Color.WHITE);
         btn.setOpaque(true);
-        btn.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY));
+        btn.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY, 1));
+        btn.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        btn.setToolTipText("Filter " + title);
+        // load & scale your icon
+        ImageIcon ic = new ImageIcon(
+                new ImageIcon(getClass().getResource("/image/filter.png"))
+                        .getImage().getScaledInstance(16, 16, Image.SCALE_SMOOTH)
+        );
+        btn.setIcon(ic);
+
         btn.addActionListener(e -> {
-            // temporarily override JOptionPane defaults to white
+            // temporarily override UI defaults
             UIManager.put("OptionPane.background", Color.WHITE);
             UIManager.put("Panel.background", Color.WHITE);
             UIManager.put("Button.background", Color.WHITE);
             UIManager.put("ComboBox.background", Color.WHITE);
             UIManager.put("ComboBox.foreground", Color.BLACK);
 
-            // build a white combo box
             JComboBox<String> combo = new JComboBox<>(options);
             combo.setBackground(Color.WHITE);
             combo.setOpaque(true);
 
-            // put our prompt and combo into a white panel
             JPanel panel = new JPanel(new BorderLayout(0, 8));
             panel.setBackground(Color.WHITE);
             panel.add(new JLabel("Select " + title + " Filter:"), BorderLayout.NORTH);
@@ -192,11 +210,10 @@ public class Dashboard extends JPanel {
             );
             if (res == JOptionPane.OK_OPTION) {
                 String sel = (String) combo.getSelectedItem();
-                // TODO: apply filter logic
-                System.out.println(title + " filter selected: " + sel);
+                onSelect.accept(sel);
             }
 
-            // restore defaults (optional)
+            // restore defaults
             UIManager.put("OptionPane.background", null);
             UIManager.put("Panel.background", null);
             UIManager.put("Button.background", null);
@@ -204,10 +221,7 @@ public class Dashboard extends JPanel {
             UIManager.put("ComboBox.foreground", null);
         });
 
-        JPanel wrapper = new JPanel(new FlowLayout(FlowLayout.RIGHT, 0, 0));
-        wrapper.setBackground(Color.WHITE);
-        wrapper.add(btn);
-        return wrapper;
+        return btn;
     }
 
     private static JPanel makeCountBlock(String title, int count) {

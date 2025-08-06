@@ -5,6 +5,7 @@
 package Class;
 
 import Class.FeedbackActions;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -140,5 +141,60 @@ public class Manager extends Person {
             System.err.println("Error reading appointment.txt: " + e.getMessage());
         }
         return results;
+    }
+    
+    public int returnTotalAppointment(String range){
+        Path appointmentData = Paths.get("src", "txt", "appointment.txt");
+        // DateTime Format
+        DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+
+        // Get Current Time
+        LocalDateTime currentTime = LocalDateTime.now();
+
+        LocalDateTime startWindow, endWindow;
+
+        switch (range) {
+            case "Today":
+                startWindow = currentTime.toLocalDate().atStartOfDay();
+                endWindow = startWindow.plusDays(1);
+
+                break;
+            case "This Week":
+                // Week starts on Monday
+                LocalDate mon = currentTime.toLocalDate().with(DayOfWeek.MONDAY);
+                startWindow = mon.atStartOfDay();
+                endWindow = startWindow.plusWeeks(1);
+                break;
+            case "This Month":
+                LocalDate thisMonth = currentTime.toLocalDate().withDayOfMonth(1);
+                startWindow = thisMonth.atStartOfDay();
+                endWindow = startWindow.plusMonths(1);
+                break;
+            case "This Year":
+                LocalDate thisYear = currentTime.toLocalDate().withDayOfYear(1);
+                startWindow = thisYear.atStartOfDay();
+                endWindow = startWindow.plusYears(1);
+                break;
+            default:
+                startWindow = currentTime.toLocalDate().atStartOfDay();
+                endWindow = startWindow.plusDays(1);
+                break;
+        }
+        
+        try {
+            List<String> lines = Files.readAllLines(appointmentData);
+            int totalAppointments = 0;
+            for (String line : lines) {
+                String[] parts = line.trim().split(",", 10);
+                LocalDateTime appointment = LocalDateTime.parse(parts[3], dateFormat);
+                if (parts.length == 10 && !appointment.isBefore(startWindow) && appointment.isBefore(endWindow) && parts[5].equals("past")) {
+                    totalAppointments += 1;
+                }
+            }
+            return totalAppointments;
+        } catch (Exception e) {
+            System.err.println("Error reading appointment.txt: " + e.getMessage());
+            return 0;
+        }
     }
 }
