@@ -64,6 +64,10 @@ public class Manager extends Person {
         return feedbackHelper.returnRatingList(staffId);
     }
     
+    public boolean isEmailEnds(String email, String endsWith){
+        return profileHelper.isEmailEndsWith(email, endsWith);
+    }
+    
     public boolean isEmailUnique(String email){
         return profileHelper.isEmailUnique(email);
     }

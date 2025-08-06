@@ -231,6 +231,10 @@ public class ProfileActions {
         return null; // or return new String[0]; if you prefer empty instead of null
     }
     
+    public boolean isEmailEndsWith(String email,String emailEnds){
+        return email.endsWith(emailEnds);
+    }
+    
     public boolean isEmailUnique(String email){
         Path staffData = Paths.get("src", "txt", "profile.txt");
         try {

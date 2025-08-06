@@ -99,9 +99,14 @@ public class AddStaff extends JFrame {
             @Override
             public void focusLost(FocusEvent e) {
                 String email = emailField.getText().trim();
-                if (!email.isEmpty() && !managerActions.isEmailUnique(email)) {
-                    ErrorDialog("This email is already in use");
-                    SwingUtilities.invokeLater(() -> emailField.requestFocusInWindow());
+                if (!email.isEmpty()){
+                    if (!managerActions.isEmailUnique(email)) {
+                        ErrorDialog("This email is already in use");
+                        SwingUtilities.invokeLater(() -> emailField.requestFocusInWindow());
+                    } else if (!managerActions.isEmailEnds(email, "@mail.apu.com")){
+                        ErrorDialog("Email must ends with @mail.apu.com");
+                        SwingUtilities.invokeLater(() -> emailField.requestFocusInWindow());
+                    }
                 }
             }
         });
