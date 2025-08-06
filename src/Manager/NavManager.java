@@ -121,6 +121,7 @@ public class NavManager extends JFrame {
         Icon iconDashboard = loadIcon("/image/dashboard.png", iconSize);
         Icon iconStaffManagement = loadIcon("/image/staff_management.png", iconSize);
         Icon iconFeedback = loadIcon("/image/view_feedback.png", iconSize);
+        Icon iconAppointment = loadIcon("/image/appointment.png",iconSize);
 
         // Menu buttons
         bar.add(makeSidebarButton("Dashboard", iconDashboard, e -> {
@@ -135,7 +136,7 @@ public class NavManager extends JFrame {
             cards.show(content, "Feedback");
             titleChanger("View Feedback");
         }));
-        bar.add(makeSidebarButton("View Appointment", iconFeedback, e -> {
+        bar.add(makeSidebarButton("View Appointment", iconAppointment, e -> {
             cards.show(content, "View Appointment");
             titleChanger("View Appointment");
         }));
