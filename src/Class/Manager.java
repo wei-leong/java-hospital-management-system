@@ -64,20 +64,20 @@ public class Manager extends Person {
     public List<String[]> returnFeedbackList(String staffId) {
         return feedbackHelper.returnRatingList(staffId);
     }
-    
-    public boolean isEmailEnds(String email, String endsWith){
+
+    public boolean isEmailEnds(String email, String endsWith) {
         return profileHelper.isEmailEndsWith(email, endsWith);
     }
-    
-    public boolean isEmailUnique(String email){
+
+    public boolean isEmailUnique(String email) {
         return profileHelper.isEmailUnique(email);
     }
-    
-    public boolean isPhoneUnique(String phone){
+
+    public boolean isPhoneUnique(String phone) {
         return profileHelper.isPhoneUnique(phone);
     }
-    
-    public boolean isPhoneValid(String phone){
+
+    public boolean isPhoneValid(String phone) {
         return profileHelper.checkPhone(phone);
     }
 
@@ -142,8 +142,8 @@ public class Manager extends Person {
         }
         return results;
     }
-    
-    public int returnTotalAppointment(String range){
+
+    public int returnTotalAppointment(String range) {
         Path appointmentData = Paths.get("src", "txt", "appointment.txt");
         // DateTime Format
         DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
@@ -180,7 +180,7 @@ public class Manager extends Person {
                 endWindow = startWindow.plusDays(1);
                 break;
         }
-        
+
         try {
             List<String> lines = Files.readAllLines(appointmentData);
             int totalAppointments = 0;
@@ -197,7 +197,7 @@ public class Manager extends Person {
             return 0;
         }
     }
-    
+
     public List<String[]> returnAverageRatingList(String staffRole) {
         Path staffData = Paths.get("src", "txt", "profile.txt");
         List<String[]> results = new ArrayList<>();
@@ -206,13 +206,12 @@ public class Manager extends Person {
             List<String> lines = Files.readAllLines(staffData);
             for (String line : lines) {
                 String[] parts = line.trim().split(",", 9);
-                if (parts.length == 10 && parts[1].equalsIgnoreCase(staffRole)) {
+                if (parts.length == 9 && parts[1].equalsIgnoreCase(staffRole) && parts[8].equals("Active")) {
                     String avgStr = String.format("%.2f", returnAverageRating(parts[0]));
                     results.add(new String[]{
                         parts[0], // appointment ID
                         parts[2], // doctorId
-                        avgStr,
-                    });
+                        avgStr,});
                 }
             }
         } catch (Exception e) {
@@ -220,21 +219,23 @@ public class Manager extends Person {
         }
         return results;
     }
-    
-    public double returnAverageRating(String staffId){
+
+    public double returnAverageRating(String staffId) {
         Path feedbackData = Paths.get("src", "txt", "feedback.txt");
         double totalRating = 0;
-        int count = 0 ;
+        int count = 0;
         try {
             List<String> lines = Files.readAllLines(feedbackData);
             for (String line : lines) {
-                String[] parts = line.trim().split(",", 5);
-                if (parts.length == 5 && parts[4].equalsIgnoreCase(staffId)) {
+                String[] parts = line.trim().split(",", 6);
+                if (parts.length == 6 && parts[4].equalsIgnoreCase(staffId)) {
                     totalRating += Double.parseDouble(parts[2]);
                     count += 1;
                 }
             }
-            
+            if (count == 0) {
+                return 0.0;
+            }
             return totalRating / count;
         } catch (Exception e) {
             System.err.println("Error reading appointment.txt: " + e.getMessage());

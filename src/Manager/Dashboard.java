@@ -11,6 +11,7 @@ package Manager;
 import Class.Manager;
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
@@ -20,6 +21,7 @@ import java.awt.Graphics2D;
 import java.awt.GridLayout;
 import java.awt.Image;
 import java.awt.RenderingHints;
+import java.util.List;
 import java.util.function.Consumer;
 
 import javax.swing.BorderFactory;
@@ -36,14 +38,20 @@ import javax.swing.JTable;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
+import javax.swing.border.Border;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 
 public class Dashboard extends JPanel {
 
     private String apptFilter = "Today";
+    private String avgFilter = "Doctor";
+    private final DefaultTableModel model;
+    private List<String[]> staffAvgData = List.of();
+    private final Manager managerActions = new Manager();
 
     public Dashboard() {
-        Manager managerActions = new Manager();
+
         setLayout(new BorderLayout(20, 20));
         setBackground(Color.WHITE);
 
@@ -57,7 +65,7 @@ public class Dashboard extends JPanel {
         revenueFilterRow.add(
                 createFilterButton(
                         "Revenue",
-                        new String[]{"Weekly", "Monthly", "Yearly"},
+                        new String[]{"Monthly", "Yearly"},
                         sel -> {
                             /* TODO: update chart */ }
                 ),
@@ -117,21 +125,15 @@ public class Dashboard extends JPanel {
 
         // b) Avg Rating card
         String[] docCols = {"Doctor ID", "Doctor Name", "Avg Rating"};
-        // will be replaced with real data:
-        Object[][] docData = {
-            {"D1", "Dr. Alice", 4.2},
-            {"D2", "Dr. Bob", 3.8},
-            {"D3", "Dr. Carol", 4.5}
-        };
 
         // build table model & table
-        DefaultTableModel tblModel = new DefaultTableModel(docData, docCols) {
+        model = new DefaultTableModel(docCols, 0) {
             @Override
             public boolean isCellEditable(int r, int c) {
                 return false;
             }
         };
-        JTable tbl = new JTable(tblModel);
+        JTable tbl = new JTable(model);
         tbl.setShowGrid(false);
         tbl.setTableHeader(null);
         tbl.setIntercellSpacing(new Dimension(0, 0));
@@ -146,6 +148,10 @@ public class Dashboard extends JPanel {
         );
         tblScroll.setColumnHeaderView(null);
         tblScroll.setBorder(BorderFactory.createEmptyBorder());
+
+        DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
+        centerRenderer.setHorizontalAlignment(SwingConstants.CENTER);
+        tbl.setDefaultRenderer(Object.class, centerRenderer);
 
         // custom header row
         JPanel customHeader = new JPanel(new GridLayout(1, docCols.length));
@@ -170,8 +176,8 @@ public class Dashboard extends JPanel {
                         "Avg Rating",
                         new String[]{"Doctor", "Staff"},
                         sel -> {
-                            // TODO: fetch new averages via managerActions.returnAverageRating(...)
-                            // update tblModel…
+                            avgFilter = sel;
+                            refreshTable();
                         }
                 ),
                 BorderLayout.EAST
@@ -184,6 +190,8 @@ public class Dashboard extends JPanel {
         middleRow.add(fbCard, BorderLayout.CENTER);
 
         add(middleRow, BorderLayout.CENTER);
+
+        refreshTable();
     }
 
     private JButton createFilterButton(String title, String[] options, Consumer<String> onSelect) {
@@ -326,6 +334,15 @@ public class Dashboard extends JPanel {
             }
 
             g2.dispose();
+        }
+    }
+
+    private void refreshTable() {
+        model.setRowCount(0);                                 // wipe old rows
+        List<String[]> rows = managerActions
+                .returnAverageRatingList(avgFilter);             // pull fresh data
+        for (String[] r : rows) {
+            model.addRow(r);             // append each
         }
     }
 }
