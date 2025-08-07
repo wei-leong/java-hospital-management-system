@@ -243,11 +243,45 @@ public class Manager extends Person {
         }
     }
     
-    public double getRevenueByYear(int year){
+    public double returnRevenueByYear(int year){
         Path paymentData = Paths.get("src", "txt", "payment.txt");
-    };
+        DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        double totalAmount = 0;
+        try {
+            List<String> lines = Files.readAllLines(paymentData);
+            for (String line : lines) {
+                String[] parts = line.trim().split(",", 4);
+                double amount = Double.parseDouble(parts[1]);
+                LocalDate date = LocalDate.parse(parts[2],df);
+                if(date.getYear() == year){
+                    totalAmount += amount;
+                }
+            }
+            return totalAmount;
+        } catch (Exception e) {
+            System.err.println("Error reading payment.txt: " + e.getMessage());
+            return 0.0;
+        }
+    }
     
-    public double getRevenueByMonth(int year,int month){
+    public double returnRevenueByMonth(int year,int month){
         Path paymentData = Paths.get("src", "txt", "payment.txt");
-    };
+        DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        double totalAmount = 0;
+        try {
+            List<String> lines = Files.readAllLines(paymentData);
+            for (String line : lines) {
+                String[] parts = line.trim().split(",", 4);
+                double amount = Double.parseDouble(parts[1]);
+                LocalDate date = LocalDate.parse(parts[2],df);
+                if(date.getYear() == year && date.getMonthValue() == month){
+                    totalAmount += amount;
+                }
+            }
+            return totalAmount;
+        } catch (Exception e) {
+            System.err.println("Error reading payment.txt: " + e.getMessage());
+            return 0.0;
+        }
+    }
 }
