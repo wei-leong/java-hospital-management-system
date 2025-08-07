@@ -242,4 +242,12 @@ public class Manager extends Person {
             return 0.0;
         }
     }
+    
+    public double getRevenueByYear(int year){
+        Path paymentData = Paths.get("src", "txt", "payment.txt");
+    };
+    
+    public double getRevenueByMonth(int year,int month){
+        Path paymentData = Paths.get("src", "txt", "payment.txt");
+    };
 }
