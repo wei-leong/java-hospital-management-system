@@ -23,6 +23,7 @@ import java.awt.RenderingHints;
 import java.util.function.Consumer;
 
 import javax.swing.BorderFactory;
+import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -46,89 +47,99 @@ public class Dashboard extends JPanel {
         setLayout(new BorderLayout(20, 20));
         setBackground(Color.WHITE);
 
-        // 1) Revenue Chart panel with filter
+        // ─── 1) Revenue Chart panel with filter ─────────────────────────
         JPanel revenuePanel = new JPanel(new BorderLayout());
         revenuePanel.setBackground(Color.WHITE);
-//        revenuePanel.add(createFilterButton("Revenue", new String[]{"Weekly", "Monthly", "Yearly"}), BorderLayout.NORTH);
+        // a) filter row pinned to east
+        JPanel revenueFilterRow = new JPanel(new BorderLayout());
+        revenueFilterRow.setBackground(Color.WHITE);
+        revenueFilterRow.add(Box.createHorizontalGlue(), BorderLayout.CENTER);
+        revenueFilterRow.add(
+                createFilterButton(
+                        "Revenue",
+                        new String[]{"Weekly", "Monthly", "Yearly"},
+                        sel -> {
+                            /* TODO: update chart */ }
+                ),
+                BorderLayout.EAST
+        );
+        revenuePanel.add(revenueFilterRow, BorderLayout.NORTH);
+        // b) chart below
         revenuePanel.add(new RevenueChartPanel(), BorderLayout.CENTER);
         add(revenuePanel, BorderLayout.NORTH);
 
-        // 2) Middle row: two cards side by side
+        // ─── 2) Middle row: two cards side by side ─────────────────────
         JPanel middleRow = new JPanel(new BorderLayout(20, 0));
         middleRow.setBackground(Color.WHITE);
 
-        // a) Appointment card with filter
+        // a) Appointment card
         JPanel apptCard = new JPanel(new BorderLayout(0, 4));
-        apptCard.setMinimumSize(new Dimension(250, 200));   // only a min size now
-        apptCard.setPreferredSize(null);                    // clear fixed pref
         apptCard.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY));
         apptCard.setBackground(Color.WHITE);
-        // filter button north-right
-        JPanel header = new JPanel(new BorderLayout());
-        header.setBackground(Color.WHITE);
-        
-        JLabel lblCountNum = new JLabel("", SwingConstants.CENTER);
-        int firstTotal = managerActions.returnTotalAppointment(apptFilter);
-        lblCountNum.setText(String.valueOf(firstTotal));
 
-        // the filter button on the right
-        header.add(
+        // Initialise lblCountNum
+        JLabel lblCountNum = new JLabel(
+                String.valueOf(managerActions.returnTotalAppointment(apptFilter)),
+                SwingConstants.CENTER
+        );
+
+        // header: title centered + filter right
+        JPanel apptHeader = new JPanel(new BorderLayout());
+        apptHeader.setBackground(Color.WHITE);
+        apptHeader.add(Box.createHorizontalStrut(1), BorderLayout.WEST);
+        apptHeader.add(
                 createFilterButton(
                         "Appointments",
                         new String[]{"Today", "This Week", "This Month", "This Year"},
                         sel -> {
-                            apptFilter = sel;                                    // store filter
+                            apptFilter = sel;
                             int total = managerActions.returnTotalAppointment(apptFilter);
-                            lblCountNum.setText(String.valueOf(total));          // update display
+                            lblCountNum.setText(String.valueOf(total));
                         }
                 ),
-            BorderLayout.EAST
+                BorderLayout.EAST
         );
-
-// the “Appointments Count” title in the center (or WEST if you’d like it left-aligned)
         JLabel lblCountTitle = new JLabel("Appointments Count", SwingConstants.CENTER);
         lblCountTitle.setFont(lblCountTitle.getFont().deriveFont(Font.BOLD, 15f));
-        header.add(lblCountTitle, BorderLayout.CENTER);
+        apptHeader.add(lblCountTitle, BorderLayout.CENTER);
+        apptCard.add(apptHeader, BorderLayout.NORTH);
 
-// add that header panel to the north of the card
-        apptCard.add(header, BorderLayout.NORTH);
-
-// now the big number in the middle
+        // big number
         lblCountNum.setFont(lblCountNum.getFont().deriveFont(Font.BOLD, 25f));
         apptCard.add(lblCountNum, BorderLayout.CENTER);
 
-// and the range label down below
+        // range label
         JLabel lblCountRange = new JLabel("This Month", SwingConstants.CENTER);
         lblCountRange.setFont(lblCountRange.getFont().deriveFont(Font.PLAIN, 15f));
         apptCard.add(lblCountRange, BorderLayout.SOUTH);
 
-// finally… add to your row
         middleRow.add(apptCard, BorderLayout.WEST);
 
-// sample data
+        // b) Avg Rating card
         String[] docCols = {"Doctor ID", "Doctor Name", "Avg Rating"};
+        // will be replaced with real data:
         Object[][] docData = {
             {"D1", "Dr. Alice", 4.2},
             {"D2", "Dr. Bob", 3.8},
-            {"D3", "Dr. Carol", 4.5},};
+            {"D3", "Dr. Carol", 4.5}
+        };
 
-// 1) build the table model
+        // build table model & table
         DefaultTableModel tblModel = new DefaultTableModel(docData, docCols) {
             @Override
             public boolean isCellEditable(int r, int c) {
                 return false;
             }
         };
-
-// 2) create the JTable
         JTable tbl = new JTable(tblModel);
         tbl.setShowGrid(false);
+        tbl.setTableHeader(null);
         tbl.setIntercellSpacing(new Dimension(0, 0));
         tbl.setRowHeight(24);
         tbl.setFillsViewportHeight(true);
         tbl.setBackground(Color.WHITE);
 
-// 3) remove its built-in header (we’ll render our own)
+        // strip built-in header
         JScrollPane tblScroll = new JScrollPane(tbl,
                 JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
                 JScrollPane.HORIZONTAL_SCROLLBAR_NEVER
@@ -136,7 +147,7 @@ public class Dashboard extends JPanel {
         tblScroll.setColumnHeaderView(null);
         tblScroll.setBorder(BorderFactory.createEmptyBorder());
 
-// 4) custom header panel (glued to the top of the scroll)
+        // custom header row
         JPanel customHeader = new JPanel(new GridLayout(1, docCols.length));
         customHeader.setBackground(Color.WHITE);
         for (String h : docCols) {
@@ -145,26 +156,31 @@ public class Dashboard extends JPanel {
             customHeader.add(lbl);
         }
 
-// 5) feedback card container
+        // feedback card container
         JPanel fbCard = new JPanel(new BorderLayout(0, 4));
-        fbCard.setBackground(Color.WHITE);
         fbCard.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY));
-        JPanel northBox = new JPanel();
-        northBox.setBackground(Color.WHITE);
-        northBox.setLayout(new BoxLayout(northBox, BoxLayout.Y_AXIS));
+        fbCard.setBackground(Color.WHITE);
 
-// add filter button first (top)
-//        northBox.add(createFilterButton("Feedback", new String[]{"To Staff", "To Doctor"}));
+        // header row: customHeader in CENTER, filter button in EAST
+        JPanel fbHeader = new JPanel(new BorderLayout());
+        fbHeader.setBackground(Color.WHITE);
+        fbHeader.add(customHeader, BorderLayout.CENTER);
+        fbHeader.add(
+                createFilterButton(
+                        "Avg Rating",
+                        new String[]{"Doctor", "Staff"},
+                        sel -> {
+                            // TODO: fetch new averages via managerActions.returnAverageRating(...)
+                            // update tblModel…
+                        }
+                ),
+                BorderLayout.EAST
+        );
+        fbCard.add(fbHeader, BorderLayout.NORTH);
 
-// then your custom column‐header row
-        northBox.add(customHeader);
-
-// 2) put northBox in fbCard.NORTH, and the scrollpane in CENTER
-        fbCard.add(northBox, BorderLayout.NORTH);
+        // table below
         fbCard.add(tblScroll, BorderLayout.CENTER);
-        fbCard.add(tblScroll, BorderLayout.CENTER);
 
-// finally, add it to your middle row
         middleRow.add(fbCard, BorderLayout.CENTER);
 
         add(middleRow, BorderLayout.CENTER);

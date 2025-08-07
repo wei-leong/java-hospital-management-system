@@ -198,7 +198,7 @@ public class Manager extends Person {
         }
     }
     
-    public List<String[]> returnAverageRAting(String staffRole) {
+    public List<String[]> returnAverageRatingList(String staffRole) {
         Path staffData = Paths.get("src", "txt", "profile.txt");
         List<String[]> results = new ArrayList<>();
 
