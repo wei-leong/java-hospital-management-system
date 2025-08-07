@@ -46,8 +46,8 @@ public class Dashboard extends JPanel {
 
     private String apptFilter = "Today";
     private String avgFilter = "Doctor";
+    private String revenueFilter = "Monthly";
     private final DefaultTableModel model;
-    private List<String[]> staffAvgData = List.of();
     private final Manager managerActions = new Manager();
 
     public Dashboard() {
@@ -338,11 +338,11 @@ public class Dashboard extends JPanel {
     }
 
     private void refreshTable() {
-        model.setRowCount(0);                                 // wipe old rows
+        model.setRowCount(0);// Remove old records
         List<String[]> rows = managerActions
-                .returnAverageRatingList(avgFilter);             // pull fresh data
+                .returnAverageRatingList(avgFilter);// Retrive new records
         for (String[] r : rows) {
-            model.addRow(r);             // append each
+            model.addRow(r);
         }
     }
 }
