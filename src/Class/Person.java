@@ -30,7 +30,7 @@ public class Person implements Login{
     }
     
     @Override
-    public String[] login(){
+    public String[] loginValidate(){
         Path staffData = Paths.get("src","txt", "profile.txt");
         try{
             List<String> lines = Files.readAllLines(staffData);

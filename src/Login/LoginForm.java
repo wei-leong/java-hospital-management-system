@@ -1,5 +1,6 @@
 package login;
 
+import Class.ImageScaler;
 import Class.Person;
 import Manager.NavManager;
 import javax.swing.*;
@@ -8,43 +9,43 @@ import static javax.swing.WindowConstants.EXIT_ON_CLOSE;
 
 public class LoginForm extends JFrame {
 
+    // Fields
     private final JTextField emailField = new JTextField(20);
     private final JPasswordField passField = new JPasswordField(20);
     private final JButton btnLogin = new JButton("Login");// Login Button    
     private final JButton btnToggle = new JButton(); // Eye Icon Button
 
+    // Constants
+    private static final float titleSize = 25f;
+    private static final float labelSize = 12f;
+    private static final float inputSize = 18f;
+    private static final Color backColor = Color.WHITE;
+    private static final Insets insets = new Insets(8, 8, 8, 8);
+    private ImageScaler imgScale = new ImageScaler();
+
+    // Image Icon for Hide and View Password
+    ImageIcon imgView = imgScale.returnScaledImageIcon("/image/view_password.png", 24, 24);
+    ImageIcon imgHide = imgScale.returnScaledImageIcon("/image/hide_password.png", 24, 24);
+
     public LoginForm() {
+
         // Window Title
         super("Login");
-
-        // Styling Options
-        float titleSize = 25;
-        float labelSize = 12;
-        float inputSize = 18;
 
         // Windows Settings
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setResizable(false);// Disable Maximize                 
 
         // Windows Title Icon 
-        ImageIcon frameIcon = new ImageIcon(
-                getClass().getResource("/image/APU_Med_Cen_Assignment.png")
-        );
-        Image scaledIcon = frameIcon.getImage().getScaledInstance(128, 128, Image.SCALE_SMOOTH);
-        setIconImage(scaledIcon);
+        Image windowIcon = imgScale.returnScaledImage("/image/APU_Med_Cen_Assignment.png", 128, 128);
+        setIconImage(windowIcon);
 
         // Panel for APU Medical Centre Image Logo ( Left )
         JPanel root = new JPanel(new BorderLayout());
         root.setBackground(Color.WHITE);
 
-        // Add Image to root Panel
-        ImageIcon rawIcon = new ImageIcon(
-                getClass().getResource("/image/APU_Med_Cen_Assignment.png")
-        );
-
-        // Scale APU Medical Centre Image to 200x200
-        Image logoImg = rawIcon.getImage().getScaledInstance(225, 225, Image.SCALE_SMOOTH);
-        JLabel lblLogo = new JLabel(new ImageIcon(logoImg));
+        ImageIcon logoImg = imgScale.returnScaledImageIcon("/image/APU_Med_Cen_Assignment.png", 225, 225);
+        JLabel lblLogo = new JLabel(logoImg);
         lblLogo.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
         root.add(lblLogo, BorderLayout.WEST);
 
@@ -52,13 +53,12 @@ public class LoginForm extends JFrame {
         JPanel form = new JPanel(new GridBagLayout());
         form.setBackground(Color.WHITE);
         GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = new Insets(8, 8, 8, 8);
+        gbc.insets = insets;
         gbc.anchor = GridBagConstraints.WEST;
         gbc.fill = GridBagConstraints.HORIZONTAL;
 
         // Title
-        JLabel lblTitle = new JLabel("APU Medical Centre");
-        lblTitle.setFont(lblTitle.getFont().deriveFont(Font.BOLD, titleSize));
+        JLabel lblTitle = addLabel("APU Medical Centre",titleSize, SwingConstants.CENTER);
         lblTitle.setHorizontalAlignment(SwingConstants.CENTER); // Align the Title to Center
         gbc.gridx = 0;
         gbc.gridy = 0;
@@ -68,59 +68,27 @@ public class LoginForm extends JFrame {
         // Email Label
         gbc.gridx = 0;
         gbc.gridy = 1;
-        gbc.weightx = 1.0;
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        gbc.ipadx = 100;
-        gbc.ipady = 10;
-        JLabel lblEmail = new JLabel("Email");
-        lblEmail.setFont(lblEmail.getFont().deriveFont(Font.BOLD, labelSize));
-        form.add(lblEmail, gbc);
+        form.add(addLabel("Email", labelSize ,  SwingConstants.LEFT), gbc);
 
         // Email Text Field
         gbc.gridx = 0;
         gbc.gridy = 2;
-        emailField.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0)); // Remove the Default Border
-        emailField.setBorder(BorderFactory.createMatteBorder(
-                0, 0, 1, 0, // top, left, bottom, right
-                Color.GRAY // line color
-        )); // Add a 1px bottom border (gray underline)
-        emailField.setFont(emailField.getFont().deriveFont(inputSize));
+        emailInputSettings();
         form.add(emailField, gbc);
-
-        // Image Icon for Hide and View Password
-        ImageIcon iconView = new ImageIcon(getClass().getResource("/image/view_password.png"));
-        Image scaleView = iconView.getImage().getScaledInstance(24, 24, Image.SCALE_SMOOTH);
-        ImageIcon scaledViewIcon = new ImageIcon(scaleView);
-
-        ImageIcon iconHide = new ImageIcon(getClass().getResource("/image/hide_password.png"));
-        Image scaleHide = iconHide.getImage().getScaledInstance(24, 24, Image.SCALE_SMOOTH);
-        ImageIcon scaledHideIcon = new ImageIcon(scaleHide);
 
         // Password Label
         gbc.gridx = 0;
         gbc.gridy = 3;
-        JLabel lblPassword = new JLabel("Password");
-        lblPassword.setFont(lblPassword.getFont().deriveFont(Font.BOLD, labelSize));
-        form.add(lblPassword, gbc);
+        form.add(addLabel("Password", labelSize,  SwingConstants.LEFT), gbc);
 
         // Password Text Field
         gbc.gridy = 4;
-        gbc.weightx = 1.0;
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        gbc.ipadx = 100;
-        gbc.ipady = 10;
         JPanel passPane = new JPanel(new BorderLayout());
-        passField.setEchoChar('*');
-        passField.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0)); // Remove the Default Border
-        passField.setBorder(BorderFactory.createMatteBorder(
-                0, 0, 1, 0, // top, left, bottom, right
-                Color.GRAY // line color
-        )); // Add a 1px bottom border (gray underline)
-        passField.setFont(passField.getFont().deriveFont(inputSize));
+        passInputSettings();
         passPane.add(passField, BorderLayout.CENTER);
 
         // Toggle View / Hide Button for Password
-        btnToggle.setIcon(scaledViewIcon);
+        btnToggle.setIcon(imgView);
         btnToggle.setFocusable(false);
         btnToggle.setOpaque(true);
         btnToggle.setContentAreaFilled(true);
@@ -134,13 +102,7 @@ public class LoginForm extends JFrame {
 
         // Toggle password visibility Function
         btnToggle.addActionListener(e -> {
-            if (passField.getEchoChar() == (char) 0) {
-                passField.setEchoChar('*');
-                btnToggle.setIcon(scaledViewIcon);
-            } else {
-                passField.setEchoChar((char) 0);
-                btnToggle.setIcon(scaledHideIcon);
-            }
+            togglePasswordVisibility();
         });
 
         // Login button
@@ -158,42 +120,7 @@ public class LoginForm extends JFrame {
             String userEmail = emailField.getText();
             String userPassword = new String(passField.getPassword());
 
-            Person newUser = new Person(userEmail, userPassword);
-            String[] staffDetails = newUser.login();
-            // Check if Account is Logged In
-            if (staffDetails == null) {
-                ErrorDialog("Login failed: incorrect email or password.");
-                return;
-            }
-
-            // Check id Account is Active
-            if (!"Active".equalsIgnoreCase(staffDetails[8])) {
-                ErrorDialog("Login failed: inactive staff are not allowed to login.");
-                return;
-            }
-
-            String role = staffDetails[1];
-            switch (role) {
-                case "Manager":
-                    SwingUtilities.invokeLater(() -> {
-                        new NavManager(staffDetails).setVisible(true);
-                    });
-                    dispose();  // close login window
-                    break;
-
-                case "Staff":
-                    break;
-
-                case "Doctor":
-                    break;
-
-                case "Customer":
-                    break;
-
-                default:
-                    ErrorDialog("Login failed: your role (“" + role + "”) is not recognized.");
-                    break;
-            }
+            Login(userEmail, userPassword);
         });
 
         bottom.add(btnLogin, BorderLayout.CENTER);
@@ -207,6 +134,45 @@ public class LoginForm extends JFrame {
         setVisible(true);
     }
 
+    private void Login(String userEmail, String userPassword) {
+        Person newUser = new Person(userEmail, userPassword);
+        String[] staffDetails = newUser.loginValidate();
+        // Check if Account is Logged In
+        if (staffDetails == null) {
+            ErrorDialog("Login failed: incorrect email or password.");
+            return;
+        }
+
+        // Check id Account is Active
+        if (!"Active".equalsIgnoreCase(staffDetails[8])) {
+            ErrorDialog("Login failed: inactive staff are not allowed to login.");
+            return;
+        }
+
+        String role = staffDetails[1];
+        switch (role) {
+            case "Manager":
+                SwingUtilities.invokeLater(() -> {
+                    new NavManager(staffDetails).setVisible(true);
+                });
+                dispose();  // close login window
+                break;
+
+            case "Staff":
+                break;
+
+            case "Doctor":
+                break;
+
+            case "Customer":
+                break;
+
+            default:
+                ErrorDialog("Login failed: your role (“" + role + "”) is not recognized.");
+                break;
+        }
+    }
+
     private void ErrorDialog(String msg) {
         JOptionPane.showMessageDialog(
                 this,
@@ -214,5 +180,42 @@ public class LoginForm extends JFrame {
                 "Login Error",
                 JOptionPane.ERROR_MESSAGE
         );
+    }
+
+    private JLabel addLabel(String text, float textSize, int alignment) {
+        JLabel lbl = new JLabel(text);
+        lbl.setFont(lbl.getFont().deriveFont(Font.BOLD, textSize));
+        lbl.setHorizontalAlignment(alignment);
+//        lbl.setHorizontalAlignment(SwingConstants);
+        return lbl;
+    }
+
+    private void emailInputSettings() {
+        emailField.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0)); // Remove the Default Border
+        emailField.setBorder(BorderFactory.createMatteBorder(
+                0, 0, 1, 0, // top, left, bottom, right
+                Color.GRAY // line color
+        )); // Add a 1px bottom border (gray underline)
+        emailField.setFont(emailField.getFont().deriveFont(inputSize));
+    }
+
+    private void passInputSettings() {
+        passField.setEchoChar('*');
+        passField.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0)); // Remove the Default Border
+        passField.setBorder(BorderFactory.createMatteBorder(
+                0, 0, 1, 0, // top, left, bottom, right
+                Color.GRAY // line color
+        )); // Add a 1px bottom border (gray underline)
+        passField.setFont(passField.getFont().deriveFont(inputSize));
+    }
+
+    private void togglePasswordVisibility() {
+        if (passField.getEchoChar() == (char) 0) {
+            passField.setEchoChar('*');
+            btnToggle.setIcon(imgView);
+        } else {
+            passField.setEchoChar((char) 0);
+            btnToggle.setIcon(imgHide);
+        }
     }
 }
