@@ -21,6 +21,9 @@ import java.awt.Graphics2D;
 import java.awt.GridLayout;
 import java.awt.Image;
 import java.awt.RenderingHints;
+import static java.awt.RenderingHints.KEY_ANTIALIASING;
+import static java.awt.RenderingHints.VALUE_ANTIALIAS_ON;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.function.Consumer;
 
@@ -49,12 +52,32 @@ public class Dashboard extends JPanel {
     private String revenueFilter = "Monthly";
     private final DefaultTableModel model;
     private final Manager managerActions = new Manager();
+    private final RevenueChartPanel chartPanel;
 
     public Dashboard() {
 
         setLayout(new BorderLayout(20, 20));
         setBackground(Color.WHITE);
 
+        // ─── compute our “axes” and data up front ─────────────────────────
+        int anchorYear = LocalDate.now().getYear();
+
+        // 12 months
+        String[] monthLabels = {
+            "Jan", "Feb", "Mar", "Apr", "May", "Jun",
+            "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
+        };
+        double[] monthlyData = managerActions.returnMonthlyRevenue(anchorYear);
+
+        // last 10 years (oldest first)
+        String[] yearLabels = new String[10];
+        for (int i = 0; i < 10; i++) {
+            yearLabels[i] = String.valueOf(anchorYear - (9 - i));
+        }
+        double[] yearlyData = managerActions.returnYearsRevenue(anchorYear);
+
+        chartPanel = new RevenueChartPanel(monthLabels, monthlyData);
+        
         // ─── 1) Revenue Chart panel with filter ─────────────────────────
         JPanel revenuePanel = new JPanel(new BorderLayout());
         revenuePanel.setBackground(Color.WHITE);
@@ -63,17 +86,22 @@ public class Dashboard extends JPanel {
         revenueFilterRow.setBackground(Color.WHITE);
         revenueFilterRow.add(Box.createHorizontalGlue(), BorderLayout.CENTER);
         revenueFilterRow.add(
-                createFilterButton(
-                        "Revenue",
-                        new String[]{"Monthly", "Yearly"},
-                        sel -> {
-                            /* TODO: update chart */ }
-                ),
+                createFilterButton("Revenue", new String[]{"Monthly", "Yearly"}, sel -> {
+                    // swap the data inside chartPanel:
+                    if ("Monthly".equals(sel)) {
+                        chartPanel.setData(monthLabels, managerActions.returnMonthlyRevenue(anchorYear));
+                    } else {
+                        chartPanel.setData(yearLabels, managerActions.returnYearsRevenue(anchorYear));
+                    }
+                }),
                 BorderLayout.EAST
         );
+        
+        // 3) Put them together
+        revenuePanel.setBackground(Color.WHITE);
         revenuePanel.add(revenueFilterRow, BorderLayout.NORTH);
-        // b) chart below
-        revenuePanel.add(new RevenueChartPanel(), BorderLayout.CENTER);
+        revenuePanel.add(chartPanel, BorderLayout.CENTER);
+
         add(revenuePanel, BorderLayout.NORTH);
 
         // ─── 2) Middle row: two cards side by side ─────────────────────
@@ -262,81 +290,155 @@ public class Dashboard extends JPanel {
         return p;
     }
 
-    private JPanel createRevenueChart() {
-        return new RevenueChartPanel();
-    }
-
     private static class RevenueChartPanel extends JPanel {
 
-        // sample revenue per month
-        private final String[] months = {
-            "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
-        };
-        private final int[] revenue = {
-            50, 75, 120, 90, 30, 60, 45, 80, 55, 100, 65, 40
-        };
+        private String[] labels;
+        private double[] values;
 
-        RevenueChartPanel() {
+        public RevenueChartPanel(String[] labels, double[] values) {
+            if (labels.length != values.length) {
+                throw new IllegalArgumentException("labels and values length must match");
+            }
+            this.labels = labels;
+            this.values = values;
             setPreferredSize(new Dimension(800, 250));
             setBackground(Color.WHITE);
             setBorder(BorderFactory.createTitledBorder("Revenue"));
+        }
+
+        public void setData(String[] labels, double[] values) {
+            if (labels.length != values.length) {
+                throw new IllegalArgumentException("labels and values length must match");
+            }
+            this.values = values;
+             this.labels = labels;
+            repaint();
         }
 
         @Override
         protected void paintComponent(Graphics g) {
             super.paintComponent(g);
             Graphics2D g2 = (Graphics2D) g.create();
-            g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
-                    RenderingHints.VALUE_ANTIALIAS_ON);
+            g2.setRenderingHint(KEY_ANTIALIASING, VALUE_ANTIALIAS_ON);
 
             int w = getWidth(), h = getHeight();
             int margin = 40;
             int chartW = w - margin * 2;
             int chartH = h - margin * 2;
 
-            // find max revenue
-            int max = 0;
-            for (int v : revenue) {
+            // find max value
+            double max = 0;
+            for (double v : values) {
                 max = Math.max(max, v);
             }
-            max = ((max + 9) / 10) * 10; // round up to nice tick
+            if (max == 0) {
+                max = 1;                       // avoid zero-division
+            }
+            max = ((max + 9) / 10) * 10;                   // round up
 
-            // draw Y-axis and ticks
+            // draw axes
             g2.setColor(Color.BLACK);
             g2.drawLine(margin, margin, margin, margin + chartH);
-            int ticks = 5;
-            for (int i = 0; i <= ticks; i++) {
-                int y = margin + chartH - (chartH * i / ticks);
-                int val = max * i / ticks;
-                g2.drawLine(margin - 5, y, margin, y);
-                g2.drawString(String.valueOf(val), 5, y + 4);
-            }
-
-            // draw X-axis
             g2.drawLine(margin, margin + chartH, margin + chartW, margin + chartH);
 
+            int ticks = 5;
+            for (int i = 0; i <= ticks; i++) {
+                int y = margin + chartH - chartH * i / ticks;
+                double val = max * i / ticks;
+                g2.drawLine(margin - 5, y, margin, y);
+                g2.drawString(String.format("%.0f", val), 5, y + 4);
+            }
+
             // draw bars
-            int barCount = months.length;
-            int barW = chartW / (barCount * 2);
-            for (int i = 0; i < barCount; i++) {
+            int n = values.length;
+            int barW = chartW / (n * 2);
+            for (int i = 0; i < n; i++) {
                 int x = margin + (2 * i + 1) * barW;
-                int barH = (int) ((double) revenue[i] / max * chartH);
+                int barH = (int) (values[i] / max * chartH);
                 int y = margin + chartH - barH;
                 g2.setColor(new Color(100, 150, 240));
                 g2.fillRect(x, y, barW, barH);
                 g2.setColor(Color.DARK_GRAY);
                 g2.drawRect(x, y, barW, barH);
 
-                // month label
-                String m = months[i];
-                int strW = g2.getFontMetrics().stringWidth(m);
-                g2.drawString(m, x + (barW - strW) / 2, margin + chartH + 15);
+                // label
+                String lbl = labels[i];
+                int strW = g2.getFontMetrics().stringWidth(lbl);
+                g2.drawString(lbl, x + (barW - strW) / 2, margin + chartH + 15);
             }
-
             g2.dispose();
         }
     }
 
+//    private static class RevenueChartPanel extends JPanel {
+//
+//        // sample revenue per month
+//        private final String[] months = {
+//            "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
+//        };
+//        private final double[] revenue;
+//
+//        public RevenueChartPanel(double[] revenue) {
+//            this.revenue = revenue;
+//            setPreferredSize(new Dimension(800, 250));
+//            setBackground(Color.WHITE);
+//            setBorder(BorderFactory.createTitledBorder("Revenue"));
+//        }
+//
+//        @Override
+//        protected void paintComponent(Graphics g) {
+//            super.paintComponent(g);
+//            Graphics2D g2 = (Graphics2D) g.create();
+//            g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+//                    RenderingHints.VALUE_ANTIALIAS_ON);
+//
+//            int w = getWidth(), h = getHeight();
+//            int margin = 40;
+//            int chartW = w - margin * 2;
+//            int chartH = h - margin * 2;
+//
+//            // find max revenue
+//            double max = 0;
+//            for (double v : revenue) {
+//                max = Math.max(max, v);
+//            }
+//            max = ((max + 9) / 10) * 10; // round up to nice tick
+//
+//            // draw Y-axis and ticks
+//            g2.setColor(Color.BLACK);
+//            g2.drawLine(margin, margin, margin, margin + chartH);
+//            int ticks = 5;
+//            for (int i = 0; i <= ticks; i++) {
+//                int y = margin + chartH - (chartH * i / ticks);
+//                double val = max * i / ticks;
+//                g2.drawLine(margin - 5, y, margin, y);
+//                g2.drawString(String.valueOf(val), 5, y + 4);
+//            }
+//
+//            // draw X-axis
+//            g2.drawLine(margin, margin + chartH, margin + chartW, margin + chartH);
+//
+//            // draw bars
+//            int barCount = months.length;
+//            int barW = chartW / (barCount * 2);
+//            for (int i = 0; i < barCount; i++) {
+//                int x = margin + (2 * i + 1) * barW;
+//                int barH = (int) ((double) revenue[i] / max * chartH);
+//                int y = margin + chartH - barH;
+//                g2.setColor(new Color(100, 150, 240));
+//                g2.fillRect(x, y, barW, barH);
+//                g2.setColor(Color.DARK_GRAY);
+//                g2.drawRect(x, y, barW, barH);
+//
+//                // month label
+//                String m = months[i];
+//                int strW = g2.getFontMetrics().stringWidth(m);
+//                g2.drawString(m, x + (barW - strW) / 2, margin + chartH + 15);
+//            }
+//
+//            g2.dispose();
+//        }
+//    }
     private void refreshTable() {
         model.setRowCount(0);// Remove old records
         List<String[]> rows = managerActions

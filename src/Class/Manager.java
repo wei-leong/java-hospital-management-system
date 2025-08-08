@@ -242,46 +242,47 @@ public class Manager extends Person {
             return 0.0;
         }
     }
-    
-    public double returnRevenueByYear(int year){
+
+    public double[] returnMonthlyRevenue(int year) {
+        double[] totals = new double[12];
         Path paymentData = Paths.get("src", "txt", "payment.txt");
         DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        double totalAmount = 0;
         try {
-            List<String> lines = Files.readAllLines(paymentData);
-            for (String line : lines) {
+            for (String line : Files.readAllLines(paymentData)) {
                 String[] parts = line.trim().split(",", 4);
                 double amount = Double.parseDouble(parts[1]);
-                LocalDate date = LocalDate.parse(parts[2],df);
-                if(date.getYear() == year){
-                    totalAmount += amount;
+                LocalDate date = LocalDate.parse(parts[2], df);
+                if (date.getYear() == year) {
+                    int m = date.getMonthValue() - 1; // Jan=0, Feb=1, …
+                    totals[m] += amount;
                 }
             }
-            return totalAmount;
-        } catch (Exception e) {
+        } catch (IOException e) {
             System.err.println("Error reading payment.txt: " + e.getMessage());
-            return 0.0;
         }
+        return totals;
     }
-    
-    public double returnRevenueByMonth(int year,int month){
+
+    public double[] returnYearsRevenue(int anchorYear) {
+        int span = 10;
+        int startYear = anchorYear - (span - 1);  // e.g. 2025 - 9 = 2016
+        double[] totals = new double[span];
         Path paymentData = Paths.get("src", "txt", "payment.txt");
         DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        double totalAmount = 0;
         try {
-            List<String> lines = Files.readAllLines(paymentData);
-            for (String line : lines) {
+            for (String line : Files.readAllLines(paymentData)) {
                 String[] parts = line.trim().split(",", 4);
                 double amount = Double.parseDouble(parts[1]);
-                LocalDate date = LocalDate.parse(parts[2],df);
-                if(date.getYear() == year && date.getMonthValue() == month){
-                    totalAmount += amount;
+                LocalDate date = LocalDate.parse(parts[2], df);
+                int y = date.getYear();
+                int idx = y - startYear;      // 2016→0, 2017→1, …, 2025→9
+                if (0 <= idx && idx < span) {
+                    totals[idx] += amount;
                 }
             }
-            return totalAmount;
-        } catch (Exception e) {
+        } catch (IOException e) {
             System.err.println("Error reading payment.txt: " + e.getMessage());
-            return 0.0;
         }
+        return totals;
     }
 }
