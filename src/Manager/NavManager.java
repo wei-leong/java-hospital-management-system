@@ -72,7 +72,8 @@ public class NavManager extends JFrame {
         setSize(1000, 600);
         setLocationRelativeTo(null);
         setLayout(new BorderLayout());
-
+        
+        // Initialize Button 
         this.btnToggle = new JButton(toggleIcon);
         this.btnLogout = new JButton("Logout");
         this.btnEdit = new JButton("Edit Profile");
@@ -94,12 +95,11 @@ public class NavManager extends JFrame {
         lblTitle = new JLabel(currentPage);
         lblTitle.setFont(lblTitle.getFont().deriveFont(Font.BOLD, 16f));
         titleBar.add(lblTitle);
-
         titleBar.add(Box.createHorizontalGlue());
         
-        btnProfileSettings();
-
+        // Button Profile to Open Staff Details
         titleBar.add(btnProfile);
+        btnProfileSettings();
 
         add(titleBar, BorderLayout.NORTH);
 
@@ -183,7 +183,8 @@ public class NavManager extends JFrame {
         // Header (Profile Picture + Staff Id and Staff Role)
         JLabel picLabel = new JLabel(iconProfileLarge);
         picLabel.setBorder(BorderFactory.createEmptyBorder(0, 10, 0, 0));
-
+        
+        // Create JPanel to group profile picture, staff id and staff role together
         JPanel idRole = new JPanel(new GridLayout(0, 1, 5, 5));
         idRole.add(new JLabel(_staffDetails[0])); // Staff ID
         idRole.add(new JLabel(_staffDetails[1])); // Staff Role
