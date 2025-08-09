@@ -25,6 +25,7 @@ public class NavManager extends JFrame {
     private String currentPage = "Dashboard";
     private final JLabel lblTitle;
     private final ImageScaler imgScale = new ImageScaler();
+    private final JButton btnToggle;
     
     // Dashboard Page
     private final Dashboard dashboard = new Dashboard();
@@ -52,13 +53,16 @@ public class NavManager extends JFrame {
     
     public NavManager(String[] staffDetails) {
         this._staffDetails = staffDetails;
-
         // Window Title
         super("APU Medical Centre");
+
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setSize(1000, 600);
         setLocationRelativeTo(null);
         setLayout(new BorderLayout());
+        
+        
+        this.btnToggle = new JButton(toggleIcon);
 
         // Windows Title Icon 
         setIconImage(windowIcon);
@@ -68,15 +72,9 @@ public class NavManager extends JFrame {
         titleBar.setFloatable(false);
 
         // Hamburger Button Toggle
-        JButton btnToggle = new JButton(toggleIcon);
-        btnToggle.setFocusable(false);
         titleBar.add(btnToggle);
         titleBar.addSeparator();
-        btnToggle.setBorderPainted(false);
-        btnToggle.setContentAreaFilled(false);
-        btnToggle.setFocusPainted(false);
-        btnToggle.setOpaque(false);
-        btnToggle.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        btnToggleSettings();
 
         // Title - APU Medical Centre
         lblTitle = new JLabel(currentPage);
@@ -152,8 +150,9 @@ public class NavManager extends JFrame {
         JButton btnLogout = new JButton("Logout");
 
         btnLogout.addActionListener(e -> {
+            // Dispose NavManager JFrame
             SwingUtilities.getWindowAncestor(bar).dispose();
-            // 2. Open the login form:
+            // Open Login Form
             login.LoginForm login = new login.LoginForm();
             login.setVisible(true);
         });
@@ -246,5 +245,14 @@ public class NavManager extends JFrame {
         Point loc = this.getLocationOnScreen();
         dlg.setLocation(loc.x + this.getWidth() - dlg.getWidth() - 10, loc.y + 10);
         dlg.setVisible(true);
+    }
+    
+    private void btnToggleSettings(){
+        btnToggle.setFocusable(false);
+        btnToggle.setBorderPainted(false);
+        btnToggle.setContentAreaFilled(false);
+        btnToggle.setFocusPainted(false);
+        btnToggle.setOpaque(false);
+        btnToggle.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
     }
 }
