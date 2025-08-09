@@ -13,11 +13,13 @@ public class AddStaff extends JFrame {
     private final JSpinner ageField = new JSpinner(new SpinnerNumberModel(18, 16, 100, 1));
     private final JComboBox roleField = new JComboBox<>(new String[]{"Manager", "Staff", "Doctor"});
     private final JTextField phoneField = new JTextField(20);
+    private final JButton btnAdd = new JButton("+ Add Staff");
+    private final JRadioButton rbM = new JRadioButton("Male");
+    private final JRadioButton rbF = new JRadioButton("Female");
+    private final Manager managerActions = new Manager();
 
     public AddStaff() {
         super("Add Staff");
-
-        Manager managerActions = new Manager();
 
         // Window settings
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
@@ -95,42 +97,14 @@ public class AddStaff extends JFrame {
         form.add(new JLabel("Email Address"), gbc);
         gbc.gridy = row++;
         form.add(emailField, gbc);
-        emailField.addFocusListener(new FocusAdapter() {
-            @Override
-            public void focusLost(FocusEvent e) {
-                String email = emailField.getText().trim();
-                if (!email.isEmpty()){
-                    if (!managerActions.isEmailUnique(email)) {
-                        ErrorDialog("This email is already in use");
-                        SwingUtilities.invokeLater(() -> emailField.requestFocusInWindow());
-                    } else if (!managerActions.isEmailEnds(email, "@mail.apu.com")){
-                        ErrorDialog("Email must ends with @mail.apu.com");
-                        SwingUtilities.invokeLater(() -> emailField.requestFocusInWindow());
-                    }
-                }
-            }
-        });
+        emailInputListener();
 
         // Phone
         gbc.gridy = row++;
         form.add(new JLabel("Phone Number"), gbc);
         gbc.gridy = row++;
         form.add(phoneField, gbc);
-        phoneField.addFocusListener(new FocusAdapter() {
-            @Override
-            public void focusLost(FocusEvent e) {
-                String phone = phoneField.getText().trim();
-                if (!phone.isEmpty()) {
-                    if (!managerActions.isPhoneValid(phone)) {
-                        ErrorDialog("Phone Number must be exactly 10 digits");
-                        SwingUtilities.invokeLater(() -> phoneField.requestFocusInWindow());
-                    } else if (!managerActions.isPhoneUnique(phone)) {
-                        ErrorDialog("Phone Number is already in use");
-                        SwingUtilities.invokeLater(() -> phoneField.requestFocusInWindow());
-                    }
-                }
-            }
-        });
+        phoneInputListener();
 
         // Gender
         gbc.gridy = row++;
@@ -138,8 +112,6 @@ public class AddStaff extends JFrame {
         gbc.gridy = row++;
         JPanel genderPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 20, 0));
         genderPanel.setBackground(Color.WHITE);
-        JRadioButton rbM = new JRadioButton("Male");
-        JRadioButton rbF = new JRadioButton("Female");
         rbM.setBackground(Color.WHITE);
         rbF.setBackground(Color.WHITE);
         ButtonGroup bg = new ButtonGroup();
@@ -151,8 +123,28 @@ public class AddStaff extends JFrame {
 
         add(form, BorderLayout.CENTER);
 
+        JPanel bottom = new JPanel(new FlowLayout(FlowLayout.CENTER, 0, 10));
+        bottom.setBackground(Color.WHITE);
+        bottom.add(btnAdd);
+        btnAddSettings();
+        add(bottom, BorderLayout.SOUTH);
+
+        pack();
+        setSize(600, 500);
+        setLocationRelativeTo(null);
+    }
+
+    private void ErrorDialog(String msg) {
+        JOptionPane.showMessageDialog(
+                this,
+                msg,
+                "Validation Error",
+                JOptionPane.ERROR_MESSAGE
+        );
+    }
+
+    private void btnAddSettings() {
         // Bottom Bar with Add Staff Button
-        JButton btnAdd = new JButton("+ Add Staff");
         btnAdd.setFont(btnAdd.getFont().deriveFont(Font.BOLD, 14f));
         btnAdd.setPreferredSize(new Dimension(300, 40));
         btnAdd.setBackground(Color.WHITE);
@@ -160,11 +152,6 @@ public class AddStaff extends JFrame {
         btnAdd.setBorder(BorderFactory.createLineBorder(Color.BLACK));
         btnAdd.setFocusPainted(false);
         btnAdd.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-
-        JPanel bottom = new JPanel(new FlowLayout(FlowLayout.CENTER, 0, 10));
-        bottom.setBackground(Color.WHITE);
-        bottom.add(btnAdd);
-        add(bottom, BorderLayout.SOUTH);
         btnAdd.addActionListener(e -> {
 
             String gender = rbM.isSelected() ? "Male" : "Female";
@@ -190,18 +177,41 @@ public class AddStaff extends JFrame {
 
             this.dispose();
         });
-
-        pack();
-        setSize(600, 500);
-        setLocationRelativeTo(null);
     }
 
-    private void ErrorDialog(String msg) {
-        JOptionPane.showMessageDialog(
-                this,
-                msg,
-                "Validation Error",
-                JOptionPane.ERROR_MESSAGE
-        );
+    private void phoneInputListener() {
+        phoneField.addFocusListener(new FocusAdapter() {
+            @Override
+            public void focusLost(FocusEvent e) {
+                String phone = phoneField.getText().trim();
+                if (!phone.isEmpty()) {
+                    if (!managerActions.isPhoneValid(phone)) {
+                        ErrorDialog("Phone Number must be exactly 10 digits");
+                        SwingUtilities.invokeLater(() -> phoneField.requestFocusInWindow());
+                    } else if (!managerActions.isPhoneUnique(phone)) {
+                        ErrorDialog("Phone Number is already in use");
+                        SwingUtilities.invokeLater(() -> phoneField.requestFocusInWindow());
+                    }
+                }
+            }
+        });
+    }
+
+    private void emailInputListener() {
+        emailField.addFocusListener(new FocusAdapter() {
+            @Override
+            public void focusLost(FocusEvent e) {
+                String email = emailField.getText().trim();
+                if (!email.isEmpty()) {
+                    if (!managerActions.isEmailUnique(email)) {
+                        ErrorDialog("This email is already in use");
+                        SwingUtilities.invokeLater(() -> emailField.requestFocusInWindow());
+                    } else if (!managerActions.isEmailEnds(email, "@mail.apu.com")) {
+                        ErrorDialog("Email must ends with @mail.apu.com");
+                        SwingUtilities.invokeLater(() -> emailField.requestFocusInWindow());
+                    }
+                }
+            }
+        });
     }
 }
