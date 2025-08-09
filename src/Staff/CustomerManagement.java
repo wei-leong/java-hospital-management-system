@@ -90,10 +90,10 @@ public class CustomerManagement extends JPanel{
         dialog.setVisible(true);                // 显示对话框
 
         // 如果 AddCustomer 有提供 getCustomerData() 之类的方法，你可以在这里添加到 table：
-        if (dialog.isSaved()) {
-            String[] newCustomer = dialog.getCustomerData(); // 示例方法，自己定义
-            model.addRow(newCustomer); // 加入表格
-        }
+//        if (dialog.isSaved()) {
+//            String[] newCustomer = dialog.getCustomerData(); // 示例方法，自己定义
+//            model.addRow(newCustomer); // 加入表格
+//        }
     });
         // 2) Column headers
         String[] cols = {"Staff ID", "Staff Name", "Phone Number", "Email"};
