@@ -8,7 +8,7 @@ import javax.swing.*;
 
 public class Feedback extends JPanel {
 
-    private final JPanel commentList;
+    private JPanel commentList;
     private String currentFilter = "All";
     private final Manager managerActions = new Manager();
 
@@ -16,6 +16,13 @@ public class Feedback extends JPanel {
         setLayout(new BorderLayout(10, 10));
         setBackground(Color.WHITE);
 
+        reviewSummary();
+        customerComments();
+        // initial population
+        refreshComments();
+    }
+
+    private void reviewSummary() {
         // NORTH JPanel to add Review Summary
         JPanel north = new JPanel();
         north.setLayout(new BoxLayout(north, BoxLayout.Y_AXIS));
@@ -40,7 +47,9 @@ public class Feedback extends JPanel {
 
         north.add(summaryBlocks);
         add(north, BorderLayout.NORTH);
+    }
 
+    private void customerComments() {
         // CENTER: Feedback title, then tags, then scrollable comments
         JPanel center = new JPanel();
         center.setLayout(new BoxLayout(center, BoxLayout.Y_AXIS));
@@ -95,10 +104,7 @@ public class Feedback extends JPanel {
         scroll.setPreferredSize(new Dimension(0, 400));
 
         center.add(scroll);
-        add(center, BorderLayout.CENTER);
-
-        // initial population
-        refreshComments();
+         add(center, BorderLayout.CENTER);
     }
 
     // Average Rating Block

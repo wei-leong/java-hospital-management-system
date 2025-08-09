@@ -55,11 +55,9 @@ public class Dashboard extends JPanel {
     private final RevenueChartPanel chartPanel;
 
     public Dashboard() {
-
         setLayout(new BorderLayout(20, 20));
         setBackground(Color.WHITE);
 
-        // ─── compute our “axes” and data up front ─────────────────────────
         int anchorYear = LocalDate.now().getYear();
 
         // 12 months
