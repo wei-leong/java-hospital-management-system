@@ -25,7 +25,22 @@ public class NavManager extends JFrame {
     private String currentPage = "Dashboard";
     private final JLabel lblTitle;
     private final ImageScaler imgScale = new ImageScaler();
-    private final 
+    
+    // Dashboard Page
+    private final Dashboard dashboard = new Dashboard();
+    private final String dashboardStr = "Dashboard";
+    
+    // Staff Management Page
+    private final StaffManagement staffManagement = new StaffManagement(_staffDetails);
+    private final String staffManagementStr = "Staff Management";
+    
+    // Feedback Page
+    private final Feedback feedback = new Feedback();
+    private final String feedbackStr = "View Feedback";
+    
+    // Appointment Page
+    private final ViewAppointment viewAppointment = new ViewAppointment();
+    private final String viewAppointmentStr = "View Appointment";
     
     ImageIcon toggleIcon = imgScale.returnScaledImageIcon("/image/nav-menu.png", 24, 24);
     Image windowIcon = imgScale.returnScaledImage("/image/APU_Med_Cen_Assignment.png",128,128);
@@ -93,10 +108,10 @@ public class NavManager extends JFrame {
 
         // Content area with CardLayout 
         content = new JPanel(cards);
-        content.add(new Dashboard(), "Dashboard");
-        content.add(new StaffManagement(staffDetails), "Staff Management");
-        content.add(new Feedback(), "Feedback");
-        content.add(new ViewAppointment(), "View Appointment");
+        content.add(dashboard, dashboardStr);
+        content.add(staffManagement, staffManagementStr);
+        content.add(feedback, feedbackStr);
+        content.add(viewAppointment, viewAppointmentStr);
         add(content, BorderLayout.CENTER);
 
         setVisible(true);
@@ -115,21 +130,21 @@ public class NavManager extends JFrame {
         bar.setLayout(new BoxLayout(bar, BoxLayout.Y_AXIS));
         
         // Menu buttons
-        bar.add(makeSidebarButton("Dashboard", iconDashboard, e -> {
-            cards.show(content, "Dashboard");
-            titleChanger("Dasbboard");
+        bar.add(makeSidebarButton(dashboardStr, iconDashboard, e -> {
+            cards.show(content, dashboardStr);
+            titleChanger(dashboardStr);
         }));
-        bar.add(makeSidebarButton("Staff Management", iconStaffManagement, e -> {
-            cards.show(content, "Staff Management");
-            titleChanger("Staff Management");
+        bar.add(makeSidebarButton(staffManagementStr, iconStaffManagement, e -> {
+            cards.show(content, staffManagementStr);
+            titleChanger(staffManagementStr);
         }));
-        bar.add(makeSidebarButton("View Feedback", iconFeedback, e -> {
-            cards.show(content, "Feedback");
-            titleChanger("View Feedback");
+        bar.add(makeSidebarButton(feedbackStr , iconFeedback, e -> {
+            cards.show(content, feedbackStr );
+            titleChanger(feedbackStr);
         }));
-        bar.add(makeSidebarButton("View Appointment", iconAppointment, e -> {
-            cards.show(content, "View Appointment");
-            titleChanger("View Appointment");
+        bar.add(makeSidebarButton(viewAppointmentStr, iconAppointment, e -> {
+            cards.show(content, viewAppointmentStr);
+            titleChanger(viewAppointmentStr);
         }));
 
         JPanel bottom = new JPanel(new BorderLayout(10, 10));
