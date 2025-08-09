@@ -1,5 +1,6 @@
 package Manager;
 
+import Class.ImageScaler;
 import Class.Manager;
 import javax.swing.*;
 import java.awt.*;
@@ -14,9 +15,12 @@ public class AddStaff extends JFrame {
     private final JComboBox roleField = new JComboBox<>(new String[]{"Manager", "Staff", "Doctor"});
     private final JTextField phoneField = new JTextField(20);
     private final JButton btnAdd = new JButton("+ Add Staff");
+    private final JButton btnBack ;
     private final JRadioButton rbM = new JRadioButton("Male");
     private final JRadioButton rbF = new JRadioButton("Female");
     private final Manager managerActions = new Manager();
+    
+    private final ImageScaler imgScale = new ImageScaler();
 
     public AddStaff() {
         super("Add Staff");
@@ -32,18 +36,11 @@ public class AddStaff extends JFrame {
         JPanel topBar = new JPanel(new FlowLayout(FlowLayout.LEFT, 8, 8));
         topBar.setBackground(Color.WHITE);
 
-        // Return Button
-        ImageIcon backIcon = new ImageIcon(
-                getClass().getResource("/image/back.png")
-        );
-        Image scaleIcon = backIcon.getImage().getScaledInstance(24, 24, Image.SCALE_SMOOTH);
-        ImageIcon scaledReturnIcon = new ImageIcon(scaleIcon);
-
-        JButton btnBack = new JButton(scaledReturnIcon);
-        btnBack.setBorder(null);
-        btnBack.setContentAreaFilled(false);
-        btnBack.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-        btnBack.addActionListener(e -> this.dispose()); // Dispose Add Staff page and return to StaffManagement
+        // Return Button Icon
+        ImageIcon returnIcon = imgScale.returnScaledImageIcon("/image/back.png", 24, 24);
+        
+        btnBack = new JButton(returnIcon);
+        btnBackSettings();
         topBar.add(btnBack);
 
         // Top Bar Label
@@ -213,5 +210,12 @@ public class AddStaff extends JFrame {
                 }
             }
         });
+    }
+    
+    private void btnBackSettings(){
+        btnBack.setBorder(null);
+        btnBack.setContentAreaFilled(false);
+        btnBack.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        btnBack.addActionListener(e -> this.dispose()); // Dispose Add Staff page and return to StaffManagement
     }
 }
