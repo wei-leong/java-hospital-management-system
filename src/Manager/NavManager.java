@@ -8,6 +8,7 @@
  */
 package Manager;
 
+import Class.ImageScaler;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
@@ -23,7 +24,16 @@ public class NavManager extends JFrame {
     private final JPanel content;
     private String currentPage = "Dashboard";
     private final JLabel lblTitle;
-
+    private final ImageScaler imgScale = new ImageScaler();
+    private final 
+    
+    ImageIcon toggleIcon = imgScale.returnScaledImageIcon("/image/nav-menu.png", 24, 24);
+    Image windowIcon = imgScale.returnScaledImage("/image/APU_Med_Cen_Assignment.png",128,128);
+    Icon iconDashboard = imgScale.returnScaledImageIcon("/image/dashboard.png", 25, 25);
+    Icon iconStaffManagement = imgScale.returnScaledImageIcon("/image/staff_management.png", 25, 25);
+    Icon iconFeedback = imgScale.returnScaledImageIcon("/image/view_feedback.png", 25, 25);
+    Icon iconAppointment = imgScale.returnScaledImageIcon("/image/appointment.png", 25, 25);
+    
     public NavManager(String[] staffDetails) {
         this._staffDetails = staffDetails;
 
@@ -35,23 +45,11 @@ public class NavManager extends JFrame {
         setLayout(new BorderLayout());
 
         // Windows Title Icon 
-        ImageIcon frameLogo = new ImageIcon(
-                getClass().getResource("/image/APU_Med_Cen_Assignment.png")
-        );
-        Image scaledIcon = frameLogo.getImage().getScaledInstance(128, 128, Image.SCALE_SMOOTH);
-        setIconImage(scaledIcon);
+        setIconImage(windowIcon);
 
         // Title Bar 
         JToolBar titleBar = new JToolBar();
         titleBar.setFloatable(false);
-
-        // Image Icon for Hamburger Menu
-        ImageIcon rawToggle = new ImageIcon(
-                getClass().getResource("/image/nav-menu.png")
-        );
-        Image togImg = rawToggle.getImage()
-                .getScaledInstance(24, 24, Image.SCALE_SMOOTH);
-        ImageIcon toggleIcon = new ImageIcon(togImg);
 
         // Hamburger Button Toggle
         JButton btnToggle = new JButton(toggleIcon);
@@ -110,19 +108,12 @@ public class NavManager extends JFrame {
     }
 
     private JPanel buildSidebar() {
-        // Styling Options
-        int iconSize = 25;
 
         JPanel bar = new JPanel();
         bar.setPreferredSize(new Dimension(200, getHeight()));
         bar.setBackground(Color.BLACK);
         bar.setLayout(new BoxLayout(bar, BoxLayout.Y_AXIS));
-
-        Icon iconDashboard = loadIcon("/image/dashboard.png", iconSize);
-        Icon iconStaffManagement = loadIcon("/image/staff_management.png", iconSize);
-        Icon iconFeedback = loadIcon("/image/view_feedback.png", iconSize);
-        Icon iconAppointment = loadIcon("/image/appointment.png",iconSize);
-
+        
         // Menu buttons
         bar.add(makeSidebarButton("Dashboard", iconDashboard, e -> {
             cards.show(content, "Dashboard");
@@ -164,12 +155,6 @@ public class NavManager extends JFrame {
         btnLogout.setFocusPainted(false);
 
         return bar;
-    }
-
-    private Icon loadIcon(String path, int size) {
-        ImageIcon raw = new ImageIcon(getClass().getResource(path));
-        Image scaled = raw.getImage().getScaledInstance(size, size, Image.SCALE_SMOOTH);
-        return new ImageIcon(scaled);
     }
 
     private JButton makeSidebarButton(String text, Icon icon, ActionListener act) {
