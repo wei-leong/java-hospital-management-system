@@ -175,14 +175,14 @@ public class NavManager extends JFrame {
     private JButton makeSidebarButton(String text, Icon icon, ActionListener act) {
         JButton b = new JButton(text, icon);
         b.setMaximumSize(new Dimension(Integer.MAX_VALUE, 40));
-        b.setAlignmentX(Component.CENTER_ALIGNMENT);
-        b.setForeground(Color.WHITE);
-        b.setBackground(Color.DARK_GRAY);
-        b.setBorderPainted(false);
-        b.setFocusPainted(false);
-        b.setHorizontalAlignment(SwingConstants.LEFT);        // puts icon+text at left edge
-        b.setHorizontalTextPosition(SwingConstants.RIGHT);   // text sits to the RIGHT of the icon
-        b.setIconTextGap(8);
+        b.setAlignmentX(Component.CENTER_ALIGNMENT); 
+        b.setForeground(Color.WHITE); // Set Color Text
+        b.setBackground(Color.DARK_GRAY); // Set Button backgroun color
+        b.setBorderPainted(false); // Remove border painted sty;e
+        b.setFocusPainted(false); // Remove focus painted style
+        b.setHorizontalAlignment(SwingConstants.LEFT);        // Set Icon to the Left
+        b.setHorizontalTextPosition(SwingConstants.RIGHT);   // Place Text to the Right
+        b.setIconTextGap(8); // Set the gap between Icon and Text
         b.addActionListener(act);
         return b;
     }
