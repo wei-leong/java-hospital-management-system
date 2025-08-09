@@ -54,6 +54,7 @@ public class NavManager extends JFrame {
     Icon iconFeedback = imgScale.returnScaledImageIcon("/image/view_feedback.png", 25, 25);
     Icon iconAppointment = imgScale.returnScaledImageIcon("/image/appointment.png", 25, 25);
     Icon iconProfile = imgScale.returnScaledImageIcon("/image/profile-user.png", 32, 32);
+    Icon iconProfileLarge = imgScale.returnScaledImageIcon("/image/profile-user.png", 50, 50);
 
     public NavManager(String[] staffDetails) {
         this._staffDetails = staffDetails;
@@ -174,23 +175,18 @@ public class NavManager extends JFrame {
     }
 
     private void showProfileDialog() {
-        // Create dialog
+        // Create dialog to show Staff Details
         JDialog dlg = new JDialog(this, "Profile", true);
         dlg.setLayout(new BorderLayout(10, 10));
         dlg.setResizable(false);
 
-        // Header (Profile Picture + ID/Role)
-        ImageIcon raw = new ImageIcon(
-                getClass().getResource("/image/profile-user.png")
-        );
-        Image pic = raw.getImage()
-                .getScaledInstance(50, 50, Image.SCALE_SMOOTH);
-        JLabel picLabel = new JLabel(new ImageIcon(pic));
+        // Header (Profile Picture + Staff Id and Staff Role)
+        JLabel picLabel = new JLabel(iconProfileLarge);
         picLabel.setBorder(BorderFactory.createEmptyBorder(0, 10, 0, 0));
 
         JPanel idRole = new JPanel(new GridLayout(0, 1, 5, 5));
-        idRole.add(new JLabel(_staffDetails[0]));
-        idRole.add(new JLabel(_staffDetails[1]));
+        idRole.add(new JLabel(_staffDetails[0])); // Staff ID
+        idRole.add(new JLabel(_staffDetails[1])); // Staff Role
 
         JPanel header = new JPanel(new BorderLayout(10, 10));
         header.add(picLabel, BorderLayout.WEST);
@@ -200,10 +196,10 @@ public class NavManager extends JFrame {
         // Details (in the CENTER so it expands naturally)
         JPanel details = new JPanel(new GridLayout(0, 1, 5, 5));
         details.setBorder(BorderFactory.createEmptyBorder(0, 20, 0, 20));
-        details.add(new JLabel(_staffDetails[2]));
-        details.add(new JLabel(_staffDetails[5]));
-        details.add(new JLabel(_staffDetails[6]));
-        details.add(new JLabel(_staffDetails[7]));
+        details.add(new JLabel(_staffDetails[2])); // Staff Name
+        details.add(new JLabel(_staffDetails[5])); // Staff Email
+        details.add(new JLabel(_staffDetails[6])); // Staff Phone Number
+        details.add(new JLabel(_staffDetails[7])); // Staff Age
         dlg.add(details, BorderLayout.CENTER);
 
         // Edit Profile Button 
