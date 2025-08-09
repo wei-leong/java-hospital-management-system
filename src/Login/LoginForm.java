@@ -124,6 +124,20 @@ public class LoginForm extends JFrame {
         setLocationRelativeTo(null);
         setVisible(true);
     }
+    
+    private void leftLogoPanel(){
+        JPanel leftPanel = new JPanel(new BorderLayout());
+        leftPanel.setBackground(Color.WHITE);
+
+        ImageIcon logoImg = imgScale.returnScaledImageIcon("/image/APU_Med_Cen_Assignment.png", 225, 225);
+        JLabel lblLogo = new JLabel(logoImg);
+        lblLogo.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+        leftPanel.add(lblLogo, BorderLayout.WEST);
+    }
+    
+    private void bottomBar(){
+        
+    }
 
     private void onLogin(String userEmail, String userPassword) {
         Person newUser = new Person(userEmail, userPassword);

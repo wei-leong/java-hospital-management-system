@@ -35,7 +35,7 @@ public class NavManager extends JFrame {
     private final String dashboardStr = "Dashboard";
 
     // Staff Management Page
-    private final StaffManagement staffManagement = new StaffManagement(_staffDetails);
+    private final StaffManagement staffManagement;
     private final String staffManagementStr = "Staff Management";
 
     // Feedback Page
@@ -60,6 +60,7 @@ public class NavManager extends JFrame {
         // Window Title
         super("APU Medical Centre");
         this._staffDetails = staffDetails;
+        this.staffManagement = new StaffManagement(_staffDetails);
 
         setDefaultCloseOperation(DISPOSE_ON_CLOSE); // Dispose Navigation Menu
         addWindowListener(new WindowAdapter() { // Reopen Login Form
