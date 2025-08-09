@@ -43,12 +43,23 @@ public class LoginForm extends JFrame {
         // Panel for APU Medical Centre Image Logo ( Left )
         JPanel root = new JPanel(new BorderLayout());
         root.setBackground(Color.WHITE);
+        root.add(leftLogo(), BorderLayout.WEST); // APU Medical Centre Logo
+        root.add(inputForm(), BorderLayout.CENTER); // Email and Password Input Form
 
+        setContentPane(root);
+        pack();
+        setLocationRelativeTo(null);
+        setVisible(true);
+    }
+
+    private JLabel leftLogo() {
         ImageIcon logoImg = imgScale.returnScaledImageIcon("/image/APU_Med_Cen_Assignment.png", 225, 225);
         JLabel lblLogo = new JLabel(logoImg);
         lblLogo.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
-        root.add(lblLogo, BorderLayout.WEST);
+        return lblLogo;
+    }
 
+    private JPanel inputForm() {
         // Panel for Title and TextBox Input ( Right ) 
         JPanel form = new JPanel(new GridBagLayout());
         form.setBackground(Color.WHITE);
@@ -116,13 +127,7 @@ public class LoginForm extends JFrame {
 
         bottom.add(btnLogin, BorderLayout.CENTER);
         form.add(bottom, gbc);
-
-        root.add(form, BorderLayout.CENTER);
-
-        setContentPane(root);
-        pack();
-        setLocationRelativeTo(null);
-        setVisible(true);
+        return form;
     }
 
     private void onLogin(String userEmail, String userPassword) {
