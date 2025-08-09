@@ -111,7 +111,7 @@ public class LoginForm extends JFrame {
             String userEmail = emailField.getText();
             String userPassword = new String(passField.getPassword());
 
-            Login(userEmail, userPassword);
+            onLogin(userEmail, userPassword);
         });
 
         bottom.add(btnLogin, BorderLayout.CENTER);
@@ -125,7 +125,7 @@ public class LoginForm extends JFrame {
         setVisible(true);
     }
 
-    private void Login(String userEmail, String userPassword) {
+    private void onLogin(String userEmail, String userPassword) {
         Person newUser = new Person(userEmail, userPassword);
         String[] staffDetails = newUser.loginValidate();
         // Check if Account is Logged In
