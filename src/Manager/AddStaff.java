@@ -15,12 +15,13 @@ public class AddStaff extends JFrame {
     private final JComboBox roleField = new JComboBox<>(new String[]{"Manager", "Staff", "Doctor"});
     private final JTextField phoneField = new JTextField(20);
     private final JButton btnAdd = new JButton("+ Add Staff");
-    private final JButton btnBack ;
+    private final JButton btnBack;
     private final JRadioButton rbM = new JRadioButton("Male");
     private final JRadioButton rbF = new JRadioButton("Female");
     private final Manager managerActions = new Manager();
-    
+
     private final ImageScaler imgScale = new ImageScaler();
+    ImageIcon returnIcon = imgScale.returnScaledImageIcon("/image/back.png", 24, 24);
 
     public AddStaff() {
         super("Add Staff");
@@ -32,99 +33,10 @@ public class AddStaff extends JFrame {
         getContentPane().setBackground(Color.WHITE);
         setLayout(new BorderLayout(10, 10));
 
-        // Top Bar Panel for Return Button
-        JPanel topBar = new JPanel(new FlowLayout(FlowLayout.LEFT, 8, 8));
-        topBar.setBackground(Color.WHITE);
-
-        // Return Button Icon
-        ImageIcon returnIcon = imgScale.returnScaledImageIcon("/image/back.png", 24, 24);
-        
         btnBack = new JButton(returnIcon);
-        btnBackSettings();
-        topBar.add(btnBack);
-
-        // Top Bar Label
-        JLabel lblTitle = new JLabel("Add Staff");
-        lblTitle.setFont(lblTitle.getFont().deriveFont(Font.BOLD, 18f));
-        topBar.add(lblTitle);
-
-        add(topBar, BorderLayout.NORTH);
-
-        // Form
-        JPanel form = new JPanel(new GridBagLayout());
-        form.setBackground(Color.WHITE);
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = new Insets(8, 8, 8, 8);
-        gbc.anchor = GridBagConstraints.WEST;
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        gbc.weightx = 1.0;
-
-        int row = 0;
-
-        // Name Title
-        gbc.gridx = 0;
-        gbc.gridy = row++;
-        form.add(new JLabel("Name"), gbc);
-        gbc.gridy = row++;
-        form.add(nameField, gbc);
-
-        // Age + Role Grid Layout
-        gbc.gridy = row++;
-        JPanel ageRole = new JPanel(new GridLayout(1, 2, 10, 0));
-        ageRole.setBackground(Color.WHITE);
-
-        // Age
-        JPanel agePanel = new JPanel(new BorderLayout());
-        agePanel.setBackground(Color.WHITE);
-        agePanel.add(new JLabel("Age"), BorderLayout.NORTH);
-        agePanel.add(ageField, BorderLayout.CENTER);
-        ageRole.add(agePanel);
-
-        // Role
-        JPanel rolePanel = new JPanel(new BorderLayout());
-        rolePanel.setBackground(Color.WHITE);
-        rolePanel.add(new JLabel("Role"), BorderLayout.NORTH);
-        rolePanel.add(roleField, BorderLayout.CENTER);
-        ageRole.add(rolePanel);
-
-        form.add(ageRole, gbc);
-
-        // Email
-        gbc.gridy = row++;
-        form.add(new JLabel("Email Address"), gbc);
-        gbc.gridy = row++;
-        form.add(emailField, gbc);
-        emailInputListener();
-
-        // Phone
-        gbc.gridy = row++;
-        form.add(new JLabel("Phone Number"), gbc);
-        gbc.gridy = row++;
-        form.add(phoneField, gbc);
-        phoneInputListener();
-
-        // Gender
-        gbc.gridy = row++;
-        form.add(new JLabel("Gender"), gbc);
-        gbc.gridy = row++;
-        JPanel genderPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 20, 0));
-        genderPanel.setBackground(Color.WHITE);
-        rbM.setBackground(Color.WHITE);
-        rbF.setBackground(Color.WHITE);
-        ButtonGroup bg = new ButtonGroup();
-        bg.add(rbM);
-        bg.add(rbF);
-        genderPanel.add(rbM);
-        genderPanel.add(rbF);
-        form.add(genderPanel, gbc);
-
-        add(form, BorderLayout.CENTER);
-
-        JPanel bottom = new JPanel(new FlowLayout(FlowLayout.CENTER, 0, 10));
-        bottom.setBackground(Color.WHITE);
-        bottom.add(btnAdd);
-        btnAddSettings();
-        add(bottom, BorderLayout.SOUTH);
+        topBar(); // Return to Staff Management Icon and Add Staff Title
+        middleSection(); // Staff Details Input Form ( Name, Age, Email, Gender )
+        bottomBar(); // Add Staff Button
 
         pack();
         setSize(600, 500);
@@ -211,11 +123,108 @@ public class AddStaff extends JFrame {
             }
         });
     }
-    
-    private void btnBackSettings(){
+
+    private void btnBackSettings() {
         btnBack.setBorder(null);
         btnBack.setContentAreaFilled(false);
         btnBack.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         btnBack.addActionListener(e -> this.dispose()); // Dispose Add Staff page and return to StaffManagement
+    }
+
+    private void topBar() {
+        // Top Bar Panel for Return Button
+        JPanel topBar = new JPanel(new FlowLayout(FlowLayout.LEFT, 8, 8));
+        topBar.setBackground(Color.WHITE);
+
+        // Return Button Icon
+        btnBackSettings();
+        topBar.add(btnBack);
+
+        // Top Bar Label
+        JLabel lblTitle = new JLabel("Add Staff");
+        lblTitle.setFont(lblTitle.getFont().deriveFont(Font.BOLD, 18f));
+        topBar.add(lblTitle);
+
+        add(topBar, BorderLayout.NORTH);
+    }
+
+    private void bottomBar() {
+        JPanel bottom = new JPanel(new FlowLayout(FlowLayout.CENTER, 0, 10));
+        bottom.setBackground(Color.WHITE);
+        bottom.add(btnAdd);
+        btnAddSettings();
+        add(bottom, BorderLayout.SOUTH);
+    }
+
+    private void middleSection() {
+        // Form
+        JPanel form = new JPanel(new GridBagLayout());
+        form.setBackground(Color.WHITE);
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(8, 8, 8, 8);
+        gbc.anchor = GridBagConstraints.WEST;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.weightx = 1.0;
+
+        int row = 0;
+
+        // Name Title
+        gbc.gridx = 0;
+        gbc.gridy = row++;
+        form.add(new JLabel("Name"), gbc);
+        gbc.gridy = row++;
+        form.add(nameField, gbc);
+
+        // Age + Role Grid Layout
+        gbc.gridy = row++;
+        JPanel ageRole = new JPanel(new GridLayout(1, 2, 10, 0));
+        ageRole.setBackground(Color.WHITE);
+
+        // Age
+        JPanel agePanel = new JPanel(new BorderLayout());
+        agePanel.setBackground(Color.WHITE);
+        agePanel.add(new JLabel("Age"), BorderLayout.NORTH);
+        agePanel.add(ageField, BorderLayout.CENTER);
+        ageRole.add(agePanel);
+
+        // Role
+        JPanel rolePanel = new JPanel(new BorderLayout());
+        rolePanel.setBackground(Color.WHITE);
+        rolePanel.add(new JLabel("Role"), BorderLayout.NORTH);
+        rolePanel.add(roleField, BorderLayout.CENTER);
+        ageRole.add(rolePanel);
+
+        form.add(ageRole, gbc);
+
+        // Email
+        gbc.gridy = row++;
+        form.add(new JLabel("Email Address"), gbc);
+        gbc.gridy = row++;
+        form.add(emailField, gbc);
+        emailInputListener();
+
+        // Phone
+        gbc.gridy = row++;
+        form.add(new JLabel("Phone Number"), gbc);
+        gbc.gridy = row++;
+        form.add(phoneField, gbc);
+        phoneInputListener();
+
+        // Gender
+        gbc.gridy = row++;
+        form.add(new JLabel("Gender"), gbc);
+        gbc.gridy = row++;
+        JPanel genderPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 20, 0));
+        genderPanel.setBackground(Color.WHITE);
+        rbM.setBackground(Color.WHITE);
+        rbF.setBackground(Color.WHITE);
+        ButtonGroup bg = new ButtonGroup();
+        bg.add(rbM);
+        bg.add(rbF);
+        genderPanel.add(rbM);
+        genderPanel.add(rbF);
+        form.add(genderPanel, gbc);
+
+        add(form, BorderLayout.CENTER);
     }
 }
