@@ -50,6 +50,7 @@ public class NavManager extends JFrame {
     Icon iconStaffManagement = imgScale.returnScaledImageIcon("/image/staff_management.png", 25, 25);
     Icon iconFeedback = imgScale.returnScaledImageIcon("/image/view_feedback.png", 25, 25);
     Icon iconAppointment = imgScale.returnScaledImageIcon("/image/appointment.png", 25, 25);
+    Icon iconProfile = imgScale.returnScaledImageIcon("/image/profile-user.png",32,32);
     
     public NavManager(String[] staffDetails) {
         this._staffDetails = staffDetails;
@@ -84,9 +85,7 @@ public class NavManager extends JFrame {
         titleBar.add(Box.createHorizontalGlue());
 
         // Profile Picture
-        JButton btnProfile = new JButton(new ImageIcon(new ImageIcon(
-                getClass().getResource("/image/profile-user.png")
-        ).getImage().getScaledInstance(32, 32, Image.SCALE_SMOOTH)));
+        JButton btnProfile = new JButton(iconProfile);
         btnProfile.setBorder(null);
         btnProfile.setContentAreaFilled(false);
         titleBar.add(btnProfile);
