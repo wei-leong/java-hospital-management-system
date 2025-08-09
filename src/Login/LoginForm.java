@@ -58,7 +58,7 @@ public class LoginForm extends JFrame {
         gbc.fill = GridBagConstraints.HORIZONTAL;
 
         // Title
-        JLabel lblTitle = addLabel("APU Medical Centre",titleSize, SwingConstants.CENTER);
+        JLabel lblTitle = addLabel("APU Medical Centre", titleSize, SwingConstants.CENTER);
         lblTitle.setHorizontalAlignment(SwingConstants.CENTER); // Align the Title to Center
         gbc.gridx = 0;
         gbc.gridy = 0;
@@ -68,7 +68,7 @@ public class LoginForm extends JFrame {
         // Email Label
         gbc.gridx = 0;
         gbc.gridy = 1;
-        form.add(addLabel("Email", labelSize ,  SwingConstants.LEFT), gbc);
+        form.add(addLabel("Email", labelSize, SwingConstants.LEFT), gbc);
 
         // Email Text Field
         gbc.gridx = 0;
@@ -79,7 +79,7 @@ public class LoginForm extends JFrame {
         // Password Label
         gbc.gridx = 0;
         gbc.gridy = 3;
-        form.add(addLabel("Password", labelSize,  SwingConstants.LEFT), gbc);
+        form.add(addLabel("Password", labelSize, SwingConstants.LEFT), gbc);
 
         // Password Text Field
         gbc.gridy = 4;
@@ -88,14 +88,7 @@ public class LoginForm extends JFrame {
         passPane.add(passField, BorderLayout.CENTER);
 
         // Toggle View / Hide Button for Password
-        btnToggle.setIcon(imgView);
-        btnToggle.setFocusable(false);
-        btnToggle.setOpaque(true);
-        btnToggle.setContentAreaFilled(true);
-        btnToggle.setBackground(Color.WHITE);
-        btnToggle.setPreferredSize(new Dimension(30, 20));
-        btnToggle.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-        btnToggle.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY));
+        btnToggleSettings();
 
         passPane.add(btnToggle, BorderLayout.EAST);
         form.add(passPane, gbc);
@@ -112,9 +105,7 @@ public class LoginForm extends JFrame {
         gbc.gridy = 30;
         gbc.gridx = 0;
         gbc.gridwidth = 20;
-        btnLogin.setPreferredSize(new Dimension(100, 25));
-        btnLogin.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        btnLogin.setBackground(Color.WHITE);
+        btnLoginSettings();
 
         btnLogin.addActionListener(e -> {
             String userEmail = emailField.getText();
@@ -139,13 +130,13 @@ public class LoginForm extends JFrame {
         String[] staffDetails = newUser.loginValidate();
         // Check if Account is Logged In
         if (staffDetails == null) {
-            ErrorDialog("Login failed: incorrect email or password.");
+            ErrorDialog("Login Failed: Incorrect Email or Password.");
             return;
         }
 
         // Check id Account is Active
         if (!"Active".equalsIgnoreCase(staffDetails[8])) {
-            ErrorDialog("Login failed: inactive staff are not allowed to login.");
+            ErrorDialog("Login Failed: Inactive Staff are not Allowed to Login.");
             return;
         }
 
@@ -186,7 +177,6 @@ public class LoginForm extends JFrame {
         JLabel lbl = new JLabel(text);
         lbl.setFont(lbl.getFont().deriveFont(Font.BOLD, textSize));
         lbl.setHorizontalAlignment(alignment);
-//        lbl.setHorizontalAlignment(SwingConstants);
         return lbl;
     }
 
@@ -194,7 +184,7 @@ public class LoginForm extends JFrame {
         emailField.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0)); // Remove the Default Border
         emailField.setBorder(BorderFactory.createMatteBorder(
                 0, 0, 1, 0, // top, left, bottom, right
-                Color.GRAY // line color
+                Color.BLACK // line color
         )); // Add a 1px bottom border (gray underline)
         emailField.setFont(emailField.getFont().deriveFont(inputSize));
     }
@@ -204,7 +194,7 @@ public class LoginForm extends JFrame {
         passField.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0)); // Remove the Default Border
         passField.setBorder(BorderFactory.createMatteBorder(
                 0, 0, 1, 0, // top, left, bottom, right
-                Color.GRAY // line color
+                Color.BLACK // line color
         )); // Add a 1px bottom border (gray underline)
         passField.setFont(passField.getFont().deriveFont(inputSize));
     }
@@ -217,5 +207,22 @@ public class LoginForm extends JFrame {
             passField.setEchoChar((char) 0);
             btnToggle.setIcon(imgHide);
         }
+    }
+
+    private void btnToggleSettings() {
+        btnToggle.setIcon(imgView);
+        btnToggle.setFocusable(false);
+        btnToggle.setOpaque(true);
+        btnToggle.setContentAreaFilled(true);
+        btnToggle.setBackground(Color.WHITE);
+        btnToggle.setPreferredSize(new Dimension(30, 20));
+        btnToggle.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        btnToggle.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY));
+    }
+
+    private void btnLoginSettings() {
+        btnLogin.setPreferredSize(new Dimension(150, 50));
+        btnLogin.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        btnLogin.setBackground(Color.WHITE);
     }
 }
