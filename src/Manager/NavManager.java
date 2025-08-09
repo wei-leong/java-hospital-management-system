@@ -109,11 +109,6 @@ public class NavManager extends JFrame {
         sidebar = buildSidebar();
         add(sidebar, BorderLayout.WEST);
 
-        // Toggle Sidebar Visibility
-        btnToggle.addActionListener(e
-                -> sidebar.setVisible(!sidebar.isVisible())
-        );
-
         // Content Area with CardLayout 
         content = new JPanel(cards);
         content.add(dashboard, dashboardStr);
@@ -157,19 +152,11 @@ public class NavManager extends JFrame {
 
         JPanel bottom = new JPanel(new BorderLayout(10, 10));
 
-        btnLogout.addActionListener(e -> {
-            // Dispose NavManager JFrame
-            SwingUtilities.getWindowAncestor(bar).dispose();
-            // Open Login Form
-            login.LoginForm login = new login.LoginForm();
-            login.setVisible(true);
-        });
-
         bottom.setBackground(Color.BLACK);
         bottom.add(btnLogout, BorderLayout.SOUTH);
         bottom.setBorder(BorderFactory.createEmptyBorder(0, 20, 20, 20));
         bar.add(bottom, BorderLayout.SOUTH);
-        btnLogoutSettings();
+        btnLogoutSettings(bar);
 
         return bar;
     }
@@ -225,11 +212,6 @@ public class NavManager extends JFrame {
         // Edit Profile Button 
         JPanel bottom = new JPanel(new BorderLayout(10, 10));
 
-        btnEdit.addActionListener(e -> {
-            dlg.dispose();
-            new login.LoginForm().setVisible(true);
-        });
-
         bottom.add(btnEdit, BorderLayout.CENTER);
         bottom.setBorder(BorderFactory.createEmptyBorder(0, 20, 20, 20));
         dlg.add(bottom, BorderLayout.SOUTH);
@@ -249,9 +231,13 @@ public class NavManager extends JFrame {
         btnToggle.setFocusPainted(false);
         btnToggle.setOpaque(false);
         btnToggle.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        // Toggle Sidebar Visibility
+        btnToggle.addActionListener(e
+                -> sidebar.setVisible(!sidebar.isVisible())
+        );
     }
 
-    private void btnLogoutSettings() {
+    private void btnLogoutSettings(JPanel bar) {
         btnLogout.setBackground(Color.WHITE);
         btnLogout.setForeground(Color.BLACK);
         btnLogout.setPreferredSize(new Dimension(150, 35));
@@ -259,6 +245,13 @@ public class NavManager extends JFrame {
         btnLogout.setOpaque(true);
         btnLogout.setContentAreaFilled(true);
         btnLogout.setFocusPainted(false);
+        btnLogout.addActionListener(e -> {
+            // Dispose NavManager JFrame
+            SwingUtilities.getWindowAncestor(bar).dispose();
+            // Open Login Form
+            login.LoginForm login = new login.LoginForm();
+            login.setVisible(true);
+        });
     }
     
     private void btnEditSettings(){
@@ -269,5 +262,8 @@ public class NavManager extends JFrame {
         btnEdit.setOpaque(true);
         btnEdit.setContentAreaFilled(true);
         btnEdit.setFocusPainted(false);
+        btnEdit.addActionListener(e -> {
+            // Edit Own Profile Logic Here
+        });
     }
 }
