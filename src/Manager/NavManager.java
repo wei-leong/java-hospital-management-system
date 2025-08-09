@@ -18,13 +18,13 @@ public class NavManager extends JFrame {
 
     // Own Staff Details - Remove own profile from StaffManagement page
     private final String[] _staffDetails;
+    private final ImageScaler imgScale = new ImageScaler();
 
     private final JPanel sidebar;
     private final CardLayout cards = new CardLayout();
     private final JPanel content;
     private String currentPage = "Dashboard";
     private final JLabel lblTitle;
-    private final ImageScaler imgScale = new ImageScaler();
     private final JButton btnToggle;
     private final JButton btnLogout;
     private final JButton btnEdit;
@@ -57,9 +57,9 @@ public class NavManager extends JFrame {
     Icon iconProfileLarge = imgScale.returnScaledImageIcon("/image/profile-user.png", 50, 50);
 
     public NavManager(String[] staffDetails) {
-        this._staffDetails = staffDetails;
         // Window Title
         super("APU Medical Centre");
+        this._staffDetails = staffDetails;
 
         setDefaultCloseOperation(DISPOSE_ON_CLOSE); // Dispose Navigation Menu
         addWindowListener(new WindowAdapter() { // Reopen Login Form
