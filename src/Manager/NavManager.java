@@ -8,13 +8,15 @@
  */
 package Manager;
 
+import Class.ImageScaler;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import static javax.swing.WindowConstants.EXIT_ON_CLOSE;
 
 public class NavManager extends JFrame {
-    // Staff Details
+
+    // Own Staff Details - Remove own profile from StaffManagement page
     private final String[] _staffDetails;
 
     private final JPanel sidebar;
@@ -22,61 +24,82 @@ public class NavManager extends JFrame {
     private final JPanel content;
     private String currentPage = "Dashboard";
     private final JLabel lblTitle;
+    private final ImageScaler imgScale = new ImageScaler();
+    private final JButton btnToggle;
+    private final JButton btnLogout;
+    private final JButton btnEdit;
+    private final JButton btnProfile;
+
+    // Dashboard Page
+    private final Dashboard dashboard = new Dashboard();
+    private final String dashboardStr = "Dashboard";
+
+    // Staff Management Page
+    private final StaffManagement staffManagement = new StaffManagement(_staffDetails);
+    private final String staffManagementStr = "Staff Management";
+
+    // Feedback Page
+    private final Feedback feedback = new Feedback();
+    private final String feedbackStr = "View Feedback";
+
+    // Appointment Page
+    private final ViewAppointment viewAppointment = new ViewAppointment();
+    private final String viewAppointmentStr = "View Appointment";
+
+    // Image
+    ImageIcon toggleIcon = imgScale.returnScaledImageIcon("/image/nav-menu.png", 24, 24);
+    Image windowIcon = imgScale.returnScaledImage("/image/APU_Med_Cen_Assignment.png", 128, 128);
+    Icon iconDashboard = imgScale.returnScaledImageIcon("/image/dashboard.png", 25, 25);
+    Icon iconStaffManagement = imgScale.returnScaledImageIcon("/image/staff_management.png", 25, 25);
+    Icon iconFeedback = imgScale.returnScaledImageIcon("/image/view_feedback.png", 25, 25);
+    Icon iconAppointment = imgScale.returnScaledImageIcon("/image/appointment.png", 25, 25);
+    Icon iconProfile = imgScale.returnScaledImageIcon("/image/profile-user.png", 32, 32);
+    Icon iconProfileLarge = imgScale.returnScaledImageIcon("/image/profile-user.png", 50, 50);
 
     public NavManager(String[] staffDetails) {
         this._staffDetails = staffDetails;
-        
         // Window Title
         super("APU Medical Centre");
-        setDefaultCloseOperation(EXIT_ON_CLOSE);
+
+        setDefaultCloseOperation(DISPOSE_ON_CLOSE); // Dispose Navigation Menu
+        addWindowListener(new WindowAdapter() { // Reopen Login Form
+            @Override
+            public void windowClosed(WindowEvent e) {
+                SwingUtilities.invokeLater(() -> new login.LoginForm().setVisible(true));
+            }
+        });
+
         setSize(1000, 600);
         setLocationRelativeTo(null);
         setLayout(new BorderLayout());
+        
+        // Initialize Button 
+        this.btnToggle = new JButton(toggleIcon);
+        this.btnLogout = new JButton("Logout");
+        this.btnEdit = new JButton("Edit Profile");
+        this.btnProfile = new JButton(iconProfile);
 
         // Windows Title Icon 
-        ImageIcon frameLogo = new ImageIcon(
-                getClass().getResource("/image/APU_Med_Cen_Assignment.png")
-        );
-        Image scaledIcon = frameLogo.getImage().getScaledInstance(128, 128, Image.SCALE_SMOOTH);
-        setIconImage(scaledIcon);
+        setIconImage(windowIcon);
 
         // Title Bar 
         JToolBar titleBar = new JToolBar();
         titleBar.setFloatable(false);
 
-        // Image Icon for Hamburger Menu
-        ImageIcon rawToggle = new ImageIcon(
-                getClass().getResource("/image/nav-menu.png")
-        );
-        Image togImg = rawToggle.getImage()
-                .getScaledInstance(24, 24, Image.SCALE_SMOOTH);
-        ImageIcon toggleIcon = new ImageIcon(togImg);
-
         // Hamburger Button Toggle
-        JButton btnToggle = new JButton(toggleIcon);
-        btnToggle.setFocusable(false);
         titleBar.add(btnToggle);
         titleBar.addSeparator();
-        btnToggle.setBorderPainted(false);
-        btnToggle.setContentAreaFilled(false);
-        btnToggle.setFocusPainted(false);
-        btnToggle.setOpaque(false);
-        btnToggle.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        btnToggleSettings();
 
         // Title - APU Medical Centre
         lblTitle = new JLabel(currentPage);
         lblTitle.setFont(lblTitle.getFont().deriveFont(Font.BOLD, 16f));
         titleBar.add(lblTitle);
-
         titleBar.add(Box.createHorizontalGlue());
-
-        // Profile Picture
-        JButton btnProfile = new JButton(new ImageIcon(new ImageIcon(
-                getClass().getResource("/image/profile-user.png")
-        ).getImage().getScaledInstance(32, 32, Image.SCALE_SMOOTH)));
-        btnProfile.setBorder(null);
-        btnProfile.setContentAreaFilled(false);
+        
+        // Button Profile to Open Staff Details
         titleBar.add(btnProfile);
+        btnProfileSettings();
 
         add(titleBar, BorderLayout.NORTH);
 
@@ -84,120 +107,87 @@ public class NavManager extends JFrame {
         sidebar = buildSidebar();
         add(sidebar, BorderLayout.WEST);
 
-        // Toggle Sidebar Visibility
-        btnToggle.addActionListener(e
-                -> sidebar.setVisible(!sidebar.isVisible())
-        );
-
-        // Profile dialog
-        btnProfile.addActionListener(e -> showProfileDialog());
-
-        // Content area with CardLayout 
+        // Content Area with CardLayout 
         content = new JPanel(cards);
-        content.add(new Dashboard(), "Dashboard");
-        content.add(new StaffManagement(), "Staff Management");
-        content.add(new Feedback(), "Feedback");
+        content.add(dashboard, dashboardStr);
+        content.add(staffManagement, staffManagementStr);
+        content.add(feedback, feedbackStr);
+        content.add(viewAppointment, viewAppointmentStr);
         add(content, BorderLayout.CENTER);
 
-        setVisible(true);
+        setVisible(true); // Ensure the NavManager page is visible
     }
-    
-    private void titleChanger(String newTitle){
+
+    // Changes the title besides the Navigation Menu Icon
+    private void titleChanger(String newTitle) {
         currentPage = newTitle;
         lblTitle.setText(newTitle);
     }
 
     private JPanel buildSidebar() {
-        // Styling Options
-        int iconSize = 25;
-        
         JPanel bar = new JPanel();
         bar.setPreferredSize(new Dimension(200, getHeight()));
         bar.setBackground(Color.BLACK);
         bar.setLayout(new BoxLayout(bar, BoxLayout.Y_AXIS));
 
-        Icon iconDashboard = loadIcon("/image/dashboard.png", iconSize);
-        Icon iconStaffManagement = loadIcon("/image/staff_management.png", iconSize);
-        Icon iconFeedback = loadIcon("/image/view_feedback.png", iconSize);
-
         // Menu buttons
-        bar.add(makeSidebarButton("Dashboard", iconDashboard, e -> {
-            cards.show(content, "Dashboard");
-            titleChanger("Dasbboard");
+        bar.add(makeSidebarButton(dashboardStr, iconDashboard, e -> {
+            cards.show(content, dashboardStr);
+            titleChanger(dashboardStr);
         }));
-        bar.add(makeSidebarButton("Staff Management", iconStaffManagement, e -> {
-            cards.show(content, "Staff Management");
-            titleChanger("Staff Management");
+        bar.add(makeSidebarButton(staffManagementStr, iconStaffManagement, e -> {
+            cards.show(content, staffManagementStr);
+            titleChanger(staffManagementStr);
         }));
-        bar.add(makeSidebarButton("View Feedback", iconFeedback, e -> {
-            cards.show(content, "Feedback");
-            titleChanger("View Feedback");
+        bar.add(makeSidebarButton(feedbackStr, iconFeedback, e -> {
+            cards.show(content, feedbackStr);
+            titleChanger(feedbackStr);
+        }));
+        bar.add(makeSidebarButton(viewAppointmentStr, iconAppointment, e -> {
+            cards.show(content, viewAppointmentStr);
+            titleChanger(viewAppointmentStr);
         }));
 
         JPanel bottom = new JPanel(new BorderLayout(10, 10));
-        JButton btnLogout = new JButton("Logout");
-
-        btnLogout.addActionListener(e -> {
-            SwingUtilities.getWindowAncestor(bar).dispose();
-            // 2. Open the login form:
-            login.LoginForm login = new login.LoginForm();
-            login.setVisible(true);
-        });
 
         bottom.setBackground(Color.BLACK);
         bottom.add(btnLogout, BorderLayout.SOUTH);
         bottom.setBorder(BorderFactory.createEmptyBorder(0, 20, 20, 20));
         bar.add(bottom, BorderLayout.SOUTH);
-        btnLogout.setBackground(Color.WHITE);
-        btnLogout.setForeground(Color.BLACK);
-        btnLogout.setPreferredSize(new Dimension(150, 35));
-        btnLogout.setBorder(BorderFactory.createLineBorder(Color.BLACK));
-        btnLogout.setOpaque(true);
-        btnLogout.setContentAreaFilled(true);
-        btnLogout.setFocusPainted(false);
+        btnLogoutSettings(bar);
 
         return bar;
-    }
-
-    private Icon loadIcon(String path, int size) {
-        ImageIcon raw = new ImageIcon(getClass().getResource(path));
-        Image scaled = raw.getImage().getScaledInstance(size, size, Image.SCALE_SMOOTH);
-        return new ImageIcon(scaled);
     }
 
     private JButton makeSidebarButton(String text, Icon icon, ActionListener act) {
         JButton b = new JButton(text, icon);
         b.setMaximumSize(new Dimension(Integer.MAX_VALUE, 40));
-        b.setAlignmentX(Component.CENTER_ALIGNMENT);
-        b.setForeground(Color.WHITE);
-        b.setBackground(Color.DARK_GRAY);
-        b.setBorderPainted(false);
-        b.setFocusPainted(false);
-        b.setHorizontalAlignment(SwingConstants.LEFT);        // puts icon+text at left edge
-        b.setHorizontalTextPosition(SwingConstants.RIGHT);   // text sits to the RIGHT of the icon
-        b.setIconTextGap(8);
+        b.setAlignmentX(Component.CENTER_ALIGNMENT); 
+        b.setForeground(Color.WHITE); // Set Color Text
+        b.setBackground(Color.DARK_GRAY); // Set Button backgroun color
+        b.setBorderPainted(false); // Remove border painted sty;e
+        b.setFocusPainted(false); // Remove focus painted style
+        b.setHorizontalAlignment(SwingConstants.LEFT);        // Set Icon to the Left
+        b.setHorizontalTextPosition(SwingConstants.RIGHT);   // Place Text to the Right
+        b.setIconTextGap(8); // Set the gap between Icon and Text
         b.addActionListener(act);
         return b;
     }
 
     private void showProfileDialog() {
-        // Create dialog
+        // Create dialog to show Staff Details
         JDialog dlg = new JDialog(this, "Profile", true);
         dlg.setLayout(new BorderLayout(10, 10));
         dlg.setResizable(false);
 
-        // Header (Profile Picture + ID/Role)
-        ImageIcon raw = new ImageIcon(
-                getClass().getResource("/image/profile-user.png")
-        );
-        Image pic = raw.getImage()
-                .getScaledInstance(50, 50, Image.SCALE_SMOOTH);
-        JLabel picLabel = new JLabel(new ImageIcon(pic));
+        // Header (Profile Picture + Staff Id and Staff Role)
+        JLabel picLabel = new JLabel(iconProfileLarge);
         picLabel.setBorder(BorderFactory.createEmptyBorder(0, 10, 0, 0));
-
+        
+        // Create JPanel to group profile picture, staff id and staff role together
         JPanel idRole = new JPanel(new GridLayout(0, 1, 5, 5));
-        idRole.add(new JLabel(_staffDetails[0]));
-        idRole.add(new JLabel(_staffDetails[1]));
+        idRole.add(new JLabel(_staffDetails[0])); // Staff ID
+        idRole.add(new JLabel(_staffDetails[1])); // Staff Role
 
         JPanel header = new JPanel(new BorderLayout(10, 10));
         header.add(picLabel, BorderLayout.WEST);
@@ -207,24 +197,58 @@ public class NavManager extends JFrame {
         // Details (in the CENTER so it expands naturally)
         JPanel details = new JPanel(new GridLayout(0, 1, 5, 5));
         details.setBorder(BorderFactory.createEmptyBorder(0, 20, 0, 20));
-        details.add(new JLabel(_staffDetails[2]));
-        details.add(new JLabel(_staffDetails[5]));
-        details.add(new JLabel(_staffDetails[6]));
-        details.add(new JLabel(_staffDetails[7]));
+        details.add(new JLabel(_staffDetails[2])); // Staff Name
+        details.add(new JLabel(_staffDetails[5])); // Staff Email
+        details.add(new JLabel(_staffDetails[6])); // Staff Phone Number
+        details.add(new JLabel(_staffDetails[7])); // Staff Age
         dlg.add(details, BorderLayout.CENTER);
 
         // Edit Profile Button 
         JPanel bottom = new JPanel(new BorderLayout(10, 10));
-        JButton btnEdit = new JButton("Edit Profile");
-
-        btnEdit.addActionListener(e -> {
-            dlg.dispose();
-            new login.LoginForm().setVisible(true);
-        });
 
         bottom.add(btnEdit, BorderLayout.CENTER);
         bottom.setBorder(BorderFactory.createEmptyBorder(0, 20, 20, 20));
         dlg.add(bottom, BorderLayout.SOUTH);
+        btnEditSettings();
+
+        // Finalize size & position
+        dlg.setSize(300, 250);  // fixed size you prefer
+        Point loc = this.getLocationOnScreen();
+        dlg.setLocation(loc.x + this.getWidth() - dlg.getWidth() - 10, loc.y + 10);
+        dlg.setVisible(true);
+    }
+
+    private void btnToggleSettings() {
+        btnToggle.setFocusable(false);
+        btnToggle.setBorderPainted(false);
+        btnToggle.setContentAreaFilled(false);
+        btnToggle.setFocusPainted(false);
+        btnToggle.setOpaque(false);
+        btnToggle.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        // Toggle Sidebar Visibility
+        btnToggle.addActionListener(e
+                -> sidebar.setVisible(!sidebar.isVisible())
+        );
+    }
+
+    private void btnLogoutSettings(JPanel bar) {
+        btnLogout.setBackground(Color.WHITE);
+        btnLogout.setForeground(Color.BLACK);
+        btnLogout.setPreferredSize(new Dimension(150, 35));
+        btnLogout.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+        btnLogout.setOpaque(true);
+        btnLogout.setContentAreaFilled(true);
+        btnLogout.setFocusPainted(false);
+        btnLogout.addActionListener(e -> {
+            // Dispose NavManager JFrame
+            SwingUtilities.getWindowAncestor(bar).dispose();
+            // Open Login Form
+            login.LoginForm login = new login.LoginForm();
+            login.setVisible(true);
+        });
+    }
+    
+    private void btnEditSettings(){
         btnEdit.setBackground(Color.white);
         btnEdit.setForeground(Color.BLACK);
         btnEdit.setPreferredSize(new Dimension(150, 35));
@@ -232,11 +256,16 @@ public class NavManager extends JFrame {
         btnEdit.setOpaque(true);
         btnEdit.setContentAreaFilled(true);
         btnEdit.setFocusPainted(false);
+        btnEdit.addActionListener(e -> {
+            // Edit Own Profile Logic Here
+        });
+    }
+    
+    private void btnProfileSettings(){
+        btnProfile.setBorder(null);
+        btnProfile.setContentAreaFilled(false);
 
-        // Finalize size & position
-        dlg.setSize(300, 250);  // fixed size you prefer
-        Point loc = this.getLocationOnScreen();
-        dlg.setLocation(loc.x + this.getWidth() - dlg.getWidth() - 10, loc.y + 10);
-        dlg.setVisible(true);
+        // Show Own Profile Details and Enable user to edit their own profile
+        btnProfile.addActionListener(e -> showProfileDialog());
     }
 }
