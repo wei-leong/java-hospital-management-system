@@ -28,14 +28,23 @@ public class Feedback extends JPanel {
         north.setLayout(new BoxLayout(north, BoxLayout.Y_AXIS));
         north.setBackground(Color.WHITE);
 
-        // 1) Review Summary title
+        // Title : Review Summary
+        north.add(reviewSummaryTitle());
+
+        // Blocks : Overall Average Rating Blocks from Staff and Doctor
+        north.add(reviewSummaryRating());
+        add(north, BorderLayout.NORTH);
+    }
+
+    private JLabel reviewSummaryTitle() {
         JLabel lblSummaryTitle = new JLabel("Review Summary");
         lblSummaryTitle.setFont(lblSummaryTitle.getFont().deriveFont(Font.BOLD, 18f));
         lblSummaryTitle.setBorder(BorderFactory.createEmptyBorder(0, 10, 8, 0));
         lblSummaryTitle.setAlignmentX(Component.LEFT_ALIGNMENT);
-        north.add(lblSummaryTitle);
+        return lblSummaryTitle;
+    }
 
-        // 2) Average-rating blocks, left aligned
+    private JPanel reviewSummaryRating() {
         JPanel summaryBlocks = new JPanel(new FlowLayout(FlowLayout.CENTER, 50, 0));
         summaryBlocks.setBackground(Color.WHITE);
         summaryBlocks.setAlignmentX(Component.LEFT_ALIGNMENT);
@@ -44,9 +53,7 @@ public class Feedback extends JPanel {
         int doctorAvg = managerActions.FeedbackSummary("D");
         summaryBlocks.add(makeAverageBlock(String.valueOf(staffAvg), "To Doctor"));
         summaryBlocks.add(makeAverageBlock(String.valueOf(doctorAvg), "To Staff"));
-
-        north.add(summaryBlocks);
-        add(north, BorderLayout.NORTH);
+        return summaryBlocks;
     }
 
     private void customerComments() {
@@ -104,7 +111,7 @@ public class Feedback extends JPanel {
         scroll.setPreferredSize(new Dimension(0, 400));
 
         center.add(scroll);
-         add(center, BorderLayout.CENTER);
+        add(center, BorderLayout.CENTER);
     }
 
     // Average Rating Block
