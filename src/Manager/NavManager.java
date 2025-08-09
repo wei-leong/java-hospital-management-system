@@ -27,6 +27,7 @@ public class NavManager extends JFrame {
     private final ImageScaler imgScale = new ImageScaler();
     private final JButton btnToggle;
     private final JButton btnLogout;
+    private JButton btnEdit;
 
     // Dashboard Page
     private final Dashboard dashboard = new Dashboard();
@@ -72,6 +73,7 @@ public class NavManager extends JFrame {
 
         this.btnToggle = new JButton(toggleIcon);
         this.btnLogout = new JButton("Logout");
+        this.btnEdit = new JButton("Edit Profile");
 
         // Windows Title Icon 
         setIconImage(windowIcon);
@@ -222,7 +224,6 @@ public class NavManager extends JFrame {
 
         // Edit Profile Button 
         JPanel bottom = new JPanel(new BorderLayout(10, 10));
-        JButton btnEdit = new JButton("Edit Profile");
 
         btnEdit.addActionListener(e -> {
             dlg.dispose();
@@ -232,13 +233,7 @@ public class NavManager extends JFrame {
         bottom.add(btnEdit, BorderLayout.CENTER);
         bottom.setBorder(BorderFactory.createEmptyBorder(0, 20, 20, 20));
         dlg.add(bottom, BorderLayout.SOUTH);
-        btnEdit.setBackground(Color.white);
-        btnEdit.setForeground(Color.BLACK);
-        btnEdit.setPreferredSize(new Dimension(150, 35));
-        btnEdit.setBorder(BorderFactory.createLineBorder(Color.BLACK));
-        btnEdit.setOpaque(true);
-        btnEdit.setContentAreaFilled(true);
-        btnEdit.setFocusPainted(false);
+        btnEditSettings();
 
         // Finalize size & position
         dlg.setSize(300, 250);  // fixed size you prefer
@@ -264,5 +259,15 @@ public class NavManager extends JFrame {
         btnLogout.setOpaque(true);
         btnLogout.setContentAreaFilled(true);
         btnLogout.setFocusPainted(false);
+    }
+    
+    private void btnEditSettings(){
+        btnEdit.setBackground(Color.white);
+        btnEdit.setForeground(Color.BLACK);
+        btnEdit.setPreferredSize(new Dimension(150, 35));
+        btnEdit.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+        btnEdit.setOpaque(true);
+        btnEdit.setContentAreaFilled(true);
+        btnEdit.setFocusPainted(false);
     }
 }
