@@ -27,7 +27,8 @@ public class NavManager extends JFrame {
     private final ImageScaler imgScale = new ImageScaler();
     private final JButton btnToggle;
     private final JButton btnLogout;
-    private JButton btnEdit;
+    private final JButton btnEdit;
+    private final JButton btnProfile;
 
     // Dashboard Page
     private final Dashboard dashboard = new Dashboard();
@@ -74,6 +75,7 @@ public class NavManager extends JFrame {
         this.btnToggle = new JButton(toggleIcon);
         this.btnLogout = new JButton("Logout");
         this.btnEdit = new JButton("Edit Profile");
+        this.btnProfile = new JButton(iconProfile);
 
         // Windows Title Icon 
         setIconImage(windowIcon);
@@ -93,14 +95,9 @@ public class NavManager extends JFrame {
         titleBar.add(lblTitle);
 
         titleBar.add(Box.createHorizontalGlue());
+        
+        btnProfileSettings();
 
-        // Profile Picture
-        JButton btnProfile = new JButton(iconProfile);
-        btnProfile.setBorder(null);
-        btnProfile.setContentAreaFilled(false);
-
-        // Show Own Profile Details and Enable user to edit their own profile
-        btnProfile.addActionListener(e -> showProfileDialog());
         titleBar.add(btnProfile);
 
         add(titleBar, BorderLayout.NORTH);
@@ -265,5 +262,13 @@ public class NavManager extends JFrame {
         btnEdit.addActionListener(e -> {
             // Edit Own Profile Logic Here
         });
+    }
+    
+    private void btnProfileSettings(){
+        btnProfile.setBorder(null);
+        btnProfile.setContentAreaFilled(false);
+
+        // Show Own Profile Details and Enable user to edit their own profile
+        btnProfile.addActionListener(e -> showProfileDialog());
     }
 }
