@@ -72,7 +72,7 @@ public class NavManager extends JFrame {
         setSize(1000, 600);
         setLocationRelativeTo(null);
         setLayout(new BorderLayout());
-        
+
         // Initialize Button 
         this.btnToggle = new JButton(toggleIcon);
         this.btnLogout = new JButton("Logout");
@@ -82,6 +82,17 @@ public class NavManager extends JFrame {
         // Windows Title Icon 
         setIconImage(windowIcon);
 
+        lblTitle = new JLabel(currentPage);
+        toolBar();
+        
+        content = new JPanel(cards);
+        sidebar = buildSidebar();
+        sideBar();
+        
+        setVisible(true); // Ensure the NavManager page is visible
+    }
+
+    private void toolBar() {
         // Title Bar 
         JToolBar titleBar = new JToolBar();
         titleBar.setFloatable(false);
@@ -92,30 +103,27 @@ public class NavManager extends JFrame {
         btnToggleSettings();
 
         // Title - APU Medical Centre
-        lblTitle = new JLabel(currentPage);
         lblTitle.setFont(lblTitle.getFont().deriveFont(Font.BOLD, 16f));
         titleBar.add(lblTitle);
         titleBar.add(Box.createHorizontalGlue());
-        
+
         // Button Profile to Open Staff Details
         titleBar.add(btnProfile);
         btnProfileSettings();
 
         add(titleBar, BorderLayout.NORTH);
+    }
 
+    private void sideBar() {
         // Sidebar
-        sidebar = buildSidebar();
         add(sidebar, BorderLayout.WEST);
 
         // Content Area with CardLayout 
-        content = new JPanel(cards);
         content.add(dashboard, dashboardStr);
         content.add(staffManagement, staffManagementStr);
         content.add(feedback, feedbackStr);
         content.add(viewAppointment, viewAppointmentStr);
         add(content, BorderLayout.CENTER);
-
-        setVisible(true); // Ensure the NavManager page is visible
     }
 
     // Changes the title besides the Navigation Menu Icon
@@ -162,7 +170,7 @@ public class NavManager extends JFrame {
     private JButton makeSidebarButton(String text, Icon icon, ActionListener act) {
         JButton b = new JButton(text, icon);
         b.setMaximumSize(new Dimension(Integer.MAX_VALUE, 40));
-        b.setAlignmentX(Component.CENTER_ALIGNMENT); 
+        b.setAlignmentX(Component.CENTER_ALIGNMENT);
         b.setForeground(Color.WHITE); // Set Color Text
         b.setBackground(Color.DARK_GRAY); // Set Button backgroun color
         b.setBorderPainted(false); // Remove border painted sty;e
@@ -183,7 +191,7 @@ public class NavManager extends JFrame {
         // Header (Profile Picture + Staff Id and Staff Role)
         JLabel picLabel = new JLabel(iconProfileLarge);
         picLabel.setBorder(BorderFactory.createEmptyBorder(0, 10, 0, 0));
-        
+
         // Create JPanel to group profile picture, staff id and staff role together
         JPanel idRole = new JPanel(new GridLayout(0, 1, 5, 5));
         idRole.add(new JLabel(_staffDetails[0])); // Staff ID
@@ -247,8 +255,8 @@ public class NavManager extends JFrame {
             login.setVisible(true);
         });
     }
-    
-    private void btnEditSettings(){
+
+    private void btnEditSettings() {
         btnEdit.setBackground(Color.white);
         btnEdit.setForeground(Color.BLACK);
         btnEdit.setPreferredSize(new Dimension(150, 35));
@@ -260,8 +268,8 @@ public class NavManager extends JFrame {
             // Edit Own Profile Logic Here
         });
     }
-    
-    private void btnProfileSettings(){
+
+    private void btnProfileSettings() {
         btnProfile.setBorder(null);
         btnProfile.setContentAreaFilled(false);
 
