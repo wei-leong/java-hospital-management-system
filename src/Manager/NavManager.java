@@ -16,7 +16,7 @@ import static javax.swing.WindowConstants.EXIT_ON_CLOSE;
 
 public class NavManager extends JFrame {
 
-    // Staff Details
+    // Own Staff Details - Remove own profile from StaffManagement page
     private final String[] _staffDetails;
 
     private final JPanel sidebar;
@@ -42,6 +42,7 @@ public class NavManager extends JFrame {
     private final ViewAppointment viewAppointment = new ViewAppointment();
     private final String viewAppointmentStr = "View Appointment";
     
+    // Image
     ImageIcon toggleIcon = imgScale.returnScaledImageIcon("/image/nav-menu.png", 24, 24);
     Image windowIcon = imgScale.returnScaledImage("/image/APU_Med_Cen_Assignment.png",128,128);
     Icon iconDashboard = imgScale.returnScaledImageIcon("/image/dashboard.png", 25, 25);
