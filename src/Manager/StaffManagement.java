@@ -24,14 +24,14 @@ public class StaffManagement extends JPanel {
     private final String[] cols = {"Staff ID", "Staff Role", "Staff Name", "Password", "Gender", "Email", "Phone Number", "Age"};
 
     public StaffManagement(String[] ownProfile) {
-
         managerActions = new Manager(ownProfile);
-
+        
+        // JPanel Settings
         setLayout(new BorderLayout(10, 10));
         setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         setBackground(Color.WHITE);
 
-        northSection();
+        northSection(); // Staff Filter Options and Table Heading
 
         // Build Table 
         model = new DefaultTableModel(cols, 0) {
@@ -40,11 +40,12 @@ public class StaffManagement extends JPanel {
                 return false;
             }
         };
-        staffData();
+        
+        staffData(); // Staff Data 
     }
-
+    
+    // Checkbox for Staff Filter Options ( All , Staff , Doctor, Manager )
     private JPanel tagBarSection() {
-        // Checkbox ( All, Staff, Doctor, Inactive
         JPanel tagBar = new JPanel(new BorderLayout(8, 0));
         tagBar.setBackground(Color.WHITE);
         tagBar.setBorder(BorderFactory.createEmptyBorder());
@@ -104,7 +105,8 @@ public class StaffManagement extends JPanel {
 
         return tagBar;
     }
-
+    
+    // UI : Place Staff Role Filter options and Table Heading in northSection adn render at top of Jpanel
     private void northSection() {
         // COlumn Headers
         JPanel headerBar = new JPanel(new GridLayout(1, cols.length, 8, 0));
@@ -126,7 +128,8 @@ public class StaffManagement extends JPanel {
 
         add(northWrapper, BorderLayout.NORTH);
     }
-
+    
+    // Return Staff Data table with the filtered Staff Role
     private void staffData() {
 
         for (JCheckBox chb : boxes) {
