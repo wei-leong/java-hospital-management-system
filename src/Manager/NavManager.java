@@ -12,7 +12,6 @@ import Class.ImageScaler;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
-import static javax.swing.WindowConstants.EXIT_ON_CLOSE;
 
 public class NavManager extends JFrame {
 
