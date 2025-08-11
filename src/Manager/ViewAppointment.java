@@ -30,8 +30,8 @@ public class ViewAppointment extends JPanel {
                 return false;
             }
         };
-        northSection();
-        appointmentTable();
+        northSection(); // Appointment Filter Options + Custom Table Heading
+        appointmentTable(); // Appointments Data ( Table Data ) 
     }
     
     private void northSection(){
