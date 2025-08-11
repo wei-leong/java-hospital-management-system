@@ -13,13 +13,14 @@ public class Feedback extends JPanel {
     private final Manager managerActions = new Manager();
 
     public Feedback() {
+        // JPanel Settings
         setLayout(new BorderLayout(10, 10));
         setBackground(Color.WHITE);
 
-        reviewSummary();
-        customerComments();
-        // initial population
-        refreshComments();
+        reviewSummary(); // Review Summary Section ( Review Summary Title + Avg Rating for Staff / Doctor
+        customerComments(); // Customer Comments Section ( Feedback Title + Comments from Custoemr to Doctor / Staff 
+        
+        refreshComments(); // // Initial table format
     }
 
     private void reviewSummary() {
