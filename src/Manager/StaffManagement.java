@@ -106,9 +106,9 @@ public class StaffManagement extends JPanel {
         return tagBar;
     }
     
-    // UI : Place Staff Role Filter options and Table Heading in northSection adn render at top of Jpanel
-    private void northSection() {
-        // COlumn Headers
+    // Table Header for Staff Data( Staff ID, StaffRole, StaffName, Email, Age , ... )
+    private JPanel tableHeader(){
+        // Column Headers
         JPanel headerBar = new JPanel(new GridLayout(1, cols.length, 8, 0));
         headerBar.setBackground(Color.WHITE);
         headerBar.setBorder(BorderFactory.createEmptyBorder());  // no panel border
@@ -119,12 +119,16 @@ public class StaffManagement extends JPanel {
             lbl.setBorder(BorderFactory.createEmptyBorder(2, 2, 2, 2)); // minimal padding
             headerBar.add(lbl);
         }
-
+        return headerBar;
+    }
+    
+    // UI : Place Staff Role Filter options and Table Heading in northSection adn render at top of Jpanel
+    private void northSection() {
         JPanel northWrapper = new JPanel();
         northWrapper.setLayout(new BoxLayout(northWrapper, BoxLayout.Y_AXIS));
         northWrapper.setBackground(Color.WHITE);
         northWrapper.add(tagBarSection());
-        northWrapper.add(headerBar);
+        northWrapper.add(tableHeader());
 
         add(northWrapper, BorderLayout.NORTH);
     }
