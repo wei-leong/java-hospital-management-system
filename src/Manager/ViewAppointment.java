@@ -77,6 +77,10 @@ public class ViewAppointment extends JPanel {
         northWrapper.add(headerBar);
         add(northWrapper, BorderLayout.NORTH);
 
+        appointmentTable();
+    }
+    
+    private void appointmentTable(){
         // 4) Create JTable, hide built-in header
         JTable table = new JTable(model);
         table.setTableHeader(null);           // ← remove default header
