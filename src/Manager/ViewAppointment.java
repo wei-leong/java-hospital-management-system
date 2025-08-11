@@ -18,21 +18,23 @@ public class ViewAppointment extends JPanel {
     private final DefaultTableModel model;
     private List<String[]> appointments = List.of();
     private final Manager managerActions = new Manager();
+    private final String[] cols = {"Appointment ID", "Doctor ID", "Customer ID", "Start", "End", "Status"};
 
     public ViewAppointment() {
         setLayout(new BorderLayout(10, 10));
         setBackground(Color.WHITE);
-
-        // 0) Build your custom header labels
-        String[] cols = {"Appointment ID", "Doctor ID", "Customer ID", "Start", "End", "Status"};
-        // 3) Create your table model
-        String[] tableCols = cols; // same headings
-        model = new DefaultTableModel(tableCols, 0) {
+        
+        model = new DefaultTableModel(cols, 0) {
             @Override
             public boolean isCellEditable(int r, int c) {
                 return false;
             }
         };
+        northSection();
+        appointmentTable();
+    }
+    
+    private void northSection(){
         refreshTable(); // populate model
 
         JPanel headerBar = new JPanel(new GridLayout(1, cols.length, 8, 0));
@@ -76,8 +78,6 @@ public class ViewAppointment extends JPanel {
         northWrapper.add(tagBar);
         northWrapper.add(headerBar);
         add(northWrapper, BorderLayout.NORTH);
-
-        appointmentTable();
     }
     
     private void appointmentTable(){
