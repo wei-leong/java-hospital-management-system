@@ -19,6 +19,9 @@ public class StaffManagement extends JPanel {
     private final DefaultTableModel model;
     private List<String[]> staffData = List.of();
     private final Manager managerActions;
+    private final List<JCheckBox> boxes = new ArrayList<>();
+    private final String[] tags = {"All", "Staff", "Manager", "Doctor", "Inactive"};
+    private final String[] cols = {"Staff ID", "Staff Role", "Staff Name", "Password", "Gender", "Email", "Phone Number", "Age"};
 
     public StaffManagement(String[] ownProfile) {
 
@@ -27,90 +30,8 @@ public class StaffManagement extends JPanel {
         setLayout(new BorderLayout(10, 10));
         setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         setBackground(Color.WHITE);
-
-        // Checkbox ( All, Staff, Doctor, Inactive
-        List<JCheckBox> boxes = new ArrayList<>();
-        JPanel tagBar = new JPanel(new BorderLayout(8, 0));
-        tagBar.setBackground(Color.WHITE);
-        tagBar.setBorder(BorderFactory.createEmptyBorder());
-
-        JPanel filters = new JPanel(new FlowLayout(FlowLayout.LEFT, 8, 0));
-        filters.setBackground(Color.WHITE);
-        filters.setBorder(BorderFactory.createEmptyBorder());
-
-        String[] tags = {
-            "All", "Staff", "Manager", "Doctor", "Inactive"
-        };
-
-        for (String t : tags) {
-            JCheckBox checkBox = new JCheckBox(t);
-            checkBox.setBackground(Color.WHITE);
-            checkBox.setForeground(Color.BLACK);
-            checkBox.setOpaque(true);
-            checkBox.setFocusPainted(false);
-            filters.add(checkBox);
-            boxes.add(checkBox);
-        }
-
-        for (JCheckBox chb : boxes) {
-            chb.addItemListener(e -> {
-                if (e.getStateChange() == ItemEvent.SELECTED) {
-                    _selectedRole = chb.getText();
-                    refreshTable();
-                    for (JCheckBox otherRole : boxes) {
-                        if (otherRole != chb) {
-                            otherRole.setSelected(false);
-                        }
-                    }
-                }
-            });
-        }
-        tagBar.add(filters, BorderLayout.WEST);
-
-        // Add Staff Button
-        JButton btnAdd = new JButton("+ Add Staff");
-        btnAdd.setBackground(Color.WHITE);
-        btnAdd.setForeground(Color.BLACK);
-        btnAdd.setFocusPainted(false);
-        btnAdd.setBorder(BorderFactory.createEmptyBorder(4, 8, 4, 8));
-        btnAdd.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-
-        btnAdd.addActionListener(e -> {
-            AddStaff add = new AddStaff();
-            add.addWindowListener(new java.awt.event.WindowAdapter() {
-                @Override
-                public void windowClosed(java.awt.event.WindowEvent we) {
-                    // 2) Once it’s closed, refresh your table
-                    refreshTable();
-                }
-            });
-            SwingUtilities.invokeLater(() -> add.setVisible(true));
-        });
-
-        tagBar.add(btnAdd, BorderLayout.EAST);
-
-        add(tagBar, BorderLayout.NORTH);
-
-        // COlumn Headers
-        String[] cols = {"Staff ID", "Staff Role", "Staff Name", "Password", "Gender", "Email", "Phone Number", "Age"};
-        JPanel headerBar = new JPanel(new GridLayout(1, cols.length, 8, 0));
-        headerBar.setBackground(Color.WHITE);
-        headerBar.setBorder(BorderFactory.createEmptyBorder());  // no panel border
-
-        for (String c : cols) {
-            JLabel lbl = new JLabel(c, SwingConstants.LEFT);
-            lbl.setFont(lbl.getFont().deriveFont(Font.BOLD, 14f));
-            lbl.setBorder(BorderFactory.createEmptyBorder(2, 2, 2, 2)); // minimal padding
-            headerBar.add(lbl);
-        }
-
-        JPanel northWrapper = new JPanel();
-        northWrapper.setLayout(new BoxLayout(northWrapper, BoxLayout.Y_AXIS));
-        northWrapper.setBackground(Color.WHITE);
-        northWrapper.add(tagBar);
-        northWrapper.add(headerBar);
-
-        add(northWrapper, BorderLayout.NORTH);
+        
+        northSection();
 
         // Build Table 
         model = new DefaultTableModel(cols, 0) {
@@ -220,9 +141,8 @@ public class StaffManagement extends JPanel {
         add(scroll, BorderLayout.CENTER);
     }
 
-    private void tagBarSection() {
+    private JPanel tagBarSection() {
         // Checkbox ( All, Staff, Doctor, Inactive
-        List<JCheckBox> boxes = new ArrayList<>();
         JPanel tagBar = new JPanel(new BorderLayout(8, 0));
         tagBar.setBackground(Color.WHITE);
         tagBar.setBorder(BorderFactory.createEmptyBorder());
@@ -230,10 +150,6 @@ public class StaffManagement extends JPanel {
         JPanel filters = new JPanel(new FlowLayout(FlowLayout.LEFT, 8, 0));
         filters.setBackground(Color.WHITE);
         filters.setBorder(BorderFactory.createEmptyBorder());
-
-        String[] tags = {
-            "All", "Staff", "Manager", "Doctor", "Inactive"
-        };
 
         for (String t : tags) {
             JCheckBox checkBox = new JCheckBox(t);
@@ -283,6 +199,30 @@ public class StaffManagement extends JPanel {
         tagBar.add(btnAdd, BorderLayout.EAST);
 
         add(tagBar, BorderLayout.NORTH);
+        
+        return tagBar;
+    }
+    
+    private void northSection(){
+                // COlumn Headers
+        JPanel headerBar = new JPanel(new GridLayout(1, cols.length, 8, 0));
+        headerBar.setBackground(Color.WHITE);
+        headerBar.setBorder(BorderFactory.createEmptyBorder());  // no panel border
+
+        for (String c : cols) {
+            JLabel lbl = new JLabel(c, SwingConstants.LEFT);
+            lbl.setFont(lbl.getFont().deriveFont(Font.BOLD, 14f));
+            lbl.setBorder(BorderFactory.createEmptyBorder(2, 2, 2, 2)); // minimal padding
+            headerBar.add(lbl);
+        }
+
+        JPanel northWrapper = new JPanel();
+        northWrapper.setLayout(new BoxLayout(northWrapper, BoxLayout.Y_AXIS));
+        northWrapper.setBackground(Color.WHITE);
+        northWrapper.add(tagBarSection());
+        northWrapper.add(headerBar);
+
+        add(northWrapper, BorderLayout.NORTH);
     }
 
     private void refreshTable() {
