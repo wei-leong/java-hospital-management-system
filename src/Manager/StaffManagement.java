@@ -18,12 +18,12 @@ public class StaffManagement extends JPanel {
     private String _selectedRole = "All";
     private final DefaultTableModel model;
     private List<String[]> staffData = List.of();
-    private final Manager managerActions ;
-    
+    private final Manager managerActions;
+
     public StaffManagement(String[] ownProfile) {
-        
+
         managerActions = new Manager(ownProfile);
-        
+
         setLayout(new BorderLayout(10, 10));
         setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         setBackground(Color.WHITE);
@@ -92,7 +92,7 @@ public class StaffManagement extends JPanel {
         add(tagBar, BorderLayout.NORTH);
 
         // COlumn Headers
-        String[] cols = {"Staff ID", "Staff Role", "Staff Name", "Password","Gender", "Email","Phone Number","Age"};
+        String[] cols = {"Staff ID", "Staff Role", "Staff Name", "Password", "Gender", "Email", "Phone Number", "Age"};
         JPanel headerBar = new JPanel(new GridLayout(1, cols.length, 8, 0));
         headerBar.setBackground(Color.WHITE);
         headerBar.setBorder(BorderFactory.createEmptyBorder());  // no panel border
@@ -119,7 +119,7 @@ public class StaffManagement extends JPanel {
                 return false;
             }
         };
-        
+
         for (JCheckBox chb : boxes) {
             if ("All".equals(chb.getText())) {
                 chb.setSelected(true);    // fires your ItemListener → calls refreshTable()
@@ -204,7 +204,7 @@ public class StaffManagement extends JPanel {
             // 3) Show it
             SwingUtilities.invokeLater(() -> edit.setVisible(true));
         });
-        
+
         // Inactive User
         miInact.addActionListener(evt -> {
             int row = table.getSelectedRow();
@@ -218,6 +218,71 @@ public class StaffManagement extends JPanel {
         JScrollPane scroll = new JScrollPane(table);
         scroll.setBackground(Color.WHITE);
         add(scroll, BorderLayout.CENTER);
+    }
+
+    private void tagBarSection() {
+        // Checkbox ( All, Staff, Doctor, Inactive
+        List<JCheckBox> boxes = new ArrayList<>();
+        JPanel tagBar = new JPanel(new BorderLayout(8, 0));
+        tagBar.setBackground(Color.WHITE);
+        tagBar.setBorder(BorderFactory.createEmptyBorder());
+
+        JPanel filters = new JPanel(new FlowLayout(FlowLayout.LEFT, 8, 0));
+        filters.setBackground(Color.WHITE);
+        filters.setBorder(BorderFactory.createEmptyBorder());
+
+        String[] tags = {
+            "All", "Staff", "Manager", "Doctor", "Inactive"
+        };
+
+        for (String t : tags) {
+            JCheckBox checkBox = new JCheckBox(t);
+            checkBox.setBackground(Color.WHITE);
+            checkBox.setForeground(Color.BLACK);
+            checkBox.setOpaque(true);
+            checkBox.setFocusPainted(false);
+            filters.add(checkBox);
+            boxes.add(checkBox);
+        }
+
+        for (JCheckBox chb : boxes) {
+            chb.addItemListener(e -> {
+                if (e.getStateChange() == ItemEvent.SELECTED) {
+                    _selectedRole = chb.getText();
+                    refreshTable();
+                    for (JCheckBox otherRole : boxes) {
+                        if (otherRole != chb) {
+                            otherRole.setSelected(false);
+                        }
+                    }
+                }
+            });
+        }
+        tagBar.add(filters, BorderLayout.WEST);
+
+        // Add Staff Button
+        JButton btnAdd = new JButton("+ Add Staff");
+        btnAdd.setBackground(Color.WHITE);
+        btnAdd.setForeground(Color.BLACK);
+        btnAdd.setFocusPainted(false);
+        btnAdd.setBorder(BorderFactory.createEmptyBorder(4, 8, 4, 8));
+        btnAdd.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+
+        btnAdd.addActionListener(e -> {
+            AddStaff add = new AddStaff();
+            add.addWindowListener(new java.awt.event.WindowAdapter() {
+                @Override
+                public void windowClosed(java.awt.event.WindowEvent we) {
+                    // 2) Once it’s closed, refresh your table
+                    refreshTable();
+                }
+            });
+            SwingUtilities.invokeLater(() -> add.setVisible(true));
+        });
+
+        tagBar.add(btnAdd, BorderLayout.EAST);
+
+        add(tagBar, BorderLayout.NORTH);
     }
 
     private void refreshTable() {
