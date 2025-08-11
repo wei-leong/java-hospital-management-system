@@ -14,11 +14,10 @@ import java.util.List;
  *
  * @author Wlhoe
  */
-// Person has the ability to Login ( Abstraction ) 
+// Person has the ability to Login ( Interfaces ) 
 public class Person implements Login{
     private String _email;
     private String _password;
-    private String[] _userDetails;
     
     public Person(String email , String password ){
         this._email = email;
