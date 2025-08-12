@@ -65,9 +65,10 @@ public class Dashboard extends JPanel {
         setBackground(Color.WHITE);
 
         double[] monthlyData = managerActions.returnMonthlyRevenue(anchorYear);
-        chartPanel = new RevenueChartPanel(monthLabels, monthlyData);
+        chartPanel = new RevenueChartPanel(monthLabels, monthlyData); // Initialise Revenue Chart in the Constructor
         revenueSection();
-
+        
+        // Initialise Table Model in the Constructor
         model = new DefaultTableModel(docCols, 0) {
             @Override
             public boolean isCellEditable(int r, int c) {
@@ -87,10 +88,10 @@ public class Dashboard extends JPanel {
         }
         double[] yearlyData = managerActions.returnYearsRevenue(anchorYear);
 
-        // ─── 1) Revenue Chart panel with filter ─────────────────────────
+        // Revenue Chart Panel with Filter Options
         JPanel revenuePanel = new JPanel(new BorderLayout());
         revenuePanel.setBackground(Color.WHITE);
-        // a) filter row pinned to east
+        // Filter Button
         JPanel revenueFilterRow = new JPanel(new BorderLayout());
         revenueFilterRow.setBackground(Color.WHITE);
         revenueFilterRow.add(Box.createHorizontalGlue(), BorderLayout.CENTER);
@@ -105,30 +106,27 @@ public class Dashboard extends JPanel {
                 }),
                 BorderLayout.EAST
         );
+        
+        revenuePanel.add(revenueFilterRow, BorderLayout.NORTH); // Add Revenue chart at NORTH
+        revenuePanel.add(chartPanel, BorderLayout.CENTER); // Add the Revenue chart at CENTER
 
-        // 3) Put them together
-        revenuePanel.setBackground(Color.WHITE);
-        revenuePanel.add(revenueFilterRow, BorderLayout.NORTH);
-        revenuePanel.add(chartPanel, BorderLayout.CENTER);
-
-        add(revenuePanel, BorderLayout.NORTH);
+        add(revenuePanel, BorderLayout.NORTH); // Add the middle section at CENTER of Dashboard() JPanel
     }
 
     // Store both Total Appointments and Average Rating for Doctor / Staff
     private void middleSection() {
-        // ─── 2) Middle row: two cards side by side ─────────────────────
+        // Panel for Storing Total Appointments ( WEST ) + Average Rating ( CENTER ) 
         JPanel middleRow = new JPanel(new BorderLayout(20, 0));
         middleRow.setBackground(Color.WHITE);
+        
+        middleRow.add(returnAppointmentCard(), BorderLayout.WEST); // Add AppointmentCard 
+        middleRow.add(returnAverageRatingTable(), BorderLayout.CENTER); // Add AverageRating 
 
-
-        middleRow.add(returnAppointmentCard(), BorderLayout.WEST);
-        middleRow.add(returnAverageRatingTable(), BorderLayout.CENTER);
-
-        add(middleRow, BorderLayout.CENTER);
+        add(middleRow, BorderLayout.CENTER); // Add the middle section at CENTER of Dashboard() JPanel
     }
     
     private JPanel returnAppointmentCard(){
-        // a) Appointment card
+        // Appointment card JPanel
         JPanel apptCard = new JPanel(new BorderLayout(0, 4));
         apptCard.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY));
         apptCard.setBackground(Color.WHITE);
@@ -139,9 +137,9 @@ public class Dashboard extends JPanel {
                 SwingConstants.CENTER
         );
 
-        // header: title centered + filter right
+        // Header: Total Appointment Title ( WEST ) + Filter Options ( EAST )
         JPanel apptHeader = new JPanel(new BorderLayout());
-        JLabel lblCountRange = new JLabel("Today", SwingConstants.CENTER);
+        JLabel lblCountRange = new JLabel("Today", SwingConstants.CENTER); // Initialise lblCountRange to let Filter Button use
         apptHeader.setBackground(Color.WHITE);
         apptHeader.add(Box.createHorizontalStrut(1), BorderLayout.WEST);
         apptHeader.add(
@@ -157,6 +155,8 @@ public class Dashboard extends JPanel {
                 ),
                 BorderLayout.EAST
         );
+        
+        // Appointments Count Label
         JLabel lblCountTitle = new JLabel("Appointments Count", SwingConstants.CENTER);
         lblCountTitle.setFont(lblCountTitle.getFont().deriveFont(Font.BOLD, 15f));
         apptHeader.add(lblCountTitle, BorderLayout.CENTER);
@@ -173,7 +173,7 @@ public class Dashboard extends JPanel {
     }
 
     private JPanel returnAverageRatingTable(){
-        // build table model & table
+        // Build table model & table
         JTable tbl = new JTable(model);
         tbl.setShowGrid(false);
         tbl.setTableHeader(null);
@@ -182,7 +182,7 @@ public class Dashboard extends JPanel {
         tbl.setFillsViewportHeight(true);
         tbl.setBackground(Color.WHITE);
 
-        // strip built-in header
+        // Strip built-in header
         JScrollPane tblScroll = new JScrollPane(tbl,
                 JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
                 JScrollPane.HORIZONTAL_SCROLLBAR_NEVER
@@ -194,7 +194,7 @@ public class Dashboard extends JPanel {
         centerRenderer.setHorizontalAlignment(SwingConstants.CENTER);
         tbl.setDefaultRenderer(Object.class, centerRenderer);
 
-        // custom header row
+        // Custom Header
         JPanel customHeader = new JPanel(new GridLayout(1, docCols.length));
         customHeader.setBackground(Color.WHITE);
         for (String h : docCols) {
@@ -203,12 +203,12 @@ public class Dashboard extends JPanel {
             customHeader.add(lbl);
         }
 
-        // feedback card container
+        // Feedback Card Container
         JPanel fbCard = new JPanel(new BorderLayout(0, 4));
         fbCard.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY));
         fbCard.setBackground(Color.WHITE);
 
-        // header row: customHeader in CENTER, filter button in EAST
+        // Header Section with custom header ( CENTER ) and filter button ( EAST )
         JPanel fbHeader = new JPanel(new BorderLayout());
         fbHeader.setBackground(Color.WHITE);
         fbHeader.add(customHeader, BorderLayout.CENTER);
@@ -225,7 +225,7 @@ public class Dashboard extends JPanel {
         );
         fbCard.add(fbHeader, BorderLayout.NORTH);
 
-        // table below
+        // Add Table
         fbCard.add(tblScroll, BorderLayout.CENTER);
         return fbCard;
     }
@@ -238,7 +238,7 @@ public class Dashboard extends JPanel {
         btn.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY, 1));
         btn.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         btn.setToolTipText("Filter " + title);
-        // load & scale your icon
+        // Load & Scale Icon
         ImageIcon ic = new ImageIcon(
                 new ImageIcon(getClass().getResource("/image/filter.png"))
                         .getImage().getScaledInstance(16, 16, Image.SCALE_SMOOTH)
@@ -246,7 +246,7 @@ public class Dashboard extends JPanel {
         btn.setIcon(ic);
 
         btn.addActionListener(e -> {
-            // temporarily override UI defaults
+            // Temporarily override UI defaults
             UIManager.put("OptionPane.background", Color.WHITE);
             UIManager.put("Panel.background", Color.WHITE);
             UIManager.put("Button.background", Color.WHITE);
@@ -274,7 +274,7 @@ public class Dashboard extends JPanel {
                 onSelect.accept(sel);
             }
 
-            // restore defaults
+            // Restore Defaults
             UIManager.put("OptionPane.background", null);
             UIManager.put("Panel.background", null);
             UIManager.put("Button.background", null);
@@ -327,9 +327,9 @@ public class Dashboard extends JPanel {
                 max = Math.max(max, v);
             }
             if (max == 0) {
-                max = 1;                       // avoid zero-division
+                max = 1;// avoid zero-division
             }
-            max = ((max + 9) / 10) * 10;                   // round up
+            max = ((max + 9) / 10) * 10; // round up
 
             // draw axes
             g2.setColor(Color.BLACK);
