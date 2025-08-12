@@ -16,14 +16,14 @@ public class Feedback extends JPanel {
         // JPanel Settings
         setLayout(new BorderLayout(10, 10));
         setBackground(Color.WHITE);
-
-        reviewSummary(); // Review Summary Section ( Review Summary Title + Avg Rating for Staff / Doctor
-        customerComments(); // Customer Comments Section ( Feedback Title + Comments from Custoemr to Doctor / Staff 
         
-        refreshComments(); // // Initial table format
+        add(reviewSummary(), BorderLayout.NORTH); // Review Summary Section ( Review Summary Title + Avg Rating for Staff / Doctor
+        add(customerComments(), BorderLayout.CENTER); // Customer Comments Section ( Feedback Title + Comments from Custoemr to Doctor / Staff 
+        
+        refreshComments(); // Initial table format
     }
 
-    private void reviewSummary() {
+    private JPanel reviewSummary() {
         // NORTH JPanel to add Review Summary
         JPanel north = new JPanel();
         north.setLayout(new BoxLayout(north, BoxLayout.Y_AXIS));
@@ -34,7 +34,7 @@ public class Feedback extends JPanel {
 
         // Blocks : Overall Average Rating Blocks from Staff and Doctor
         north.add(reviewSummaryRating());
-        add(north, BorderLayout.NORTH);
+        return north;
     }
 
     private JLabel reviewSummaryTitle(String title, float textSize,int top, int left, int bottom, int right) {
@@ -57,7 +57,7 @@ public class Feedback extends JPanel {
         return summaryBlocks;
     }
 
-    private void customerComments() {
+    private JPanel customerComments() {
         // CENTER: Feedback title, then tags, then scrollable comments
         JPanel center = new JPanel();
         center.setLayout(new BoxLayout(center, BoxLayout.Y_AXIS));
@@ -108,7 +108,7 @@ public class Feedback extends JPanel {
         scroll.setPreferredSize(new Dimension(0, 400));
 
         center.add(scroll);
-        add(center, BorderLayout.CENTER);
+        return center;
     }
 
     // Average Rating Block
