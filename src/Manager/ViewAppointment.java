@@ -30,11 +30,13 @@ public class ViewAppointment extends JPanel {
                 return false;
             }
         };
-        northSection(); // Appointment Filter Options + Custom Table Heading
-        appointmentTable(); // Appointments Data ( Table Data ) 
+        
+        add(northSection(), BorderLayout.NORTH);// Appointment Filter Options + Custom Table Heading
+        add(appointmentTable(), BorderLayout.CENTER);// Appointments Data ( Table Data ) 
+        
     }
     
-    private void northSection(){
+    private JPanel northSection(){
         refreshTable(); // populate model
 
         JPanel headerBar = new JPanel(new GridLayout(1, cols.length, 8, 0));
@@ -68,32 +70,32 @@ public class ViewAppointment extends JPanel {
                 }
             });
         }
-        // default
+        // Default Selection
         boxes.get(0).setSelected(true);
 
-        // 2) Combine headerBar + tagBar into one northWrapper
+        // Combine headerBar + tagBar into one northWrapper
         JPanel northWrapper = new JPanel();
         northWrapper.setLayout(new BoxLayout(northWrapper, BoxLayout.Y_AXIS));
         northWrapper.setBackground(Color.WHITE);
         northWrapper.add(tagBar);
         northWrapper.add(headerBar);
-        add(northWrapper, BorderLayout.NORTH);
+        
+        return northWrapper;
     }
     
-    private void appointmentTable(){
-        // 4) Create JTable, hide built-in header
+    private JTable appointmentTable(){
+        // Create JTable, hide built-in header
         JTable table = new JTable(model);
         table.setTableHeader(null);           // ← remove default header
         table.setFillsViewportHeight(true);
         table.setRowHeight(table.getRowHeight() + 8);
 
-        add(new JScrollPane(table), BorderLayout.CENTER);
+        return table;
     }
 
     private void refreshTable() {
         model.setRowCount(0);
-        // assume managerActions.returnAppointments(range) returns List<String[]> rows
-
+        // Assume managerActions.returnAppointments(range) returns List<String[]> rows
         appointments = managerActions.returnAppointmentsList(_selectedRange);
         for (String[] row : appointments) {
             model.addRow(row);
