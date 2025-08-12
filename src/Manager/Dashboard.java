@@ -75,12 +75,14 @@ public class Dashboard extends JPanel {
                 return false;
             }
         };
-        middleSection();
+        
+        add(revenueSection(), BorderLayout.NORTH); // Add the middle section at CENTER of Dashboard() JPanel
+        add(middleSection(), BorderLayout.CENTER); // Add the middle section at CENTER of Dashboard() JPanel
 
         refreshTable();
     }
 
-    private void revenueSection() {
+    private JPanel revenueSection() {
         // last 10 years (oldest first)
         String[] yearLabels = new String[10];
         for (int i = 0; i < 10; i++) {
@@ -109,12 +111,12 @@ public class Dashboard extends JPanel {
         
         revenuePanel.add(revenueFilterRow, BorderLayout.NORTH); // Add Revenue chart at NORTH
         revenuePanel.add(chartPanel, BorderLayout.CENTER); // Add the Revenue chart at CENTER
-
-        add(revenuePanel, BorderLayout.NORTH); // Add the middle section at CENTER of Dashboard() JPanel
+        
+        return revenuePanel;
     }
 
     // Store both Total Appointments and Average Rating for Doctor / Staff
-    private void middleSection() {
+    private JPanel middleSection() {
         // Panel for Storing Total Appointments ( WEST ) + Average Rating ( CENTER ) 
         JPanel middleRow = new JPanel(new BorderLayout(20, 0));
         middleRow.setBackground(Color.WHITE);
@@ -122,7 +124,7 @@ public class Dashboard extends JPanel {
         middleRow.add(returnAppointmentCard(), BorderLayout.WEST); // Add AppointmentCard 
         middleRow.add(returnAverageRatingTable(), BorderLayout.CENTER); // Add AverageRating 
 
-        add(middleRow, BorderLayout.CENTER); // Add the middle section at CENTER of Dashboard() JPanel
+        return middleRow;
     }
     
     private JPanel returnAppointmentCard(){
