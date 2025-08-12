@@ -119,6 +119,7 @@ public class Dashboard extends JPanel {
 
         // header: title centered + filter right
         JPanel apptHeader = new JPanel(new BorderLayout());
+        JLabel lblCountRange = new JLabel("Today", SwingConstants.CENTER);
         apptHeader.setBackground(Color.WHITE);
         apptHeader.add(Box.createHorizontalStrut(1), BorderLayout.WEST);
         apptHeader.add(
@@ -129,6 +130,7 @@ public class Dashboard extends JPanel {
                             apptFilter = sel;
                             int total = managerActions.returnTotalAppointment(apptFilter);
                             lblCountNum.setText(String.valueOf(total));
+                            lblCountRange.setText(apptFilter);
                         }
                 ),
                 BorderLayout.EAST
@@ -138,12 +140,11 @@ public class Dashboard extends JPanel {
         apptHeader.add(lblCountTitle, BorderLayout.CENTER);
         apptCard.add(apptHeader, BorderLayout.NORTH);
 
-        // big number
+        // Total Appointments Number
         lblCountNum.setFont(lblCountNum.getFont().deriveFont(Font.BOLD, 25f));
         apptCard.add(lblCountNum, BorderLayout.CENTER);
 
-        // range label
-        JLabel lblCountRange = new JLabel("This Month", SwingConstants.CENTER);
+        // Range Label
         lblCountRange.setFont(lblCountRange.getFont().deriveFont(Font.PLAIN, 15f));
         apptCard.add(lblCountRange, BorderLayout.SOUTH);
 
