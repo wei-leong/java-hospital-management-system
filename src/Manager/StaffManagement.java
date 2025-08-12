@@ -30,8 +30,8 @@ public class StaffManagement extends JPanel {
         setLayout(new BorderLayout(10, 10));
         setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         setBackground(Color.WHITE);
-
-        northSection(); // Staff Filter Options and Table Heading
+        
+        add(northSection(), BorderLayout.NORTH);// Staff Filter Options and Table Heading
 
         // Build Table 
         model = new DefaultTableModel(cols, 0) {
@@ -41,7 +41,7 @@ public class StaffManagement extends JPanel {
             }
         };
         
-        staffData(); // Staff Data 
+        add(staffData(), BorderLayout.CENTER);// Staff Data 
     }
     
     // Checkbox for Staff Filter Options ( All , Staff , Doctor, Manager )
@@ -123,19 +123,18 @@ public class StaffManagement extends JPanel {
     }
     
     // UI : Place Staff Role Filter options and Table Heading in northSection adn render at top of Jpanel
-    private void northSection() {
+    private JPanel northSection() {
         JPanel northWrapper = new JPanel();
         northWrapper.setLayout(new BoxLayout(northWrapper, BoxLayout.Y_AXIS));
         northWrapper.setBackground(Color.WHITE);
         northWrapper.add(tagBarSection());
         northWrapper.add(tableHeader());
 
-        add(northWrapper, BorderLayout.NORTH);
+        return northWrapper;
     }
     
     // Return Staff Data table with the filtered Staff Role
-    private void staffData() {
-
+    private JScrollPane staffData() {
         for (JCheckBox chb : boxes) {
             if ("All".equals(chb.getText())) {
                 chb.setSelected(true);    // fires your ItemListener → calls refreshTable()
@@ -233,7 +232,7 @@ public class StaffManagement extends JPanel {
         // 6) Finally add to your scroll pane & container
         JScrollPane scroll = new JScrollPane(table);
         scroll.setBackground(Color.WHITE);
-        add(scroll, BorderLayout.CENTER);
+        return scroll;
     }
 
     private void refreshTable() {
