@@ -132,7 +132,7 @@ public class Manager extends Person {
                         parts[1], // doctorId
                         parts[2], // customerId
                         parts[3], // start
-                        parts[5] // status
+                        parts[4] // status
                     });
                 }
             }
