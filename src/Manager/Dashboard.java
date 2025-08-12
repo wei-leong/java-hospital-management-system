@@ -53,35 +53,46 @@ public class Dashboard extends JPanel {
     private final DefaultTableModel model;
     private final Manager managerActions = new Manager();
     private final RevenueChartPanel chartPanel;
+    private final String[] monthLabels = {
+        "Jan", "Feb", "Mar", "Apr", "May", "Jun",
+        "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
+    };
+    private final String[] docCols = {"Doctor ID", "Doctor Name", "Avg Rating"};
+    private final int anchorYear = LocalDate.now().getYear();
 
     public Dashboard() {
-
         setLayout(new BorderLayout(20, 20));
         setBackground(Color.WHITE);
 
-        // ─── compute our “axes” and data up front ─────────────────────────
-        int anchorYear = LocalDate.now().getYear();
-
-        // 12 months
-        String[] monthLabels = {
-            "Jan", "Feb", "Mar", "Apr", "May", "Jun",
-            "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
-        };
         double[] monthlyData = managerActions.returnMonthlyRevenue(anchorYear);
+        chartPanel = new RevenueChartPanel(monthLabels, monthlyData); // Initialise Revenue Chart in the Constructor
+        revenueSection();
+        
+        // Initialise Table Model in the Constructor
+        model = new DefaultTableModel(docCols, 0) {
+            @Override
+            public boolean isCellEditable(int r, int c) {
+                return false;
+            }
+        };
+        
+        add(revenueSection(), BorderLayout.NORTH); // Add the middle section at CENTER of Dashboard() JPanel
+        add(middleSection(), BorderLayout.CENTER); // Add the middle section at CENTER of Dashboard() JPanel
 
+        refreshTable();
+    }
+
+    private JPanel revenueSection() {
         // last 10 years (oldest first)
         String[] yearLabels = new String[10];
         for (int i = 0; i < 10; i++) {
             yearLabels[i] = String.valueOf(anchorYear - (9 - i));
         }
-        double[] yearlyData = managerActions.returnYearsRevenue(anchorYear);
 
-        chartPanel = new RevenueChartPanel(monthLabels, monthlyData);
-        
-        // ─── 1) Revenue Chart panel with filter ─────────────────────────
+        // Revenue Chart Panel with Filter Options
         JPanel revenuePanel = new JPanel(new BorderLayout());
         revenuePanel.setBackground(Color.WHITE);
-        // a) filter row pinned to east
+        // Filter Button
         JPanel revenueFilterRow = new JPanel(new BorderLayout());
         revenueFilterRow.setBackground(Color.WHITE);
         revenueFilterRow.add(Box.createHorizontalGlue(), BorderLayout.CENTER);
@@ -97,18 +108,26 @@ public class Dashboard extends JPanel {
                 BorderLayout.EAST
         );
         
-        // 3) Put them together
-        revenuePanel.setBackground(Color.WHITE);
-        revenuePanel.add(revenueFilterRow, BorderLayout.NORTH);
-        revenuePanel.add(chartPanel, BorderLayout.CENTER);
+        revenuePanel.add(revenueFilterRow, BorderLayout.NORTH); // Add Revenue chart at NORTH
+        revenuePanel.add(chartPanel, BorderLayout.CENTER); // Add the Revenue chart at CENTER
+        
+        return revenuePanel;
+    }
 
-        add(revenuePanel, BorderLayout.NORTH);
-
-        // ─── 2) Middle row: two cards side by side ─────────────────────
+    // Store both Total Appointments and Average Rating for Doctor / Staff
+    private JPanel middleSection() {
+        // Panel for Storing Total Appointments ( WEST ) + Average Rating ( CENTER ) 
         JPanel middleRow = new JPanel(new BorderLayout(20, 0));
         middleRow.setBackground(Color.WHITE);
+        
+        middleRow.add(returnAppointmentCard(), BorderLayout.WEST); // Add AppointmentCard 
+        middleRow.add(returnAverageRatingTable(), BorderLayout.CENTER); // Add AverageRating 
 
-        // a) Appointment card
+        return middleRow;
+    }
+    
+    private JPanel returnAppointmentCard(){
+        // Appointment card JPanel
         JPanel apptCard = new JPanel(new BorderLayout(0, 4));
         apptCard.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY));
         apptCard.setBackground(Color.WHITE);
@@ -119,8 +138,9 @@ public class Dashboard extends JPanel {
                 SwingConstants.CENTER
         );
 
-        // header: title centered + filter right
+        // Header: Total Appointment Title ( WEST ) + Filter Options ( EAST )
         JPanel apptHeader = new JPanel(new BorderLayout());
+        JLabel lblCountRange = new JLabel("Today", SwingConstants.CENTER); // Initialise lblCountRange to let Filter Button use
         apptHeader.setBackground(Color.WHITE);
         apptHeader.add(Box.createHorizontalStrut(1), BorderLayout.WEST);
         apptHeader.add(
@@ -131,36 +151,30 @@ public class Dashboard extends JPanel {
                             apptFilter = sel;
                             int total = managerActions.returnTotalAppointment(apptFilter);
                             lblCountNum.setText(String.valueOf(total));
+                            lblCountRange.setText(apptFilter);
                         }
                 ),
                 BorderLayout.EAST
         );
+        
+        // Appointments Count Label
         JLabel lblCountTitle = new JLabel("Appointments Count", SwingConstants.CENTER);
         lblCountTitle.setFont(lblCountTitle.getFont().deriveFont(Font.BOLD, 15f));
         apptHeader.add(lblCountTitle, BorderLayout.CENTER);
         apptCard.add(apptHeader, BorderLayout.NORTH);
 
-        // big number
+        // Total Appointments Number
         lblCountNum.setFont(lblCountNum.getFont().deriveFont(Font.BOLD, 25f));
         apptCard.add(lblCountNum, BorderLayout.CENTER);
 
-        // range label
-        JLabel lblCountRange = new JLabel("This Month", SwingConstants.CENTER);
+        // Range Label
         lblCountRange.setFont(lblCountRange.getFont().deriveFont(Font.PLAIN, 15f));
         apptCard.add(lblCountRange, BorderLayout.SOUTH);
+        return apptCard;
+    }
 
-        middleRow.add(apptCard, BorderLayout.WEST);
-
-        // b) Avg Rating card
-        String[] docCols = {"Doctor ID", "Doctor Name", "Avg Rating"};
-
-        // build table model & table
-        model = new DefaultTableModel(docCols, 0) {
-            @Override
-            public boolean isCellEditable(int r, int c) {
-                return false;
-            }
-        };
+    private JPanel returnAverageRatingTable(){
+        // Build table model & table
         JTable tbl = new JTable(model);
         tbl.setShowGrid(false);
         tbl.setTableHeader(null);
@@ -169,7 +183,7 @@ public class Dashboard extends JPanel {
         tbl.setFillsViewportHeight(true);
         tbl.setBackground(Color.WHITE);
 
-        // strip built-in header
+        // Strip built-in header
         JScrollPane tblScroll = new JScrollPane(tbl,
                 JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
                 JScrollPane.HORIZONTAL_SCROLLBAR_NEVER
@@ -181,7 +195,7 @@ public class Dashboard extends JPanel {
         centerRenderer.setHorizontalAlignment(SwingConstants.CENTER);
         tbl.setDefaultRenderer(Object.class, centerRenderer);
 
-        // custom header row
+        // Custom Header
         JPanel customHeader = new JPanel(new GridLayout(1, docCols.length));
         customHeader.setBackground(Color.WHITE);
         for (String h : docCols) {
@@ -190,12 +204,12 @@ public class Dashboard extends JPanel {
             customHeader.add(lbl);
         }
 
-        // feedback card container
+        // Feedback Card Container
         JPanel fbCard = new JPanel(new BorderLayout(0, 4));
         fbCard.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY));
         fbCard.setBackground(Color.WHITE);
 
-        // header row: customHeader in CENTER, filter button in EAST
+        // Header Section with custom header ( CENTER ) and filter button ( EAST )
         JPanel fbHeader = new JPanel(new BorderLayout());
         fbHeader.setBackground(Color.WHITE);
         fbHeader.add(customHeader, BorderLayout.CENTER);
@@ -212,16 +226,12 @@ public class Dashboard extends JPanel {
         );
         fbCard.add(fbHeader, BorderLayout.NORTH);
 
-        // table below
+        // Add Table
         fbCard.add(tblScroll, BorderLayout.CENTER);
-
-        middleRow.add(fbCard, BorderLayout.CENTER);
-
-        add(middleRow, BorderLayout.CENTER);
-
-        refreshTable();
+        return fbCard;
     }
-
+    
+    // Filter Button for Revenue, Total Appointment, Average Rating Section
     private JButton createFilterButton(String title, String[] options, Consumer<String> onSelect) {
         JButton btn = new JButton();
         btn.setBackground(Color.WHITE);
@@ -229,7 +239,7 @@ public class Dashboard extends JPanel {
         btn.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY, 1));
         btn.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         btn.setToolTipText("Filter " + title);
-        // load & scale your icon
+        // Load & Scale Icon
         ImageIcon ic = new ImageIcon(
                 new ImageIcon(getClass().getResource("/image/filter.png"))
                         .getImage().getScaledInstance(16, 16, Image.SCALE_SMOOTH)
@@ -237,7 +247,7 @@ public class Dashboard extends JPanel {
         btn.setIcon(ic);
 
         btn.addActionListener(e -> {
-            // temporarily override UI defaults
+            // Temporarily override UI defaults
             UIManager.put("OptionPane.background", Color.WHITE);
             UIManager.put("Panel.background", Color.WHITE);
             UIManager.put("Button.background", Color.WHITE);
@@ -265,7 +275,7 @@ public class Dashboard extends JPanel {
                 onSelect.accept(sel);
             }
 
-            // restore defaults
+            // Restore Defaults
             UIManager.put("OptionPane.background", null);
             UIManager.put("Panel.background", null);
             UIManager.put("Button.background", null);
@@ -274,20 +284,6 @@ public class Dashboard extends JPanel {
         });
 
         return btn;
-    }
-
-    private static JPanel makeCountBlock(String title, int count) {
-        JPanel p = new JPanel(new BorderLayout());
-        p.setPreferredSize(new Dimension(140, 60));
-        p.setBackground(Color.WHITE);
-        p.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY));
-        JLabel t = new JLabel(title, SwingConstants.CENTER);
-        t.setFont(t.getFont().deriveFont(Font.PLAIN, 12f));
-        JLabel c = new JLabel(String.valueOf(count), SwingConstants.CENTER);
-        c.setFont(c.getFont().deriveFont(Font.BOLD, 20f));
-        p.add(t, BorderLayout.NORTH);
-        p.add(c, BorderLayout.CENTER);
-        return p;
     }
 
     private static class RevenueChartPanel extends JPanel {
@@ -311,7 +307,7 @@ public class Dashboard extends JPanel {
                 throw new IllegalArgumentException("labels and values length must match");
             }
             this.values = values;
-             this.labels = labels;
+            this.labels = labels;
             repaint();
         }
 
@@ -332,9 +328,9 @@ public class Dashboard extends JPanel {
                 max = Math.max(max, v);
             }
             if (max == 0) {
-                max = 1;                       // avoid zero-division
+                max = 1;// avoid zero-division
             }
-            max = ((max + 9) / 10) * 10;                   // round up
+            max = ((max + 9) / 10) * 10; // round up
 
             // draw axes
             g2.setColor(Color.BLACK);
@@ -370,75 +366,6 @@ public class Dashboard extends JPanel {
         }
     }
 
-//    private static class RevenueChartPanel extends JPanel {
-//
-//        // sample revenue per month
-//        private final String[] months = {
-//            "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
-//        };
-//        private final double[] revenue;
-//
-//        public RevenueChartPanel(double[] revenue) {
-//            this.revenue = revenue;
-//            setPreferredSize(new Dimension(800, 250));
-//            setBackground(Color.WHITE);
-//            setBorder(BorderFactory.createTitledBorder("Revenue"));
-//        }
-//
-//        @Override
-//        protected void paintComponent(Graphics g) {
-//            super.paintComponent(g);
-//            Graphics2D g2 = (Graphics2D) g.create();
-//            g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
-//                    RenderingHints.VALUE_ANTIALIAS_ON);
-//
-//            int w = getWidth(), h = getHeight();
-//            int margin = 40;
-//            int chartW = w - margin * 2;
-//            int chartH = h - margin * 2;
-//
-//            // find max revenue
-//            double max = 0;
-//            for (double v : revenue) {
-//                max = Math.max(max, v);
-//            }
-//            max = ((max + 9) / 10) * 10; // round up to nice tick
-//
-//            // draw Y-axis and ticks
-//            g2.setColor(Color.BLACK);
-//            g2.drawLine(margin, margin, margin, margin + chartH);
-//            int ticks = 5;
-//            for (int i = 0; i <= ticks; i++) {
-//                int y = margin + chartH - (chartH * i / ticks);
-//                double val = max * i / ticks;
-//                g2.drawLine(margin - 5, y, margin, y);
-//                g2.drawString(String.valueOf(val), 5, y + 4);
-//            }
-//
-//            // draw X-axis
-//            g2.drawLine(margin, margin + chartH, margin + chartW, margin + chartH);
-//
-//            // draw bars
-//            int barCount = months.length;
-//            int barW = chartW / (barCount * 2);
-//            for (int i = 0; i < barCount; i++) {
-//                int x = margin + (2 * i + 1) * barW;
-//                int barH = (int) ((double) revenue[i] / max * chartH);
-//                int y = margin + chartH - barH;
-//                g2.setColor(new Color(100, 150, 240));
-//                g2.fillRect(x, y, barW, barH);
-//                g2.setColor(Color.DARK_GRAY);
-//                g2.drawRect(x, y, barW, barH);
-//
-//                // month label
-//                String m = months[i];
-//                int strW = g2.getFontMetrics().stringWidth(m);
-//                g2.drawString(m, x + (barW - strW) / 2, margin + chartH + 15);
-//            }
-//
-//            g2.dispose();
-//        }
-//    }
     private void refreshTable() {
         model.setRowCount(0);// Remove old records
         List<String[]> rows = managerActions

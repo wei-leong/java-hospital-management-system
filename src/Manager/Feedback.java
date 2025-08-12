@@ -8,27 +8,44 @@ import javax.swing.*;
 
 public class Feedback extends JPanel {
 
-    private final JPanel commentList;
+    private JPanel commentList;
     private String currentFilter = "All";
     private final Manager managerActions = new Manager();
 
     public Feedback() {
+        // JPanel Settings
         setLayout(new BorderLayout(10, 10));
         setBackground(Color.WHITE);
+        
+        add(reviewSummary(), BorderLayout.NORTH); // Review Summary Section ( Review Summary Title + Avg Rating for Staff / Doctor
+        add(customerComments(), BorderLayout.CENTER); // Customer Comments Section ( Feedback Title + Comments from Custoemr to Doctor / Staff 
+        
+        refreshComments(); // Initial table format
+    }
 
+    private JPanel reviewSummary() {
         // NORTH JPanel to add Review Summary
         JPanel north = new JPanel();
         north.setLayout(new BoxLayout(north, BoxLayout.Y_AXIS));
         north.setBackground(Color.WHITE);
 
-        // 1) Review Summary title
-        JLabel lblSummaryTitle = new JLabel("Review Summary");
-        lblSummaryTitle.setFont(lblSummaryTitle.getFont().deriveFont(Font.BOLD, 18f));
-        lblSummaryTitle.setBorder(BorderFactory.createEmptyBorder(0, 10, 8, 0));
-        lblSummaryTitle.setAlignmentX(Component.LEFT_ALIGNMENT);
-        north.add(lblSummaryTitle);
+        // Title : Review Summary
+        north.add(reviewSummaryTitle("Review Summary",18f,0,10,8,0));
 
-        // 2) Average-rating blocks, left aligned
+        // Blocks : Overall Average Rating Blocks from Staff and Doctor
+        north.add(reviewSummaryRating());
+        return north;
+    }
+
+    private JLabel reviewSummaryTitle(String title, float textSize,int top, int left, int bottom, int right) {
+        JLabel lblSummaryTitle = new JLabel(title);
+        lblSummaryTitle.setFont(lblSummaryTitle.getFont().deriveFont(Font.BOLD, textSize));
+        lblSummaryTitle.setBorder(BorderFactory.createEmptyBorder(top, left, bottom, right));
+        lblSummaryTitle.setAlignmentX(Component.LEFT_ALIGNMENT);
+        return lblSummaryTitle;
+    }
+
+    private JPanel reviewSummaryRating() {
         JPanel summaryBlocks = new JPanel(new FlowLayout(FlowLayout.CENTER, 50, 0));
         summaryBlocks.setBackground(Color.WHITE);
         summaryBlocks.setAlignmentX(Component.LEFT_ALIGNMENT);
@@ -37,21 +54,17 @@ public class Feedback extends JPanel {
         int doctorAvg = managerActions.FeedbackSummary("D");
         summaryBlocks.add(makeAverageBlock(String.valueOf(staffAvg), "To Doctor"));
         summaryBlocks.add(makeAverageBlock(String.valueOf(doctorAvg), "To Staff"));
+        return summaryBlocks;
+    }
 
-        north.add(summaryBlocks);
-        add(north, BorderLayout.NORTH);
-
+    private JPanel customerComments() {
         // CENTER: Feedback title, then tags, then scrollable comments
         JPanel center = new JPanel();
         center.setLayout(new BoxLayout(center, BoxLayout.Y_AXIS));
         center.setBackground(Color.WHITE);
 
         // 1) “Feedback” heading
-        JLabel lblFeedbackTitle = new JLabel("Feedback");
-        lblFeedbackTitle.setFont(lblFeedbackTitle.getFont().deriveFont(Font.BOLD, 18f));
-        lblFeedbackTitle.setBorder(BorderFactory.createEmptyBorder(8, 10, 8, 0));
-        lblFeedbackTitle.setAlignmentX(Component.LEFT_ALIGNMENT);
-        center.add(lblFeedbackTitle);
+        center.add(reviewSummaryTitle("Feedback",18f,8,10,8,0));
 
         // 2) Tag filters just below the title
         JPanel tags = new JPanel(new FlowLayout(FlowLayout.LEFT, 20, 0));
@@ -95,10 +108,7 @@ public class Feedback extends JPanel {
         scroll.setPreferredSize(new Dimension(0, 400));
 
         center.add(scroll);
-        add(center, BorderLayout.CENTER);
-
-        // initial population
-        refreshComments();
+        return center;
     }
 
     // Average Rating Block

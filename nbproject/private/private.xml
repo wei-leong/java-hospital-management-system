@@ -3,25 +3,22 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/D:/1.Projects/OOP%20with%20Java/ApuMedicalCentre/src/apumedicalcentre/ApuMedicalCentre.java</file>
-            <file>file:/D:/1.Projects/OOP%20with%20Java/ApuMedicalCentre/src/Class/Login.java</file>
-            <file>file:/D:/1.Projects/OOP%20with%20Java/ApuMedicalCentre/src/Class/Person.java</file>
-            <file>file:/D:/1.Projects/OOP%20with%20Java/ApuMedicalCentre/src/Manager/AddStaff.java</file>
-            <file>file:/D:/1.Projects/OOP%20with%20Java/ApuMedicalCentre/src/Class/FeedbackActions.java</file>
             <file>file:/D:/1.Projects/OOP%20with%20Java/ApuMedicalCentre/src/Manager/Feedback.java</file>
             <file>file:/D:/1.Projects/OOP%20with%20Java/ApuMedicalCentre/src/Class/ProfileActions.java</file>
             <file>file:/D:/1.Projects/OOP%20with%20Java/ApuMedicalCentre/src/txt/feedback.txt</file>
-            <file>file:/D:/1.Projects/OOP%20with%20Java/ApuMedicalCentre/src/Manager/ViewAppointment.java</file>
             <file>file:/D:/1.Projects/OOP%20with%20Java/ApuMedicalCentre/src/Class/Manager.java</file>
             <file>file:/D:/1.Projects/OOP%20with%20Java/ApuMedicalCentre/src/Manager/Dashboard.java</file>
             <file>file:/D:/1.Projects/OOP%20with%20Java/ApuMedicalCentre/src/Login/LoginForm.java</file>
-            <file>file:/D:/1.Projects/OOP%20with%20Java/ApuMedicalCentre/src/txt/profile.txt</file>
             <file>file:/D:/1.Projects/OOP%20with%20Java/ApuMedicalCentre/src/Manager/StaffManagement.java</file>
-            <file>file:/D:/1.Projects/OOP%20with%20Java/ApuMedicalCentre/src/Class/ImageScaler.java</file>
             <file>file:/D:/1.Projects/OOP%20with%20Java/ApuMedicalCentre/src/Manager/NavManager.java</file>
+            <file>file:/D:/1.Projects/OOP%20with%20Java/ApuMedicalCentre/src/Manager/EditStaff.java</file>
+            <file>file:/D:/1.Projects/OOP%20with%20Java/ApuMedicalCentre/src/Manager/ViewAppointment.java</file>
+            <file>file:/D:/1.Projects/OOP%20with%20Java/ApuMedicalCentre/src/Class/Login.java</file>
+            <file>file:/D:/1.Projects/OOP%20with%20Java/ApuMedicalCentre/src/Class/Person.java</file>
+            <file>file:/D:/1.Projects/OOP%20with%20Java/ApuMedicalCentre/src/txt/profile.txt</file>
             <file>file:/D:/1.Projects/OOP%20with%20Java/ApuMedicalCentre/src/txt/appointment.txt</file>
             <file>file:/D:/1.Projects/OOP%20with%20Java/ApuMedicalCentre/src/txt/comments.txt</file>
-            <file>file:/D:/1.Projects/OOP%20with%20Java/ApuMedicalCentre/src/txt/payment.txt</file>
+            <file>file:/D:/1.Projects/OOP%20with%20Java/ApuMedicalCentre/src/Class/FeedbackActions.java</file>
         </group>
     </open-files>
 </project-private>

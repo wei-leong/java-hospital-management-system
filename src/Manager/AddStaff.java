@@ -34,9 +34,9 @@ public class AddStaff extends JFrame {
         setLayout(new BorderLayout(10, 10));
 
         btnBack = new JButton(returnIcon);
-        topBar(); // Return to Staff Management Icon and Add Staff Title
-        middleSection(); // Staff Details Input Form ( Name, Age, Email, Gender )
-        bottomBar(); // Add Staff Button
+        add(topBar(), BorderLayout.NORTH); // Return to Staff Management Icon and Add Staff Title
+        add(middleSection(), BorderLayout.CENTER); // Staff Details Input Form ( Name, Age, Email, Gender )
+        add(bottomBar(), BorderLayout.SOUTH); // Add Staff Button
 
         pack();
         setSize(600, 500);
@@ -131,7 +131,7 @@ public class AddStaff extends JFrame {
         btnBack.addActionListener(e -> this.dispose()); // Dispose Add Staff page and return to StaffManagement
     }
 
-    private void topBar() {
+    private JPanel topBar() {
         // Top Bar Panel for Return Button
         JPanel topBar = new JPanel(new FlowLayout(FlowLayout.LEFT, 8, 8));
         topBar.setBackground(Color.WHITE);
@@ -145,18 +145,18 @@ public class AddStaff extends JFrame {
         lblTitle.setFont(lblTitle.getFont().deriveFont(Font.BOLD, 18f));
         topBar.add(lblTitle);
 
-        add(topBar, BorderLayout.NORTH);
+        return topBar;
     }
 
-    private void bottomBar() {
+    private JPanel bottomBar() {
         JPanel bottom = new JPanel(new FlowLayout(FlowLayout.CENTER, 0, 10));
         bottom.setBackground(Color.WHITE);
         bottom.add(btnAdd);
         btnAddSettings();
-        add(bottom, BorderLayout.SOUTH);
+        return bottom;
     }
 
-    private void middleSection() {
+    private JPanel middleSection() {
         // Form
         JPanel form = new JPanel(new GridBagLayout());
         form.setBackground(Color.WHITE);
@@ -225,6 +225,6 @@ public class AddStaff extends JFrame {
         genderPanel.add(rbF);
         form.add(genderPanel, gbc);
 
-        add(form, BorderLayout.CENTER);
+        return form;
     }
 }

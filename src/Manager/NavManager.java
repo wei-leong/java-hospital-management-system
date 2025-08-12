@@ -12,7 +12,6 @@ import Class.ImageScaler;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
-import static javax.swing.WindowConstants.EXIT_ON_CLOSE;
 
 public class NavManager extends JFrame {
 
@@ -84,16 +83,17 @@ public class NavManager extends JFrame {
         setIconImage(windowIcon);
 
         lblTitle = new JLabel(currentPage);
-        toolBar();
-        
+        add(toolBar(), BorderLayout.NORTH); // Toolbar section
+
         content = new JPanel(cards);
         sidebar = buildSidebar();
-        sideBar();
+        add(sidebar, BorderLayout.WEST); // Sidebar
+        add(contentSection(), BorderLayout.CENTER);
         
         setVisible(true); // Ensure the NavManager page is visible
     }
 
-    private void toolBar() {
+    private JToolBar toolBar() {
         // Title Bar 
         JToolBar titleBar = new JToolBar();
         titleBar.setFloatable(false);
@@ -112,19 +112,17 @@ public class NavManager extends JFrame {
         titleBar.add(btnProfile);
         btnProfileSettings();
 
-        add(titleBar, BorderLayout.NORTH);
+        return titleBar;
     }
 
-    private void sideBar() {
-        // Sidebar
-        add(sidebar, BorderLayout.WEST);
-
+    private JPanel contentSection() {
         // Content Area with CardLayout 
         content.add(dashboard, dashboardStr);
         content.add(staffManagement, staffManagementStr);
         content.add(feedback, feedbackStr);
         content.add(viewAppointment, viewAppointmentStr);
-        add(content, BorderLayout.CENTER);
+        
+        return content;
     }
 
     // Changes the title besides the Navigation Menu Icon

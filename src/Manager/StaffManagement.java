@@ -18,18 +18,34 @@ public class StaffManagement extends JPanel {
     private String _selectedRole = "All";
     private final DefaultTableModel model;
     private List<String[]> staffData = List.of();
-    private final Manager managerActions ;
-    
+    private final Manager managerActions;
+    private final List<JCheckBox> boxes = new ArrayList<>();
+    private final String[] tags = {"All", "Staff", "Manager", "Doctor", "Inactive"};
+    private final String[] cols = {"Staff ID", "Staff Role", "Staff Name", "Password", "Gender", "Email", "Phone Number", "Age"};
+
     public StaffManagement(String[] ownProfile) {
-        
         managerActions = new Manager(ownProfile);
         
+        // JPanel Settings
         setLayout(new BorderLayout(10, 10));
         setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         setBackground(Color.WHITE);
+        
+        add(northSection(), BorderLayout.NORTH);// Staff Filter Options and Table Heading
 
-        // Checkbox ( All, Staff, Doctor, Inactive
-        List<JCheckBox> boxes = new ArrayList<>();
+        // Build Table 
+        model = new DefaultTableModel(cols, 0) {
+            @Override
+            public boolean isCellEditable(int r, int c) {
+                return false;
+            }
+        };
+        
+        add(staffData(), BorderLayout.CENTER);// Staff Data 
+    }
+    
+    // Checkbox for Staff Filter Options ( All , Staff , Doctor, Manager )
+    private JPanel tagBarSection() {
         JPanel tagBar = new JPanel(new BorderLayout(8, 0));
         tagBar.setBackground(Color.WHITE);
         tagBar.setBorder(BorderFactory.createEmptyBorder());
@@ -37,10 +53,6 @@ public class StaffManagement extends JPanel {
         JPanel filters = new JPanel(new FlowLayout(FlowLayout.LEFT, 8, 0));
         filters.setBackground(Color.WHITE);
         filters.setBorder(BorderFactory.createEmptyBorder());
-
-        String[] tags = {
-            "All", "Staff", "Manager", "Doctor", "Inactive"
-        };
 
         for (String t : tags) {
             JCheckBox checkBox = new JCheckBox(t);
@@ -91,8 +103,12 @@ public class StaffManagement extends JPanel {
 
         add(tagBar, BorderLayout.NORTH);
 
-        // COlumn Headers
-        String[] cols = {"Staff ID", "Staff Role", "Staff Name", "Password","Gender", "Email","Phone Number","Age"};
+        return tagBar;
+    }
+    
+    // Table Header for Staff Data( Staff ID, StaffRole, StaffName, Email, Age , ... )
+    private JPanel tableHeader(){
+        // Column Headers
         JPanel headerBar = new JPanel(new GridLayout(1, cols.length, 8, 0));
         headerBar.setBackground(Color.WHITE);
         headerBar.setBorder(BorderFactory.createEmptyBorder());  // no panel border
@@ -103,23 +119,22 @@ public class StaffManagement extends JPanel {
             lbl.setBorder(BorderFactory.createEmptyBorder(2, 2, 2, 2)); // minimal padding
             headerBar.add(lbl);
         }
-
+        return headerBar;
+    }
+    
+    // UI : Place Staff Role Filter options and Table Heading in northSection adn render at top of Jpanel
+    private JPanel northSection() {
         JPanel northWrapper = new JPanel();
         northWrapper.setLayout(new BoxLayout(northWrapper, BoxLayout.Y_AXIS));
         northWrapper.setBackground(Color.WHITE);
-        northWrapper.add(tagBar);
-        northWrapper.add(headerBar);
+        northWrapper.add(tagBarSection());
+        northWrapper.add(tableHeader());
 
-        add(northWrapper, BorderLayout.NORTH);
-
-        // Build Table 
-        model = new DefaultTableModel(cols, 0) {
-            @Override
-            public boolean isCellEditable(int r, int c) {
-                return false;
-            }
-        };
-        
+        return northWrapper;
+    }
+    
+    // Return Staff Data table with the filtered Staff Role
+    private JScrollPane staffData() {
         for (JCheckBox chb : boxes) {
             if ("All".equals(chb.getText())) {
                 chb.setSelected(true);    // fires your ItemListener → calls refreshTable()
@@ -204,7 +219,7 @@ public class StaffManagement extends JPanel {
             // 3) Show it
             SwingUtilities.invokeLater(() -> edit.setVisible(true));
         });
-        
+
         // Inactive User
         miInact.addActionListener(evt -> {
             int row = table.getSelectedRow();
@@ -217,7 +232,7 @@ public class StaffManagement extends JPanel {
         // 6) Finally add to your scroll pane & container
         JScrollPane scroll = new JScrollPane(table);
         scroll.setBackground(Color.WHITE);
-        add(scroll, BorderLayout.CENTER);
+        return scroll;
     }
 
     private void refreshTable() {
