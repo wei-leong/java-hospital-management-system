@@ -88,7 +88,6 @@ public class Dashboard extends JPanel {
         for (int i = 0; i < 10; i++) {
             yearLabels[i] = String.valueOf(anchorYear - (9 - i));
         }
-        double[] yearlyData = managerActions.returnYearsRevenue(anchorYear);
 
         // Revenue Chart Panel with Filter Options
         JPanel revenuePanel = new JPanel(new BorderLayout());
