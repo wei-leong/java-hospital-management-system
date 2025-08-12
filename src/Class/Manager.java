@@ -124,15 +124,14 @@ public class Manager extends Person {
         try {
             List<String> lines = Files.readAllLines(appointmentData);
             for (String line : lines) {
-                String[] parts = line.trim().split(",", 10);
+                String[] parts = line.trim().split(",", 7);
                 LocalDateTime appointment = LocalDateTime.parse(parts[3], dateFormat);
-                if (parts.length == 10 && !appointment.isBefore(startWindow) && appointment.isBefore(endWindow)) {
+                if (parts.length == 7 && !appointment.isBefore(startWindow) && appointment.isBefore(endWindow)) {
                     results.add(new String[]{
                         parts[0], // appointment ID
                         parts[1], // doctorId
                         parts[2], // customerId
                         parts[3], // start
-                        parts[4], // end
                         parts[5] // status
                     });
                 }
@@ -185,9 +184,9 @@ public class Manager extends Person {
             List<String> lines = Files.readAllLines(appointmentData);
             int totalAppointments = 0;
             for (String line : lines) {
-                String[] parts = line.trim().split(",", 10);
+                String[] parts = line.trim().split(",", 7);
                 LocalDateTime appointment = LocalDateTime.parse(parts[3], dateFormat);
-                if (parts.length == 10 && !appointment.isBefore(startWindow) && appointment.isBefore(endWindow) && parts[5].equals("past")) {
+                if (parts.length == 7 && !appointment.isBefore(startWindow) && appointment.isBefore(endWindow) && parts[4].equals("complete")) {
                     totalAppointments += 1;
                 }
             }
