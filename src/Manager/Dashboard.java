@@ -53,20 +53,33 @@ public class Dashboard extends JPanel {
     private final DefaultTableModel model;
     private final Manager managerActions = new Manager();
     private final RevenueChartPanel chartPanel;
+    private final String[] monthLabels = {
+        "Jan", "Feb", "Mar", "Apr", "May", "Jun",
+        "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
+    };
+    private final String[] docCols = {"Doctor ID", "Doctor Name", "Avg Rating"};
+    private final int anchorYear = LocalDate.now().getYear();
 
     public Dashboard() {
         setLayout(new BorderLayout(20, 20));
         setBackground(Color.WHITE);
 
-        int anchorYear = LocalDate.now().getYear();
-
-        // 12 months
-        String[] monthLabels = {
-            "Jan", "Feb", "Mar", "Apr", "May", "Jun",
-            "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
-        };
         double[] monthlyData = managerActions.returnMonthlyRevenue(anchorYear);
+        chartPanel = new RevenueChartPanel(monthLabels, monthlyData);
+        revenueSection();
 
+        model = new DefaultTableModel(docCols, 0) {
+            @Override
+            public boolean isCellEditable(int r, int c) {
+                return false;
+            }
+        };
+        middleSection();
+
+        refreshTable();
+    }
+
+    private void revenueSection() {
         // last 10 years (oldest first)
         String[] yearLabels = new String[10];
         for (int i = 0; i < 10; i++) {
@@ -74,8 +87,6 @@ public class Dashboard extends JPanel {
         }
         double[] yearlyData = managerActions.returnYearsRevenue(anchorYear);
 
-        chartPanel = new RevenueChartPanel(monthLabels, monthlyData);
-        
         // ─── 1) Revenue Chart panel with filter ─────────────────────────
         JPanel revenuePanel = new JPanel(new BorderLayout());
         revenuePanel.setBackground(Color.WHITE);
@@ -94,18 +105,29 @@ public class Dashboard extends JPanel {
                 }),
                 BorderLayout.EAST
         );
-        
+
         // 3) Put them together
         revenuePanel.setBackground(Color.WHITE);
         revenuePanel.add(revenueFilterRow, BorderLayout.NORTH);
         revenuePanel.add(chartPanel, BorderLayout.CENTER);
 
         add(revenuePanel, BorderLayout.NORTH);
+    }
 
+    // Store both Total Appointments and Average Rating for Doctor / Staff
+    private void middleSection() {
         // ─── 2) Middle row: two cards side by side ─────────────────────
         JPanel middleRow = new JPanel(new BorderLayout(20, 0));
         middleRow.setBackground(Color.WHITE);
 
+
+        middleRow.add(returnAppointmentCard(), BorderLayout.WEST);
+        middleRow.add(returnAverageRatingTable(), BorderLayout.CENTER);
+
+        add(middleRow, BorderLayout.CENTER);
+    }
+    
+    private JPanel returnAppointmentCard(){
         // a) Appointment card
         JPanel apptCard = new JPanel(new BorderLayout(0, 4));
         apptCard.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY));
@@ -147,19 +169,11 @@ public class Dashboard extends JPanel {
         // Range Label
         lblCountRange.setFont(lblCountRange.getFont().deriveFont(Font.PLAIN, 15f));
         apptCard.add(lblCountRange, BorderLayout.SOUTH);
+        return apptCard;
+    }
 
-        middleRow.add(apptCard, BorderLayout.WEST);
-
-        // b) Avg Rating card
-        String[] docCols = {"Doctor ID", "Doctor Name", "Avg Rating"};
-
+    private JPanel returnAverageRatingTable(){
         // build table model & table
-        model = new DefaultTableModel(docCols, 0) {
-            @Override
-            public boolean isCellEditable(int r, int c) {
-                return false;
-            }
-        };
         JTable tbl = new JTable(model);
         tbl.setShowGrid(false);
         tbl.setTableHeader(null);
@@ -213,14 +227,10 @@ public class Dashboard extends JPanel {
 
         // table below
         fbCard.add(tblScroll, BorderLayout.CENTER);
-
-        middleRow.add(fbCard, BorderLayout.CENTER);
-
-        add(middleRow, BorderLayout.CENTER);
-
-        refreshTable();
+        return fbCard;
     }
-
+    
+    // Filter Button for Revenue, Total Appointment, Average Rating Section
     private JButton createFilterButton(String title, String[] options, Consumer<String> onSelect) {
         JButton btn = new JButton();
         btn.setBackground(Color.WHITE);
@@ -275,20 +285,6 @@ public class Dashboard extends JPanel {
         return btn;
     }
 
-    private static JPanel makeCountBlock(String title, int count) {
-        JPanel p = new JPanel(new BorderLayout());
-        p.setPreferredSize(new Dimension(140, 60));
-        p.setBackground(Color.WHITE);
-        p.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY));
-        JLabel t = new JLabel(title, SwingConstants.CENTER);
-        t.setFont(t.getFont().deriveFont(Font.PLAIN, 12f));
-        JLabel c = new JLabel(String.valueOf(count), SwingConstants.CENTER);
-        c.setFont(c.getFont().deriveFont(Font.BOLD, 20f));
-        p.add(t, BorderLayout.NORTH);
-        p.add(c, BorderLayout.CENTER);
-        return p;
-    }
-
     private static class RevenueChartPanel extends JPanel {
 
         private String[] labels;
@@ -310,7 +306,7 @@ public class Dashboard extends JPanel {
                 throw new IllegalArgumentException("labels and values length must match");
             }
             this.values = values;
-             this.labels = labels;
+            this.labels = labels;
             repaint();
         }
 
@@ -368,7 +364,7 @@ public class Dashboard extends JPanel {
             g2.dispose();
         }
     }
-    
+
     private void refreshTable() {
         model.setRowCount(0);// Remove old records
         List<String[]> rows = managerActions
