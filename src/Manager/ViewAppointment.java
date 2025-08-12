@@ -48,7 +48,7 @@ public class ViewAppointment extends JPanel {
             headerBar.add(lbl);
         }
 
-        // 1) Build your tag-checkbox bar
+        // Build Tag-checkbox bar
         String[] ranges = {"Today", "This Week", "This Month", "This Year"};
         JPanel tagBar = new JPanel(new FlowLayout(FlowLayout.LEFT, 8, 8));
         tagBar.setBackground(Color.WHITE);
