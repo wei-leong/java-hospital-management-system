@@ -131,9 +131,9 @@ public class NavStaff extends JFrame{
             cards.show(content, "Appointments");
             titleChanger("Appointments Management");
         }));
-        bar.add(makeSidebarButton("Appointments", iconFinanceReport, e -> {
+        bar.add(makeSidebarButton("Finance Report", iconFinanceReport, e -> {
             cards.show(content, "Finance Report");
-            titleChanger("Finance Report");
+            titleChanger("Receive Generated and Payment Collection");
         }));
 
         JPanel bottom = new JPanel(new BorderLayout(10, 10));

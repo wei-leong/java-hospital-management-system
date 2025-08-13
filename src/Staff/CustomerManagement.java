@@ -85,18 +85,13 @@ public class CustomerManagement extends JPanel{
         Button1.add(btnAdd);
         Button1.add(btnEdit);
         btnAdd.addActionListener(e -> {
-        AddCustomer dialog = new AddCustomer(); // 创建 AddCustomer 对话框
-        dialog.setLocationRelativeTo(this);     // 设置弹窗居中
-        dialog.setVisible(true);                // 显示对话框
-
-        // 如果 AddCustomer 有提供 getCustomerData() 之类的方法，你可以在这里添加到 table：
-//        if (dialog.isSaved()) {
-//            String[] newCustomer = dialog.getCustomerData(); // 示例方法，自己定义
-//            model.addRow(newCustomer); // 加入表格
-//        }
+        AddCustomer dialog = new AddCustomer(CustomerManagement.this); 
+        dialog.setLocationRelativeTo(this);     
+        dialog.setVisible(true); // set the page visible
     });
+        
         // 2) Column headers
-        String[] cols = {"Staff ID", "Staff Name", "Phone Number", "Email"};
+        String[] cols = {"Staff ID", "Staff Role", "Name", "Password","Gender","Email","Phone Number","Age","Status"};
         JPanel headerBar = new JPanel(new GridLayout(1, cols.length, 8, 0));
         headerBar.setBackground(Color.WHITE);
         headerBar.setBorder(BorderFactory.createEmptyBorder());  
@@ -121,12 +116,6 @@ public class CustomerManagement extends JPanel{
         northWrapper.add(headerBar);
         add(northWrapper, BorderLayout.NORTH);
         
-
-        // 3) Data table area
-        Object[][] sampleData = {
-            {"C1", "Alice Tan", "012-3456789", "alice@apumed.edu"},
-            {"M2", "Bob Lee", "013-9876543", "bob@apumed.edu"}
-        };
         model = new DefaultTableModel(cols, 0) {
             @Override
             public boolean isCellEditable(int r, int c) {
@@ -147,7 +136,7 @@ public class CustomerManagement extends JPanel{
                 JLabel lbl = (JLabel) super.getTableCellRendererComponent(
                         table, value, isSelected, false, row, column);
                 Border outer = BorderFactory.createLineBorder(Color.BLACK, 1);
-                Border inner = BorderFactory.createEmptyBorder(5, 5, 5, 5);
+                Border inner = BorderFactory.createEmptyBorder(5, 5, 5, 10);
                 lbl.setBorder(BorderFactory.createCompoundBorder(outer, inner));
                 return lbl;
             }
@@ -158,16 +147,37 @@ public class CustomerManagement extends JPanel{
         JScrollPane scroll = new JScrollPane(table);
         add(scroll, BorderLayout.CENTER);
 
-        // 初始加载一次（因为默认 All 被选中）
         refreshTable();
     }
     
-       private void refreshTable() {
-        if (model == null) return; // 保险
+       public void refreshTable() {
+        if (model == null) return;
         model.setRowCount(0);
         CustomerData = CustomerDetails.returnCustomerData(_selectedRole);
         if (CustomerData != null) {
-            CustomerData.forEach(model::addRow);
+            CustomerData.stream()
+            .filter(row -> row[0] != null && row[0].startsWith("C"))
+            .forEach(model::addRow);
         }
-    }
+    }     
+//    public void refreshTable() {
+//    if (model == null) return;
+//    model.setRowCount(0); 
+//
+//    CustomerData = CustomerDetails.returnCustomerData(_selectedRole);
+//    if (CustomerData != null) {
+//        CustomerData.stream()
+//
+//            .filter(row -> row[0] != null && row[0].startsWith("C"))
+//            .forEach(row -> {
+// 
+//                String id = row[0];      // C5
+//                String name = row[2];    // Kye Huang
+//                String phone = row[6];   // 0106389999
+//                String email = row[5];   // ky@mail.com
+//
+//                model.addRow(new Object[]{id, name, phone, email});
+//            });
+//    }
+//}
 }
