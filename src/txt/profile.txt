@@ -5,3 +5,5 @@ M1,Manager,manager,1234,Male,manager@mail.apu.com,0111111111,20,Active
 S1,Staff,staff,1234,Male,staff@mail.apu.com,0111111111,20,Active
 
 M2,Manager,Tan Jia Jie,tjjisgay@mai1111,Female,tjj@mail.apu.com,0188888886,51,Active
+
+S2,Staff,Alston Tan Jia Jie,S220,Female,atjj@mail.apu.com,0188877763,20,Active

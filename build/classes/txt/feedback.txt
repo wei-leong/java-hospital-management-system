@@ -1,2 +1,0 @@
-F1,C1,5,Great,D1,2025-08-02
-F2,C1,4,Not in a good mood,S1,2025-08-02

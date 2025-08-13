@@ -4,6 +4,7 @@
  */
 package Class;
 
+import Class.FileActions;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -16,51 +17,61 @@ import java.util.List;
  *
  * @author Wlhoe
  */
-public class ProfileActions {
+
+public class ProfileActions extends FileActions {
+
+    private static final int idx_id = 0;
+    private static final int idx_role = 1;
+    private static final int idx_name = 2;
+    private static final int idx_pass = 3;
+    private static final int idx_gender = 4;
+    private static final int idx_email = 5;
+    private static final int idx_phone = 6;
+    private static final int idx_age = 7;
+    private static final int idx_status = 8;
+    private static final int txt_len = 9;
+
+    public ProfileActions() {
+        super("profile.txt");
+    }
 
     public void AddNewProfile(String newName, String newEmail, int newAge, String newRole, String newPhone, String id, String newGender) {
-        Path file = Paths.get("src", "txt", "profile.txt");
-        try {
-            List<String> lines = Files.readAllLines(file);
-            int maxId = 0;
-            for (String line : lines) {
-                String[] parts = line.trim().split(",", 8);
-                String staffID = parts[0];
-                if (parts.length == 8 && staffID.startsWith(id)) {
-                    String numPart = staffID.substring(id.length()); // e.g. from M3 → "3"
-                    try {
-                        int num = Integer.parseInt(numPart); // convert "3" to 3
-                        if (num > maxId) {
-                            maxId = num; // keep the largest one found
-                        }
-                    } catch (NumberFormatException ignored) {
+
+        List<String[]> allData = returnAllDataFromFile(txt_len);
+        int maxId = 0;
+        
+        for(String[] row : allData){
+            // Need to change the startwith
+            if(row.length == txt_len && row[idx_id].startsWith(id)){
+                try{
+                    int num = Integer.parseInt(row[idx_id].substring(1)); // Skip the tag ( S1 skip S )
+                    if(num > maxId){
+                        maxId = num; // Replace maxId with higher number
                     }
+                }catch (NumberFormatException e){
+                    // Ignore invalid id
                 }
             }
-            String newId = id + (maxId + 1);
-
-            List<String> linesToAdd = List.of(
-                    "\n" + String.join(",",
-                            newId, // e.g., "M4"
-                            newRole,
-                            newName,
-                            newId + String.valueOf(newAge), // Password based on Phone Number and Name
-                            newGender,
-                            newEmail,
-                            newPhone,
-                            String.valueOf(newAge), // 8th field placeholder if needed
-                            "Active"
-                    )
-            );
-            Files.write(
-                    file,
-                    linesToAdd,
-                    StandardOpenOption.CREATE,
-                    StandardOpenOption.APPEND
-            );
-        } catch (IOException e) {
-            System.err.println("Error reading profile.txt: " + e.getMessage());
         }
+        
+        String newId = id + (maxId + 1);
+        String password = newId + newAge; 
+
+            
+        String[] newStaff = {
+            newId,
+            newRole,
+            newName,
+            password,
+            newGender,
+            newEmail,
+            newPhone,
+            String.valueOf(newAge),
+            "Active"
+        };
+
+        addRowToFile(newStaff);  
+
     }
 
     // I would also need to filter out staff role Customer
@@ -214,7 +225,7 @@ public class ProfileActions {
         }
         return null; // or return new String[0]; if you prefer empty instead of null
     }
-    
+
     public String[] returnCustomerProfile(String customerId) {
         Path staffData = Paths.get("src", "txt", "profile.txt");
         try {
@@ -230,12 +241,12 @@ public class ProfileActions {
         }
         return null; // or return new String[0]; if you prefer empty instead of null
     }
-    
-    public boolean isEmailEndsWith(String email,String emailEnds){
+
+    public boolean isEmailEndsWith(String email, String emailEnds) {
         return email.endsWith(emailEnds);
     }
-    
-    public boolean isEmailUnique(String email){
+
+    public boolean isEmailUnique(String email) {
         Path staffData = Paths.get("src", "txt", "profile.txt");
         try {
             List<String> lines = Files.readAllLines(staffData);
@@ -251,8 +262,8 @@ public class ProfileActions {
         }
         return true;
     }
-    
-    public boolean isPhoneUnique(String phone){
+
+    public boolean isPhoneUnique(String phone) {
         Path staffData = Paths.get("src", "txt", "profile.txt");
         try {
             List<String> lines = Files.readAllLines(staffData);
@@ -268,8 +279,9 @@ public class ProfileActions {
         }
         return true;
     }
-    
-    public boolean checkPhone(String phone){
-        return phone!= null && phone.length() == 10 && phone.chars().allMatch(Character::isDigit);
+
+    public boolean checkPhone(String phone) {
+        return phone != null && phone.length() == 10 && phone.chars().allMatch(Character::isDigit);
     }
+
 }
