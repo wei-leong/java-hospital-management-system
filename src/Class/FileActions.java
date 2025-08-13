@@ -68,4 +68,23 @@ public class FileActions {
             System.err.println("Error editing " + _filePath + " : " + e.getMessage());
         }
     }
+    
+    public void addRowToFile(String[] newData){
+        Path fileData = Paths.get("src", "txt", _filePath);
+        try {
+            List<String> linesToAdd = List.of(
+                    "\n" + String.join(",",newData)
+            );
+            Files.write(
+                    fileData,
+                    linesToAdd,
+                    StandardCharsets.UTF_8,
+                    StandardOpenOption.CREATE,
+                    StandardOpenOption.APPEND
+            );
+
+        } catch (IOException e) {
+            System.err.println("Error adding data to " + _filePath + " : " + e.getMessage());
+        }
+    }
 }
