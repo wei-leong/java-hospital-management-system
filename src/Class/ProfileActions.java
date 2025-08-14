@@ -71,42 +71,36 @@ public class ProfileActions extends FileActions {
         };
 
         addRowToFile(newStaff);  
-
     }
 
     // I would also need to filter out staff role Customer
     public List<String[]> ShowProfile(String filterRole, String[] ownProfile) {
-        Path staffData = Paths.get("src", "txt", "profile.txt");
-        List<String[]> results = new ArrayList<>();
-        try {
-            List<String> lines = Files.readAllLines(staffData);
-            for (String line : lines) {
-                String[] parts = line.trim().split(",", 9);
-
-                if (parts.length == 9 && parts[0].equals(ownProfile[0])) {
-                    continue;
+        List<String[]> allData = returnAllDataFromFile(txt_len);
+        List<String[]> filteredData = new ArrayList<>(txt_len);
+        
+        for(String[] row : allData){
+            if(row.length == 9 && row[idx_id].equals(ownProfile[0])){
+                continue;
+            }
+            
+            if(row.length == 9 && row[idx_role].equals("Customer")){
+                continue;
+            }
+            
+            if (row.length == 9 && row[idx_status].equals("Active")) {
+                // if "All" or matches the role
+                if (filterRole.equalsIgnoreCase("All")
+                        || row[idx_role].equals(filterRole)) {
+                    filteredData.add(row);
                 }
-
-                if (parts.length == 9 && parts[1].equals("Customer")) {
-                    continue;
-                }
-
-                if (parts.length == 9 && parts[8].equals("Active")) {
-                    // if "All" or matches the role
-                    if (filterRole.equalsIgnoreCase("All")
-                            || parts[1].equals(filterRole)) {
-                        results.add(parts);
-                    }
-                } else if (parts.length == 9 && filterRole.equalsIgnoreCase("Inactive")) {
-                    if (parts[8].equalsIgnoreCase("Inactive")) {
-                        results.add(parts);
-                    }
+            } else if (row.length == 9 && filterRole.equalsIgnoreCase("Inactive")) {
+                if (row[idx_status].equalsIgnoreCase("Inactive")) {
+                    filteredData.add(row);
                 }
             }
-        } catch (IOException e) {
-            System.err.println("Error reading profile.txt: " + e.getMessage());
+            
         }
-        return results;
+        return filteredData;
     }
 
     public void EditProfile(String[] oldData, String[] newData) {
