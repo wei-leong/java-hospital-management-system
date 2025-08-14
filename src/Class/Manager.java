@@ -53,8 +53,8 @@ public class Manager extends Person {
         profileHelper.EditProfile(oldData, newData);
     }
 
-    public void InactiveStaff(String[] staffDetails) {
-        profileHelper.InactiveProfile(staffDetails);
+    public void InactiveStaff(String[] oldData,String[] staffDetails) {
+        profileHelper.InactiveProfile(oldData,staffDetails);
     }
 
     public int FeedbackSummary(String staffRole) {
