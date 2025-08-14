@@ -17,7 +17,6 @@ import java.util.List;
  *
  * @author Wlhoe
  */
-
 public class ProfileActions extends FileActions {
 
     private static final int idx_id = 0;
@@ -39,25 +38,24 @@ public class ProfileActions extends FileActions {
 
         List<String[]> allData = returnAllDataFromFile(txt_len);
         int maxId = 0;
-        
-        for(String[] row : allData){
+
+        for (String[] row : allData) {
             // Need to change the startwith
-            if(row.length == txt_len && row[idx_id].startsWith(id)){
-                try{
+            if (row.length == txt_len && row[idx_id].startsWith(id)) {
+                try {
                     int num = Integer.parseInt(row[idx_id].substring(1)); // Skip the tag ( S1 skip S )
-                    if(num > maxId){
+                    if (num > maxId) {
                         maxId = num; // Replace maxId with higher number
                     }
-                }catch (NumberFormatException e){
+                } catch (NumberFormatException e) {
                     // Ignore invalid id
                 }
             }
         }
-        
-        String newId = id + (maxId + 1);
-        String password = newId + newAge; 
 
-            
+        String newId = id + (maxId + 1);
+        String password = newId + newAge;
+
         String[] newStaff = {
             newId,
             newRole,
@@ -70,23 +68,23 @@ public class ProfileActions extends FileActions {
             "Active"
         };
 
-        addRowToFile(newStaff);  
+        addRowToFile(newStaff);
     }
 
     // I would also need to filter out staff role Customer
     public List<String[]> ShowProfile(String filterRole, String[] ownProfile) {
         List<String[]> allData = returnAllDataFromFile(txt_len);
         List<String[]> filteredData = new ArrayList<>(txt_len);
-        
-        for(String[] row : allData){
-            if(row.length == 9 && row[idx_id].equals(ownProfile[0])){
+
+        for (String[] row : allData) {
+            if (row.length == 9 && row[idx_id].equals(ownProfile[0])) {
                 continue;
             }
-            
-            if(row.length == 9 && row[idx_role].equals("Customer")){
+
+            if (row.length == 9 && row[idx_role].equals("Customer")) {
                 continue;
             }
-            
+
             if (row.length == 9 && row[idx_status].equals("Active")) {
                 // if "All" or matches the role
                 if (filterRole.equalsIgnoreCase("All")
@@ -98,60 +96,15 @@ public class ProfileActions extends FileActions {
                     filteredData.add(row);
                 }
             }
-            
+
         }
         return filteredData;
     }
 
     public void EditProfile(String[] oldData, String[] newData) {
-        Path staffData = Paths.get("src", "txt", "profile.txt");
-        String oldId = oldData[0];
-        try {
-            // Remove Old Staff Data
-            List<String> lines = Files.readAllLines(staffData);
-            List<String> updatedLines = new ArrayList<>();
 
-            for (String line : lines) {
-                String[] parts = line.trim().split(",", 8);
-                if (parts.length == 8 && !parts[0].equals(oldId.trim())) {
-                    updatedLines.add(line);
-                }
-            }
+        editRowFromFile(txt_len, oldData, newData);
 
-            Files.write(staffData, updatedLines);
-
-            String id = newData[0];
-            String newRole = newData[1];
-            String newName = newData[2];
-            String newPass = newData[3];
-            String newGender = newData[4];
-            String newEmail = newData[5];
-            String newPhone = newData[6];
-            String newAge = newData[7];
-
-            List<String> linesToAdd = List.of(
-                    "\n" + String.join(",",
-                            id, // e.g., "M4"
-                            newRole,
-                            newName,
-                            newPass, // Password
-                            newGender,
-                            newEmail,
-                            newPhone,
-                            newAge, // 8th field placeholder if needed
-                            "Active"
-                    )
-            );
-            Files.write(
-                    staffData,
-                    linesToAdd,
-                    StandardOpenOption.CREATE,
-                    StandardOpenOption.APPEND
-            );
-
-        } catch (IOException e) {
-            System.err.println("Error reading profile.txt: " + e.getMessage());
-        }
     }
 
     public void InactiveProfile(String[] staffProfile) {
