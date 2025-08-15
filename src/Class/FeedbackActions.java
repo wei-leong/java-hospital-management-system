@@ -46,7 +46,6 @@ public class FeedbackActions extends FileActions{
 
     public List<String[]> returnRatingList(String staffId) {
         List<String[]> allData = returnAllDataFromFile(txt_len);
-//        Path feedbackData = Paths.get("src", "txt", "feedback.txt");
         List<String[]> results = new ArrayList<>();
 
         for (String[] row : allData) {
@@ -81,7 +80,6 @@ public class FeedbackActions extends FileActions{
                 staffIdUsed,
                 row[idx_rating]
             });
-
         }
         
         return results;
