@@ -130,19 +130,15 @@ public class ProfileActions extends FileActions {
     }
 
     public String[] returnCustomerProfile(String customerId) {
-        Path staffData = Paths.get("src", "txt", "profile.txt");
-        try {
-            List<String> lines = Files.readAllLines(staffData);
-            for (String line : lines) {
-                String[] parts = line.trim().split(",", 9);
-                if (parts.length == 9 && parts[0].equals(customerId)) {
-                    return new String[]{parts[2], parts[5]};
-                }
+        List<String[]> allData = returnAllDataFromFile(txt_len);
+        
+        for (String[] row : allData) {
+            if(row.length == txt_len && row[idx_id].equals(customerId)){
+                return new String[]{row[idx_name],row[idx_email]};
             }
-        } catch (IOException e) {
-            System.err.println("Error reading profile.txt: " + e.getMessage());
         }
-        return null; // or return new String[0]; if you prefer empty instead of null
+        
+        return null;
     }
 
     public boolean isEmailEndsWith(String email, String emailEnds) {
@@ -150,6 +146,8 @@ public class ProfileActions extends FileActions {
     }
 
     public boolean isEmailUnique(String email) {
+        
+        
         Path staffData = Paths.get("src", "txt", "profile.txt");
         try {
             List<String> lines = Files.readAllLines(staffData);
