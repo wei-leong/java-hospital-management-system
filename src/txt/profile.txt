@@ -3,9 +3,5 @@ C1,Customer,customer,1234,Male,customer@gmail.com,0111111111,20,Active
 D2,Doctor,Wilson Tee Xing Yang,D2100,Male,wilson@mail.apu.com,0188888883,100,Inactive
 M1,Manager,manager,1234,Male,manager@mail.apu.com,0111111111,20,Active
 S1,Staff,staff,1234,Male,staff@mail.apu.com,0111111111,20,Active
-
 M2,Manager,Tan Jia Jie,tjjisgay1111,Female,tjj@mail.apu.com,0188888886,51,Active
-
-S2,Staff,Alston Tan Jia Jie,S220,Female,atjj@mail.apu.com,0188877763,20,Inactive
-
-D3,Doctor,Alston Lim Jia Jie,aljj12345678,Female,aljj112@mail.apu.com,0199392841,100,Active
+M3,Manager,Alston Tan Jia Jie,tan40123,Male,atjj1@mail.apu.com,0188887763,40,Inactive

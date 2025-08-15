@@ -15,33 +15,29 @@ import java.util.List;
  *
  * @author Wlhoe
  */
-public class FeedbackActions {
+public class FeedbackActions extends ProfileActions {
 
-    ProfileActions profileActions = new ProfileActions();
-
-    int feedbackLen = 6;
+//    ProfileActions profileActions = new ProfileActions();
+//    int feedbackLen = 6;
+    private static final int idx_id = 0;
+    private static final int idx_cusId = 1;
+    private static final int idx_rating = 2;
+    private static final int idx_feedback = 3;
+    private static final int idx_staffId = 4;
+    private static final int idx_date = 5;
+    private static final int txt_len = 6;
 
     public int returnAverageRating(String staffId) {
-        Path feedbackData = Paths.get("src", "txt", "feedback.txt");
-        try {
-            List<String> lines = Files.readAllLines(feedbackData);
-            int totalRating = 0;
-            int counts = 0;
-            for (String line : lines) {
-                String[] parts = line.trim().split(",", feedbackLen);
-
-                if (parts.length == feedbackLen && parts[4].startsWith(staffId)) {
-                    totalRating += Integer.parseInt(parts[2]);
-                    counts++;
-                }
-
+        List<String[]> allData = returnAllDataFromFile(txt_len);
+        int totalRating = 0;
+        int counts = 0;
+        for (String[] row : allData) {
+            if (row.length == txt_len && row[4].startsWith(staffId)) {
+                totalRating += Integer.parseInt(row[idx_rating]);
+                counts++;
             }
-
-            return totalRating / counts;
-        } catch (IOException e) {
-            System.err.println("Error reading profile.txt: " + e.getMessage());
-            return 0;
         }
+        return counts == 0 ? 0 : totalRating / counts;
     }
 
     public List<String[]> returnRatingList(String staffId) {
