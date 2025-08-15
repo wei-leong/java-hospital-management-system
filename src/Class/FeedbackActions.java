@@ -22,7 +22,6 @@ public class FeedbackActions extends FileActions{
     }
 
     ProfileActions profileActions = new ProfileActions();
-//    int feedbackLen = 6;
     private static final int idx_id = 0;
     private static final int idx_cusId = 1;
     private static final int idx_rating = 2;

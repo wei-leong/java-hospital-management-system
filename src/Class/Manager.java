@@ -20,7 +20,7 @@ import java.util.List;
  *
  * @author Wlhoe
  */
-public class Manager extends Person {
+public class Manager extends Person{
 
     private final ProfileActions profileHelper = new ProfileActions();
     private final FeedbackActions feedbackHelper = new FeedbackActions();
