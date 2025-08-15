@@ -35,7 +35,6 @@ public class ProfileActions extends FileActions {
     }
 
     public void AddNewProfile(String newName, String newEmail, int newAge, String newRole, String newPhone, String id, String newGender) {
-
         List<String[]> allData = returnAllDataFromFile(txt_len);
         int maxId = 0;
 
@@ -96,44 +95,35 @@ public class ProfileActions extends FileActions {
                     filteredData.add(row);
                 }
             }
-
         }
         return filteredData;
     }
 
     public void EditProfile(String[] oldData, String[] newData) {
-
         editRowFromFile(txt_len, oldData, newData);
-
     }
 
     public void InactiveProfile(String[] oldData,String[] staffProfile) {
-        
         editRowFromFile(txt_len,oldData,staffProfile);
-
     }
 
     public String[] returnStaffProfile(String staffId) {
         List<String[]> allData = returnAllDataFromFile(txt_len);
-        
         for (String[] row : allData) {
             if(row.length == txt_len && row[idx_id].equals(staffId)){
                 return new String[]{row[idx_id],row[idx_name]};
             }
         }
-        
         return null; // or return new String[0]; if you prefer empty instead of null
     }
 
     public String[] returnCustomerProfile(String customerId) {
         List<String[]> allData = returnAllDataFromFile(txt_len);
-        
         for (String[] row : allData) {
             if(row.length == txt_len && row[idx_id].equals(customerId)){
                 return new String[]{row[idx_name],row[idx_email]};
             }
         }
-        
         return null;
     }
 
@@ -143,7 +133,6 @@ public class ProfileActions extends FileActions {
 
     public boolean isEmailUnique(String email) {
         List<String[]> allData = returnAllDataFromFile(txt_len);
-        
         for(String[] row: allData){
             if(row.length == txt_len && row[idx_email].equals(email)){
                 return false;
@@ -154,7 +143,6 @@ public class ProfileActions extends FileActions {
 
     public boolean isPhoneUnique(String phone) {
         List<String[]> allData = returnAllDataFromFile(txt_len);
-        
         for(String[] row: allData){
             if(row.length == txt_len && row[idx_phone].equals(phone)){
                 return false;
@@ -166,5 +154,4 @@ public class ProfileActions extends FileActions {
     public boolean checkPhone(String phone) {
         return phone != null && phone.length() == 10 && phone.chars().allMatch(Character::isDigit);
     }
-
 }
