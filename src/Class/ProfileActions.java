@@ -146,20 +146,12 @@ public class ProfileActions extends FileActions {
     }
 
     public boolean isEmailUnique(String email) {
+        List<String[]> allData = returnAllDataFromFile(txt_len);
         
-        
-        Path staffData = Paths.get("src", "txt", "profile.txt");
-        try {
-            List<String> lines = Files.readAllLines(staffData);
-            for (String line : lines) {
-                String[] parts = line.trim().split(",", 9);
-                if (parts.length == 9 && parts[5].equals(email)) {
-                    return false;
-                }
+        for(String[] row: allData){
+            if(row.length == txt_len && row[idx_email].equals(email)){
+                return false;
             }
-        } catch (IOException e) {
-            System.err.println("Error reading profile.txt: " + e.getMessage());
-            return false;
         }
         return true;
     }
