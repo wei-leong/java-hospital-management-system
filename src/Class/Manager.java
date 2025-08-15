@@ -24,6 +24,7 @@ public class Manager extends Person{
 
     private final ProfileActions profileHelper = new ProfileActions();
     private final FeedbackActions feedbackHelper = new FeedbackActions();
+    private final RevenueActions revenueHelper = new RevenueActions();
     private final String[] _ownProfile;
 
     public Manager(String email, String password) {
@@ -243,23 +244,7 @@ public class Manager extends Person{
     }
 
     public double[] returnMonthlyRevenue(int year) {
-        double[] totals = new double[12];
-        Path paymentData = Paths.get("src", "txt", "payment.txt");
-        DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        try {
-            for (String line : Files.readAllLines(paymentData)) {
-                String[] parts = line.trim().split(",", 4);
-                double amount = Double.parseDouble(parts[1]);
-                LocalDate date = LocalDate.parse(parts[2], df);
-                if (date.getYear() == year) {
-                    int m = date.getMonthValue() - 1; // Jan=0, Feb=1, …
-                    totals[m] += amount;
-                }
-            }
-        } catch (IOException e) {
-            System.err.println("Error reading payment.txt: " + e.getMessage());
-        }
-        return totals;
+        return revenueHelper.returnMonthlyRevenue(year);
     }
 
     public double[] returnYearsRevenue(int anchorYear) {
