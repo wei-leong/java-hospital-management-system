@@ -29,6 +29,7 @@ public class ProfileActions extends FileActions {
     private static final int idx_age = 7;
     private static final int idx_status = 8;
     private static final int txt_len = 9;
+//    private final List<String[]> _allData; Can't use this attribute or it won't refresh table for StaffManagement
 
     public ProfileActions() {
         super("profile.txt");
