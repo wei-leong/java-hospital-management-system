@@ -114,18 +114,14 @@ public class ProfileActions extends FileActions {
     }
 
     public String[] returnStaffProfile(String staffId) {
-        Path staffData = Paths.get("src", "txt", "profile.txt");
-        try {
-            List<String> lines = Files.readAllLines(staffData);
-            for (String line : lines) {
-                String[] parts = line.trim().split(",", 9);
-                if (parts.length == 9 && parts[0].equals(staffId)) {
-                    return new String[]{parts[0], parts[2]};
-                }
+        List<String[]> allData = returnAllDataFromFile(txt_len);
+        
+        for (String[] row : allData) {
+            if(row.length == txt_len && row[idx_id].equals(staffId)){
+                return new String[]{row[idx_id],row[idx_name]};
             }
-        } catch (IOException e) {
-            System.err.println("Error reading profile.txt: " + e.getMessage());
         }
+        
         return null; // or return new String[0]; if you prefer empty instead of null
     }
 
