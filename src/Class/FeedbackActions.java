@@ -15,9 +15,13 @@ import java.util.List;
  *
  * @author Wlhoe
  */
-public class FeedbackActions extends ProfileActions {
+public class FeedbackActions extends FileActions{
+    
+    public FeedbackActions(){
+        super("feedback.txt");
+    }
 
-//    ProfileActions profileActions = new ProfileActions();
+    ProfileActions profileActions = new ProfileActions();
 //    int feedbackLen = 6;
     private static final int idx_id = 0;
     private static final int idx_cusId = 1;
@@ -41,57 +45,45 @@ public class FeedbackActions extends ProfileActions {
     }
 
     public List<String[]> returnRatingList(String staffId) {
-        Path feedbackData = Paths.get("src", "txt", "feedback.txt");
+        List<String[]> allData = returnAllDataFromFile(txt_len);
+//        Path feedbackData = Paths.get("src", "txt", "feedback.txt");
         List<String[]> results = new ArrayList<>();
-        try {
-            List<String> lines = Files.readAllLines(feedbackData);
-            for (String line : lines) {
-                // feedback.txt fields: F1,C1,5,Great,D1,2025-08-02
-                String[] parts = line.trim().split(",", 6);
-                if (parts.length != 6) {
-                    continue;
-                }
 
-                String customerId = parts[1];
-                String rating = parts[2];
-                String comments = parts[3];
-                String staffOrDocId = parts[4];
-                String date = parts[5];
-
-                // skip non-matching unless we're in “All” mode
-                if (!"All".equalsIgnoreCase(staffId) && !staffOrDocId.startsWith(staffId)) {
-                    continue;
-                }
-
-                // look up customer
-                String[] customerData = profileActions.returnCustomerProfile(customerId);
-                if (customerData == null) {
-                    continue;  // missing or malformed
-                }
-                // look up staff/doctor
-                String[] staffData = profileActions.returnStaffProfile(staffOrDocId);
-                if (staffData == null) {
-                    continue;
-                }
-
-                String customerName = customerData[0];
-                String customerEmail = customerData[1];
-                String staffName = staffData[1];
-                String staffIdUsed = staffData[0];
-
-                results.add(new String[]{
-                    customerName,
-                    customerEmail,
-                    date,
-                    comments,
-                    staffName,
-                    staffIdUsed,
-                    rating
-                });
+        for (String[] row : allData) {
+            // skip non-matching unless we're in “All” mode
+            if (!"All".equalsIgnoreCase(staffId) && !row[idx_staffId].startsWith(staffId)) {
+                continue;
             }
-        } catch (IOException e) {
-            System.err.println("Error reading feedback.txt: " + e.getMessage());
+
+            // look up customer
+            String[] customerData = profileActions.returnCustomerProfile(row[idx_cusId]);
+            if (customerData == null) {
+                continue;  // missing or malformed
+            }
+
+            // look up staff/doctor
+            String[] staffData = profileActions.returnStaffProfile(row[idx_staffId]);
+            if (staffData == null) {
+                continue;
+            }
+
+            String customerName = customerData[0];
+            String customerEmail = customerData[1];
+            String staffName = staffData[1];
+            String staffIdUsed = staffData[0];
+
+            results.add(new String[]{
+                customerName,
+                customerEmail,
+                row[idx_date],
+                row[idx_feedback],
+                staffName,
+                staffIdUsed,
+                row[idx_rating]
+            });
+
         }
+        
         return results;
     }
 }
