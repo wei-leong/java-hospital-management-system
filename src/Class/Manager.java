@@ -199,48 +199,7 @@ public class Manager extends Person{
     }
 
     public List<String[]> returnAverageRatingList(String staffRole) {
-        Path staffData = Paths.get("src", "txt", "profile.txt");
-        List<String[]> results = new ArrayList<>();
-
-        try {
-            List<String> lines = Files.readAllLines(staffData);
-            for (String line : lines) {
-                String[] parts = line.trim().split(",", 9);
-                if (parts.length == 9 && parts[1].equalsIgnoreCase(staffRole) && parts[8].equals("Active")) {
-                    String avgStr = String.format("%.2f", returnAverageRating(parts[0]));
-                    results.add(new String[]{
-                        parts[0], // appointment ID
-                        parts[2], // doctorId
-                        avgStr,});
-                }
-            }
-        } catch (Exception e) {
-            System.err.println("Error reading appointment.txt: " + e.getMessage());
-        }
-        return results;
-    }
-
-    public double returnAverageRating(String staffId) {
-        Path feedbackData = Paths.get("src", "txt", "feedback.txt");
-        double totalRating = 0;
-        int count = 0;
-        try {
-            List<String> lines = Files.readAllLines(feedbackData);
-            for (String line : lines) {
-                String[] parts = line.trim().split(",", 6);
-                if (parts.length == 6 && parts[4].equalsIgnoreCase(staffId)) {
-                    totalRating += Double.parseDouble(parts[2]);
-                    count += 1;
-                }
-            }
-            if (count == 0) {
-                return 0.0;
-            }
-            return totalRating / count;
-        } catch (Exception e) {
-            System.err.println("Error reading appointment.txt: " + e.getMessage());
-            return 0.0;
-        }
+        return feedbackHelper.returnAverageRatingList(staffRole);
     }
 
     public double[] returnMonthlyRevenue(int year) {

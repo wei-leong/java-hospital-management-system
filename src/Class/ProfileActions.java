@@ -155,4 +155,8 @@ public class ProfileActions extends FileActions {
     public boolean checkPhone(String phone) {
         return phone != null && phone.length() == 10 && phone.chars().allMatch(Character::isDigit);
     }
+    
+    public List<String[]> ReturnAllStaffData(){
+        return returnAllDataFromFile(txt_len);
+    }
 }

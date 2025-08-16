@@ -15,9 +15,9 @@ import java.util.List;
  *
  * @author Wlhoe
  */
-public class FeedbackActions extends FileActions{
-    
-    public FeedbackActions(){
+public class FeedbackActions extends FileActions {
+
+    public FeedbackActions() {
         super("feedback.txt");
     }
 
@@ -80,7 +80,40 @@ public class FeedbackActions extends FileActions{
                 row[idx_rating]
             });
         }
-        
+
         return results;
+    }
+
+    // Modify here
+    public List<String[]> returnAverageRatingList(String staffRole) {
+        List<String[]> staffData = profileActions.ReturnAllStaffData();
+        List<String[]> results = new ArrayList<>();
+
+        for (String[] row : staffData) {
+            if (row.length == 9 && row[1].equalsIgnoreCase(staffRole) && row[8].equals("Active")) {
+                String avgStr = String.format("%.2f", returnAverageStaffRating(row[0]));
+                results.add(new String[]{
+                    row[0], // appointment ID
+                    row[2], // doctorId
+                    avgStr,});
+            }
+        }
+        return results;
+    }
+
+    public double returnAverageStaffRating(String staffId) {
+        List<String[]> allData = returnAllDataFromFile(txt_len);
+        double totalRating = 0;
+        int count = 0;
+        for (String[] row : allData) {
+            if (row.length == txt_len && row[4].equalsIgnoreCase(staffId)) {
+                totalRating += Double.parseDouble(row[2]);
+                count += 1;
+            }
+        }
+        if (count == 0) {
+            return 0.0;
+        }
+        return totalRating / count;
     }
 }
