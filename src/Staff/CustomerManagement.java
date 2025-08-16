@@ -91,7 +91,7 @@ public class CustomerManagement extends JPanel{
     });
         
         // 2) Column headers
-        String[] cols = {"Staff ID", "Staff Role", "Name", "Password","Gender","Email","Phone Number","Age","Status"};
+        String[] cols = {"Staff ID", "Staff Role", "Name", "Password","Gender","Email","Phone Number","Age","Status","Edit"};
         JPanel headerBar = new JPanel(new GridLayout(1, cols.length, 8, 0));
         headerBar.setBackground(Color.WHITE);
         headerBar.setBorder(BorderFactory.createEmptyBorder());  
@@ -157,27 +157,15 @@ public class CustomerManagement extends JPanel{
         if (CustomerData != null) {
             CustomerData.stream()
             .filter(row -> row[0] != null && row[0].startsWith("C"))
-            .forEach(model::addRow);
+            .forEach(row ->{
+            Object[] newRow = new Object[row.length + 1];
+                System.arraycopy(row, 0, newRow, 0, row.length);
+
+                newRow[newRow.length - 1] = ""; 
+
+                model.addRow(newRow);
+            });
         }
-    }     
-//    public void refreshTable() {
-//    if (model == null) return;
-//    model.setRowCount(0); 
-//
-//    CustomerData = CustomerDetails.returnCustomerData(_selectedRole);
-//    if (CustomerData != null) {
-//        CustomerData.stream()
-//
-//            .filter(row -> row[0] != null && row[0].startsWith("C"))
-//            .forEach(row -> {
-// 
-//                String id = row[0];      // C5
-//                String name = row[2];    // Kye Huang
-//                String phone = row[6];   // 0106389999
-//                String email = row[5];   // ky@mail.com
-//
-//                model.addRow(new Object[]{id, name, phone, email});
-//            });
-//    }
-//}
+    }   
+       
 }
