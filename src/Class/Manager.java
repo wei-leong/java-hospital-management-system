@@ -24,7 +24,8 @@ public class Manager extends Person{
     private final FeedbackActions feedbackHelper = new FeedbackActions();
     private final RevenueActions revenueHelper = new RevenueActions();
     private final String[] _ownProfile;
-
+    
+    // Polymorphism ( Constructor Overloading ) 
     public Manager(String email, String password) {
         super(email, password);
         this._ownProfile = null;
