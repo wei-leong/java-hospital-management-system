@@ -4,8 +4,6 @@
  */
 package Class;
 
-import Class.FeedbackActions;
-import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -35,8 +33,6 @@ public class Manager extends Person{
     public Manager() {
         this._ownProfile = null;
     }
-
-    ;
     
     public Manager(String[] ownProfile) {
         this._ownProfile = ownProfile;
