@@ -19,7 +19,7 @@ import java.util.List;
  * @author Wlhoe
  */
 public class Manager extends Person{
-
+    // Composition  -> Manager has ProfileAction, FeedbackAction and RevenueActions
     private final ProfileActions profileHelper = new ProfileActions();
     private final FeedbackActions feedbackHelper = new FeedbackActions();
     private final RevenueActions revenueHelper = new RevenueActions();
