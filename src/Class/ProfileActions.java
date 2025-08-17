@@ -187,4 +187,12 @@ public class ProfileActions {
             System.err.println("Error reading profile.txt: " + e.getMessage());
         }
     }
+
+    String[] returnCustomerProfile(String customerId) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    String[] returnStaffProfile(String staffOrDocId) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
 }

@@ -1,6 +1,7 @@
 package Staff;
 
 import Class.Staff;
+import Class.TableStyle;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
@@ -72,10 +73,9 @@ public class CustomerManagement extends JPanel{
         Button1.setOpaque(true); 
         
         JButton btnAdd = new JButton("Create");
-        JButton btnEdit = new JButton("Edit");
         
         //Set button Color
-        for (JButton btn : new JButton[]{btnAdd, btnEdit}) {
+        for (JButton btn : new JButton[]{btnAdd}) {
         btn.setBackground(Color.WHITE);                            //
         btn.setContentAreaFilled(false);                           
         btn.setOpaque(true);                                     
@@ -83,7 +83,6 @@ public class CustomerManagement extends JPanel{
 
 }
         Button1.add(btnAdd);
-        Button1.add(btnEdit);
         btnAdd.addActionListener(e -> {
         AddCustomer dialog = new AddCustomer(CustomerManagement.this); 
         dialog.setLocationRelativeTo(this);     
@@ -92,14 +91,14 @@ public class CustomerManagement extends JPanel{
         
         // 2) Column headers
         String[] cols = {"Staff ID", "Staff Role", "Name", "Password","Gender","Email","Phone Number","Age","Status","Edit"};
-        JPanel headerBar = new JPanel(new GridLayout(1, cols.length, 8, 0));
+        JPanel headerBar = new JPanel(new GridLayout(1, cols.length, 10, 0));
         headerBar.setBackground(Color.WHITE);
         headerBar.setBorder(BorderFactory.createEmptyBorder());  
 
         for (String c : cols) {
             JLabel lbl = new JLabel(c, SwingConstants.LEFT);
             lbl.setFont(lbl.getFont().deriveFont(Font.BOLD, 14f));
-            lbl.setBorder(BorderFactory.createEmptyBorder(2, 2, 2, 2)); // minimal padding
+            lbl.setBorder(BorderFactory.createEmptyBorder(2, 2, 4, 2)); // minimal padding
             headerBar.add(lbl);
         }
 
@@ -116,6 +115,7 @@ public class CustomerManagement extends JPanel{
         northWrapper.add(headerBar);
         add(northWrapper, BorderLayout.NORTH);
         
+
         model = new DefaultTableModel(cols, 0) {
             @Override
             public boolean isCellEditable(int r, int c) {
@@ -127,6 +127,23 @@ public class CustomerManagement extends JPanel{
         table.setFont(table.getFont().deriveFont(20f));
         table.setShowGrid(false);
         table.setIntercellSpacing(new Dimension(0, 10));
+        
+        TableStyle.applyStyle(table);
+        
+        table.getColumnModel().getColumn(model.getColumnCount() - 1).setCellRenderer(new DefaultTableCellRenderer() {
+        ImageIcon rawIcon = new ImageIcon(getClass().getResource("/image/edit_profile.png"));
+        Image img = rawIcon.getImage().getScaledInstance(20, 20, Image.SCALE_SMOOTH);
+        Icon editIcon = new ImageIcon(img); 
+
+        @Override
+        public Component getTableCellRendererComponent(JTable table,
+                                                       Object value, boolean isSelected,
+                                                       boolean hasFocus, int row, int column) {
+            JLabel lbl = new JLabel(editIcon);
+            lbl.setHorizontalAlignment(SwingConstants.CENTER);
+            return lbl;
+        }
+    });
 
         DefaultTableCellRenderer cellRend = new DefaultTableCellRenderer() {
             @Override

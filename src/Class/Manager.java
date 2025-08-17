@@ -34,4 +34,8 @@ public class Manager extends Person{
     public void InactiveStaff(String[] staffDetails){
         profileHelper.InactiveProfile(staffDetails);
     }
+
+    public List<String[]> returnAppointmentsList(String _selectedRange) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
 }
