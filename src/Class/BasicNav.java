@@ -6,6 +6,7 @@ package Class;
 
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
+import java.awt.Font;
 import java.awt.Image;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -45,5 +46,27 @@ public class BasicNav extends JFrame{
     private final JButton btnEdit = new JButton("Edit Profile");
     private final JButton btnProfile = new JButton();
     
-    
+    public BasicNav(String windowTitle, String[] staffDetails){
+        super("APU Medical Centre");
+        this._staffDetails = staffDetails;
+        
+        setDefaultCloseOperation(DISPOSE_ON_CLOSE); // Dispose Navigation Menu
+        addWindowListener(new WindowAdapter() { // Reopen Login Form
+            @Override
+            public void windowClosed(WindowEvent e) {
+                SwingUtilities.invokeLater(() -> new login.LoginForm().setVisible(true));
+            }
+        });
+        
+        // Window Size
+        setSize(1000, 600);
+        setLocationRelativeTo(null);
+        setLayout(new BorderLayout());
+        setIconImage(windowIcon); // Set window icon
+        
+        // Initialize lblTitle 
+        lblTitle.setFont(lblTitle.getFont().deriveFont(Font.BOLD, 16f));
+        
+        setVisible(true); // Ensure the NavManager page is visible
+    }
 }
