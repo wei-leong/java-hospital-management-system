@@ -130,11 +130,13 @@ public class CustomerManagement extends JPanel{
         
         TableStyle.applyStyle(table);
         
+        //Edit Button
         table.getColumnModel().getColumn(model.getColumnCount() - 1).setCellRenderer(new DefaultTableCellRenderer() {
         ImageIcon rawIcon = new ImageIcon(getClass().getResource("/image/edit_profile.png"));
         Image img = rawIcon.getImage().getScaledInstance(20, 20, Image.SCALE_SMOOTH);
         Icon editIcon = new ImageIcon(img); 
-
+        
+        
         @Override
         public Component getTableCellRendererComponent(JTable table,
                                                        Object value, boolean isSelected,

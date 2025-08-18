@@ -6,6 +6,9 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ItemEvent;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.List;
 import java.util.ArrayList;
 import javax.swing.border.Border;
@@ -14,10 +17,10 @@ import javax.swing.table.DefaultTableCellRenderer;
 public class AppointmentsManagement extends JPanel{
     
     private String _selectedRole = "All";
-    private List<String[]> CustomerData = List.of();
+    private List<String[]> AppointmentData = List.of();
     private DefaultTableModel model;
     private JTable table;
-    Staff CustomerDetails = new Staff();
+    Staff appointmenttable = new Staff();
     private JButton AddCustomerbtn;
             
     public AppointmentsManagement() {
@@ -51,7 +54,7 @@ public class AppointmentsManagement extends JPanel{
         Button1.add(btnAdd);
         
         // 2) Column headers
-        String[] cols = {"Appointments ID", "Docter Name", "Customer Name", "Time","Status","Edit"};
+        String[] cols = {"Appointments ID", "Docter ID", "Customer ID", "Date & Time","Status","Edit"};
         JPanel headerBar = new JPanel(new GridLayout(1, cols.length, 12, 0));
         headerBar.setBackground(Color.WHITE);
         headerBar.setBorder(BorderFactory.createEmptyBorder());  
@@ -72,7 +75,6 @@ public class AppointmentsManagement extends JPanel{
 
         northWrapper.add(topBar);
         northWrapper.add(headerBar);
-        northWrapper.add(headerBar);
         add(northWrapper, BorderLayout.NORTH);
         
         model = new DefaultTableModel(cols, 0) {
@@ -88,6 +90,51 @@ public class AppointmentsManagement extends JPanel{
         table.setIntercellSpacing(new Dimension(0, 10));
         
         TableStyle.applyStyle(table);
+        
+        table.addMouseListener(new java.awt.event.MouseAdapter() {
+        @Override
+        public void mouseClicked(java.awt.event.MouseEvent e) {
+            int row = table.rowAtPoint(e.getPoint());    // 获取点击的行
+            int col = table.columnAtPoint(e.getPoint()); // 获取点击的列
+
+            // 如果点击的是最后一列（Delete图标所在列）
+            if (col == model.getColumnCount() - 1 && row >= 0) {
+                int confirm = JOptionPane.showConfirmDialog(
+                        AppointmentsManagement.this,
+                        "Are you sure you want to delete this appointment?",
+                        "Confirm Delete",
+                        JOptionPane.YES_NO_OPTION
+                );
+
+                if (confirm == JOptionPane.YES_OPTION) {
+                    // 获取要删除的 Appointment ID（假设第一列是 ID）
+                    String appointmentId = (String) model.getValueAt(row, 0);
+
+                    // 从 JTable 删除
+                    model.removeRow(row);
+
+                    // 同步删除 appointment.txt 文件里的对应数据
+                    removeAppointmentFromFile(appointmentId);
+                }
+            }
+        }
+    });
+        
+        table.getColumnModel().getColumn(model.getColumnCount() - 1).setCellRenderer(new DefaultTableCellRenderer() {
+        ImageIcon rawIcon = new ImageIcon(getClass().getResource("/image/delete.png"));
+        Image img = rawIcon.getImage().getScaledInstance(20, 20, Image.SCALE_SMOOTH);
+        Icon editIcon = new ImageIcon(img); 
+        
+        
+        @Override
+        public Component getTableCellRendererComponent(JTable table,
+                                                       Object value, boolean isSelected,
+                                                       boolean hasFocus, int row, int column) {
+            JLabel lbl = new JLabel(editIcon);
+            lbl.setHorizontalAlignment(SwingConstants.CENTER);
+            return lbl;
+        }
+    });
 
         DefaultTableCellRenderer cellRend = new DefaultTableCellRenderer() {
             @Override
@@ -108,24 +155,64 @@ public class AppointmentsManagement extends JPanel{
         JScrollPane scroll = new JScrollPane(table);
         add(scroll, BorderLayout.CENTER);
 
-        refreshTable();
+        refreshAppointmentTable();
     }
     
-       public void refreshTable() {
-        if (model == null) return;
-        model.setRowCount(0);
-        CustomerData = CustomerDetails.returnCustomerData(_selectedRole);
-        if (CustomerData != null) {
-            CustomerData.stream()
-            .filter(row -> row[0] != null && row[0].startsWith("C"))
-            .forEach(row ->{
-            Object[] newRow = new Object[row.length + 1];
-                System.arraycopy(row, 0, newRow, 0, row.length);
+public void refreshAppointmentTable() {
+    if (model == null) return;
+    model.setRowCount(0);  // 清空旧数据
 
-                newRow[newRow.length - 1] = ""; 
+    try (BufferedReader br = new BufferedReader(new FileReader("D:\\USER BACKUP\\Documents\\NetBeansProjects\\JavaAssignment\\apu-medical-centre\\src\\txt\\appointment.txt"))) {
+        String line;
+        while ((line = br.readLine()) != null) {
+            // 跳过空行
+            if (line.trim().isEmpty()) continue;
 
+            // 按逗号分隔字段
+            String[] row = line.split(",");
+
+            // 确保数据足够长（至少有4个字段）
+            if (row.length >= 4) {
+             
+                Object[] newRow = {
+                    row[0].trim(),  
+                    row[1].trim(),  
+                    row[2].trim(),
+                    row[3].trim(),
+                    row[4].trim(),
+                    ""              
+                };
                 model.addRow(newRow);
-            });
+            }
+        }
+    } catch (IOException e) {
+        JOptionPane.showMessageDialog(this, 
+            "Error reading appointments.txt: " + e.getMessage(),
+            "File Error", JOptionPane.ERROR_MESSAGE);
+    }
+}
+
+    private void removeAppointmentFromFile(String appointmentId) {
+        String filePath = "D:\\USER BACKUP\\Documents\\NetBeansProjects\\JavaAssignment\\apu-medical-centre\\src\\txt\\appointment.txt";
+        List<String> lines = new ArrayList<>();
+
+        try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                if (!line.startsWith(appointmentId + ",")) { 
+                    lines.add(line); // 保留非删除的行
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        try (java.io.FileWriter fw = new java.io.FileWriter(filePath)) {
+            for (String l : lines) {
+                fw.write(l + System.lineSeparator());
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 }

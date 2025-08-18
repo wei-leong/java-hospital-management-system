@@ -2,7 +2,7 @@ M1,Manager,manager,1234,Male,manager@mail.apu.com,0111111111,20,Active
 S1,Staff,staff,1234,Male,staff@mail.apu.com,0111111111,20,Active
 D1,Doctor,doctor,1234,Male,doctor@mail.apu.com,0111111111,20,Active
 C1,Customer,customer,1234,Male,customer@mail.apu.com,0111111111,20,Active
-
+D2,Doctor,doctor,1234,Male,doctor@mail.apu.com,0111111111,20,Active
 M2,Manager,Tan Jia Jie,M222,Female,tjj@mail.apu.com,0188888886,22,Inactive
 C2,Customer,Seah Si Wei,1234,Female,siweiseah@mail.com,1111111111,28,Active
 C3,Customer,jj,1234,Male,jj@mail.com,1111111111,18,Active
