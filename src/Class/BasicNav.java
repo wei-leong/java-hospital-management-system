@@ -6,16 +6,25 @@ package Class;
 
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
+import java.awt.Color;
+import java.awt.Cursor;
+import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.GridLayout;
 import java.awt.Image;
+import java.awt.Point;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import javax.swing.BorderFactory;
+import javax.swing.Box;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JToolBar;
 import javax.swing.SwingUtilities;
 import static javax.swing.WindowConstants.DISPOSE_ON_CLOSE;
 
@@ -68,5 +77,26 @@ public class BasicNav extends JFrame{
         lblTitle.setFont(lblTitle.getFont().deriveFont(Font.BOLD, 16f));
         
         setVisible(true); // Ensure the NavManager page is visible
+    }
+    
+    protected JToolBar buildToolBar(){
+        // Title Bar 
+        JToolBar titleBar = new JToolBar();
+        titleBar.setFloatable(false);
+        
+        // Hamburger Button Toggle
+        titleBar.add(btnToggle);
+        titleBar.addSeparator();
+        btnToggleSettings();
+
+        // Title - APU Medical Centre
+        titleBar.add(lblTitle);
+        titleBar.add(Box.createHorizontalGlue());
+
+        // Button Profile to Open Staff Details
+        titleBar.add(btnProfile);
+        btnProfileSettings();
+
+        return titleBar;
     }
 }
