@@ -42,24 +42,24 @@ public class BasicNav extends JFrame {
 
     // Own Staff Details - Remove own profile from StaffManagement page
     protected final String[] _staffDetails;
-    private final ImageScaler imgScale = new ImageScaler();
+    protected final ImageScaler imgScale = new ImageScaler();
 
-    private final JPanel sidebar;
-    private final CardLayout cards = new CardLayout();
-    private final JPanel content = new JPanel(cards);
-    private final JLabel lblTitle = new JLabel();
+    protected final JPanel sidebar;
+    protected final CardLayout cards = new CardLayout();
+    protected final JPanel content = new JPanel(cards);
+    protected final JLabel lblTitle = new JLabel();
 
     // Image Setup
-    private final ImageIcon toggleIcon = imgScale.returnScaledImageIcon("/image/nav-menu.png", 24, 24);
+    protected final ImageIcon toggleIcon = imgScale.returnScaledImageIcon("/image/nav-menu.png", 24, 24);
     Image windowIcon = imgScale.returnScaledImage("/image/APU_Med_Cen_Assignment.png", 128, 128);
     Icon iconProfile = imgScale.returnScaledImageIcon("/image/profile-user.png", 32, 32);
     Icon iconProfileLarge = imgScale.returnScaledImageIcon("/image/profile-user.png", 50, 50);
 
     // Button Attributes
-    private final JButton btnToggle = new JButton(toggleIcon);
-    private final JButton btnLogout = new JButton("Logout");
-    private final JButton btnEdit = new JButton("Edit Profile");
-    private final JButton btnProfile = new JButton();
+    protected final JButton btnToggle = new JButton(toggleIcon);
+    protected final JButton btnLogout = new JButton("Logout");
+    protected final JButton btnEdit = new JButton("Edit Profile");
+    protected final JButton btnProfile = new JButton();
     
     protected final Map<String, JButton> sidebarButtons = new LinkedHashMap<>();
 
