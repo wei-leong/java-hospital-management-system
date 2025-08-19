@@ -33,8 +33,7 @@ public class NavManager extends BasicNav {
     private final Icon _iconStaffManagement;
     private final Icon _iconFeedback;
     private final Icon _iconAppointment;
-    private final Icon _iconProfileLarge;
-    
+
     public NavManager(String[] staffDetails){
         super("APU Medical Centre", staffDetails);
         
