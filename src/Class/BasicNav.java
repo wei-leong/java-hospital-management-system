@@ -17,6 +17,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
+import javax.swing.BoxLayout;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -100,6 +101,13 @@ public class BasicNav extends JFrame{
         return titleBar;
     }
     
+    protected JPanel buildSidebar(){
+        JPanel bar = new JPanel();
+        bar.setPreferredSize(new Dimension(200, getHeight()));
+        bar.setBackground(Color.BLACK);
+        bar.setLayout(new BoxLayout(bar, BoxLayout.Y_AXIS));
+        return bar;
+    }
         
     protected void showProfileDialog() {
         // Create dialog to show Staff Details
