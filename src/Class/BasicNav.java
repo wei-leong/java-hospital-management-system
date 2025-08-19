@@ -7,14 +7,18 @@ package Class;
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.Image;
 import java.awt.Point;
+import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -26,6 +30,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JToolBar;
+import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import static javax.swing.WindowConstants.DISPOSE_ON_CLOSE;
 
@@ -33,33 +38,35 @@ import static javax.swing.WindowConstants.DISPOSE_ON_CLOSE;
  *
  * @author Wlhoe
  */
-public class BasicNav extends JFrame{
+public class BasicNav extends JFrame {
+
     // Own Staff Details - Remove own profile from StaffManagement page
     private final String[] _staffDetails;
     private final ImageScaler imgScale = new ImageScaler();
-    
+
     private final JPanel sidebar;
     private final CardLayout cards = new CardLayout();
-    private final JPanel content= JPanel(cards);
-    private String currentPage = "";
+    private final JPanel content = new JPanel(cards);
     private final JLabel lblTitle = new JLabel();
-    
+
     // Image Setup
     private final ImageIcon toggleIcon = imgScale.returnScaledImageIcon("/image/nav-menu.png", 24, 24);
     Image windowIcon = imgScale.returnScaledImage("/image/APU_Med_Cen_Assignment.png", 128, 128);
     Icon iconProfile = imgScale.returnScaledImageIcon("/image/profile-user.png", 32, 32);
     Icon iconProfileLarge = imgScale.returnScaledImageIcon("/image/profile-user.png", 50, 50);
-    
+
     // Button Attributes
     private final JButton btnToggle = new JButton(toggleIcon);
-    private final JButton btnLogout= new JButton("Logout");
+    private final JButton btnLogout = new JButton("Logout");
     private final JButton btnEdit = new JButton("Edit Profile");
     private final JButton btnProfile = new JButton();
     
-    public BasicNav(String windowTitle, String[] staffDetails){
+    protected final Map<String, JButton> sidebarButtons = new LinkedHashMap<>();
+
+    public BasicNav(String windowTitle, String[] staffDetails) {
         super("APU Medical Centre");
         this._staffDetails = staffDetails;
-        
+
         setDefaultCloseOperation(DISPOSE_ON_CLOSE); // Dispose Navigation Menu
         addWindowListener(new WindowAdapter() { // Reopen Login Form
             @Override
@@ -67,24 +74,52 @@ public class BasicNav extends JFrame{
                 SwingUtilities.invokeLater(() -> new login.LoginForm().setVisible(true));
             }
         });
-        
+
         // Window Size
         setSize(1000, 600);
         setLocationRelativeTo(null);
         setLayout(new BorderLayout());
         setIconImage(windowIcon); // Set window icon
-        
+
         // Initialize lblTitle 
         lblTitle.setFont(lblTitle.getFont().deriveFont(Font.BOLD, 16f));
-        
+
         setVisible(true); // Ensure the NavManager page is visible
+        
+        
+        add(buildToolbar(), BorderLayout.NORTH);
+
+        sidebar = buildSidebar();
+        add(sidebar, BorderLayout.WEST);
+
+        add(content, BorderLayout.CENTER);
+
+        // default behaviour for toggle and profile/logout/edit
+        btnToggleSettings();
+        btnProfileSettings();
+        btnLogoutSettings(sidebar);
     }
-    
-    protected JToolBar buildToolBar(){
+
+    protected JButton makeSidebarButton(String text, Icon icon, ActionListener act) {
+        JButton b = new JButton(text, icon);
+        b.setMaximumSize(new Dimension(Integer.MAX_VALUE, 40));
+        b.setAlignmentX(Component.CENTER_ALIGNMENT);
+        b.setForeground(Color.WHITE);
+        b.setBackground(Color.DARK_GRAY);
+        b.setBorderPainted(false);
+        b.setFocusPainted(false);
+        b.setHorizontalAlignment(SwingConstants.LEFT);
+        b.setHorizontalTextPosition(SwingConstants.RIGHT);
+        b.setIconTextGap(8);
+        b.addActionListener(act);
+        return b;
+    }
+
+    protected JToolBar buildToolbar() {
         // Title Bar 
         JToolBar titleBar = new JToolBar();
         titleBar.setFloatable(false);
-        
+
         // Hamburger Button Toggle
         titleBar.add(btnToggle);
         titleBar.addSeparator();
@@ -100,15 +135,29 @@ public class BasicNav extends JFrame{
 
         return titleBar;
     }
-    
-    protected JPanel buildSidebar(){
+
+    protected JPanel buildSidebar() {
         JPanel bar = new JPanel();
         bar.setPreferredSize(new Dimension(200, getHeight()));
         bar.setBackground(Color.BLACK);
         bar.setLayout(new BoxLayout(bar, BoxLayout.Y_AXIS));
         return bar;
     }
-        
+
+    protected void addPage(String name, Component component, Icon icon) {
+        content.add(component, name);
+        JButton b = makeSidebarButton(name, icon, e -> {
+            cards.show(content, name);
+            titleChanger(name);
+        });
+        sidebar.add(b);
+        sidebarButtons.put(name, b);
+    }
+
+    protected void titleChanger(String newTitle) {
+        lblTitle.setText(newTitle);
+    }
+
     protected void showProfileDialog() {
         // Create dialog to show Staff Details
         JDialog dlg = new JDialog(this, "Profile", true);
@@ -152,7 +201,7 @@ public class BasicNav extends JFrame{
         dlg.setLocation(loc.x + this.getWidth() - dlg.getWidth() - 10, loc.y + 10);
         dlg.setVisible(true);
     }
-    
+
     protected void btnToggleSettings() {
         btnToggle.setFocusable(false);
         btnToggle.setBorderPainted(false);
