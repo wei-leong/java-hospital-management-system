@@ -83,9 +83,6 @@ public class BasicNav extends JFrame {
 
         // Initialize lblTitle 
         lblTitle.setFont(lblTitle.getFont().deriveFont(Font.BOLD, 16f));
-
-        setVisible(true); // Ensure the NavManager page is visible
-        
         
         add(buildToolbar(), BorderLayout.NORTH);
 
@@ -93,11 +90,8 @@ public class BasicNav extends JFrame {
         add(sidebar, BorderLayout.WEST);
 
         add(content, BorderLayout.CENTER);
-
-        // default behaviour for toggle and profile/logout/edit
-        btnToggleSettings();
-        btnProfileSettings();
-        btnLogoutSettings(sidebar);
+        
+        setVisible(true); // Ensure the NavManager page is visible
     }
 
     protected JButton makeSidebarButton(String text, Icon icon, ActionListener act) {
@@ -248,6 +242,7 @@ public class BasicNav extends JFrame {
     protected void btnProfileSettings() {
         btnProfile.setBorder(null);
         btnProfile.setContentAreaFilled(false);
+        btnProfile.setIcon(iconProfile);
 
         // Show Own Profile Details and Enable user to edit their own profile
         btnProfile.addActionListener(e -> showProfileDialog());
