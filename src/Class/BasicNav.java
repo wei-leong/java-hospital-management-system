@@ -41,7 +41,7 @@ import static javax.swing.WindowConstants.DISPOSE_ON_CLOSE;
 public class BasicNav extends JFrame {
 
     // Own Staff Details - Remove own profile from StaffManagement page
-    private final String[] _staffDetails;
+    protected final String[] _staffDetails;
     private final ImageScaler imgScale = new ImageScaler();
 
     private final JPanel sidebar;
