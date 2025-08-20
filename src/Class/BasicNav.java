@@ -136,26 +136,27 @@ public class BasicNav extends JFrame {
     }
 
     protected JPanel buildSidebar() {
+        Color sidebarBack = Color.BLACK;
+        
+        // Add sidebar button with the panel from addPage method
         JPanel bar = new JPanel();
         bar.setPreferredSize(new Dimension(200, getHeight()));
-        bar.setBackground(Color.BLACK);
+        bar.setBackground(sidebarBack);
         bar.setLayout(new BoxLayout(bar, BoxLayout.Y_AXIS));
+        bar.add(Box.createVerticalGlue()); // Glue the sidebar button at the top of the sidebar
 
-        // ... add your menu buttons here (or let addPage do it) ...
-        // add glue to push next component to bottom
-        bar.add(Box.createVerticalGlue());
-
-        // bottom panel containing logout (and optionally other bottom controls)
+        // Bottom panel contain btnLogout
         JPanel bottom = new JPanel(new BorderLayout(10, 10));
-        bottom.setBackground(Color.BLACK);
+        bottom.setBackground(sidebarBack);
         bottom.setBorder(BorderFactory.createEmptyBorder(0, 20, 20, 20));
         bottom.add(btnLogout, BorderLayout.SOUTH);
         btnLogoutSettings(bar);
 
-        bar.add(bottom);
+        bar.add(bottom); // Add bottom area to sidebar
         return bar;
     }
-
+    
+    // Add Panel function 
     protected void addPage(String name, Component component, Icon icon) {
         content.add(component, name);
         JButton b = makeSidebarButton(name, icon, e -> {
@@ -168,11 +169,13 @@ public class BasicNav extends JFrame {
         sidebar.repaint();
         sidebarButtons.put(name, b);
     }
-
+    
+    // Chance title when accessing new Panel
     protected void titleChanger(String newTitle) {
         lblTitle.setText(newTitle);
     }
-
+    
+    // Show Profile Details ( Staff ID, Staff Role, Name, Age ) when btnProfile is pressed
     protected void showProfileDialog() {
         // Create dialog to show Staff Details
         JDialog dlg = new JDialog(this, "Profile", true);
@@ -216,7 +219,8 @@ public class BasicNav extends JFrame {
         dlg.setLocation(loc.x + this.getWidth() - dlg.getWidth() - 10, loc.y + 10);
         dlg.setVisible(true);
     }
-
+    
+    // Button Style and Function Settings
     protected void btnToggleSettings() {
         btnToggle.setFocusable(false);
         btnToggle.setBorderPainted(false);
