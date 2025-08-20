@@ -159,9 +159,9 @@ public class BasicNav extends JFrame {
     }
     
     // Add Panel function 
-    protected void addPage(String name, Component component, Icon icon) {
-        content.add(component, name); 
-        
+    protected void addPage(String name, JPanel panel, Icon icon) {
+        content.add(panel, name); 
+                
         // Create Navigation Button to Panel
         JButton b = makeSidebarButton(name, icon, e -> {
             cards.show(content, name);
