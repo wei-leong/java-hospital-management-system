@@ -60,7 +60,7 @@ public class BasicNav extends JFrame {
     protected final JButton btnLogout = new JButton("Logout");
     protected final JButton btnEdit = new JButton("Edit Profile");
     protected final JButton btnProfile = new JButton();
-    
+
     protected final Map<String, JButton> sidebarButtons = new LinkedHashMap<>();
 
     public BasicNav(String windowTitle, String[] staffDetails) {
@@ -83,14 +83,14 @@ public class BasicNav extends JFrame {
 
         // Initialize lblTitle 
         lblTitle.setFont(lblTitle.getFont().deriveFont(Font.BOLD, 16f));
-        
+
         add(buildToolbar(), BorderLayout.NORTH);
 
         sidebar = buildSidebar();
         add(sidebar, BorderLayout.WEST);
 
         add(content, BorderLayout.CENTER);
-        
+
         setVisible(true); // Ensure the NavManager page is visible
     }
 
@@ -135,6 +135,19 @@ public class BasicNav extends JFrame {
         bar.setPreferredSize(new Dimension(200, getHeight()));
         bar.setBackground(Color.BLACK);
         bar.setLayout(new BoxLayout(bar, BoxLayout.Y_AXIS));
+
+        // ... add your menu buttons here (or let addPage do it) ...
+        // add glue to push next component to bottom
+        bar.add(Box.createVerticalGlue());
+
+        // bottom panel containing logout (and optionally other bottom controls)
+        JPanel bottom = new JPanel(new BorderLayout(10, 10));
+        bottom.setBackground(Color.BLACK);
+        bottom.setBorder(BorderFactory.createEmptyBorder(0, 20, 20, 20));
+        bottom.add(btnLogout, BorderLayout.SOUTH);
+        btnLogoutSettings(bar);
+
+        bar.add(bottom);
         return bar;
     }
 
@@ -144,7 +157,10 @@ public class BasicNav extends JFrame {
             cards.show(content, name);
             titleChanger(name);
         });
-        sidebar.add(b);
+        int insertIndex = Math.max(0, sidebar.getComponentCount() - 1);
+        sidebar.add(b, insertIndex);
+        sidebar.revalidate();
+        sidebar.repaint();
         sidebarButtons.put(name, b);
     }
 
