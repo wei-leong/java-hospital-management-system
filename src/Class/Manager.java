@@ -4,8 +4,6 @@
  */
 package Class;
 
-import Class.FeedbackActions;
-import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -20,12 +18,14 @@ import java.util.List;
  *
  * @author Wlhoe
  */
-public class Manager extends Person {
-
+public class Manager extends Person{
+    // Composition  -> Manager has ProfileAction, FeedbackAction and RevenueActions
     private final ProfileActions profileHelper = new ProfileActions();
     private final FeedbackActions feedbackHelper = new FeedbackActions();
+    private final RevenueActions revenueHelper = new RevenueActions();
     private final String[] _ownProfile;
-
+    
+    // Polymorphism ( Constructor Overloading ) 
     public Manager(String email, String password) {
         super(email, password);
         this._ownProfile = null;
@@ -34,8 +34,6 @@ public class Manager extends Person {
     public Manager() {
         this._ownProfile = null;
     }
-
-    ;
     
     public Manager(String[] ownProfile) {
         this._ownProfile = ownProfile;
@@ -53,8 +51,8 @@ public class Manager extends Person {
         profileHelper.EditProfile(oldData, newData);
     }
 
-    public void InactiveStaff(String[] staffDetails) {
-        profileHelper.InactiveProfile(staffDetails);
+    public void InactiveStaff(String[] oldData,String[] staffDetails) {
+        profileHelper.InactiveProfile(oldData,staffDetails);
     }
 
     public int FeedbackSummary(String staffRole) {
@@ -198,90 +196,14 @@ public class Manager extends Person {
     }
 
     public List<String[]> returnAverageRatingList(String staffRole) {
-        Path staffData = Paths.get("src", "txt", "profile.txt");
-        List<String[]> results = new ArrayList<>();
-
-        try {
-            List<String> lines = Files.readAllLines(staffData);
-            for (String line : lines) {
-                String[] parts = line.trim().split(",", 9);
-                if (parts.length == 9 && parts[1].equalsIgnoreCase(staffRole) && parts[8].equals("Active")) {
-                    String avgStr = String.format("%.2f", returnAverageRating(parts[0]));
-                    results.add(new String[]{
-                        parts[0], // appointment ID
-                        parts[2], // doctorId
-                        avgStr,});
-                }
-            }
-        } catch (Exception e) {
-            System.err.println("Error reading appointment.txt: " + e.getMessage());
-        }
-        return results;
-    }
-
-    public double returnAverageRating(String staffId) {
-        Path feedbackData = Paths.get("src", "txt", "feedback.txt");
-        double totalRating = 0;
-        int count = 0;
-        try {
-            List<String> lines = Files.readAllLines(feedbackData);
-            for (String line : lines) {
-                String[] parts = line.trim().split(",", 6);
-                if (parts.length == 6 && parts[4].equalsIgnoreCase(staffId)) {
-                    totalRating += Double.parseDouble(parts[2]);
-                    count += 1;
-                }
-            }
-            if (count == 0) {
-                return 0.0;
-            }
-            return totalRating / count;
-        } catch (Exception e) {
-            System.err.println("Error reading appointment.txt: " + e.getMessage());
-            return 0.0;
-        }
+        return feedbackHelper.returnAverageRatingList(staffRole);
     }
 
     public double[] returnMonthlyRevenue(int year) {
-        double[] totals = new double[12];
-        Path paymentData = Paths.get("src", "txt", "payment.txt");
-        DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        try {
-            for (String line : Files.readAllLines(paymentData)) {
-                String[] parts = line.trim().split(",", 4);
-                double amount = Double.parseDouble(parts[1]);
-                LocalDate date = LocalDate.parse(parts[2], df);
-                if (date.getYear() == year) {
-                    int m = date.getMonthValue() - 1; // Jan=0, Feb=1, …
-                    totals[m] += amount;
-                }
-            }
-        } catch (IOException e) {
-            System.err.println("Error reading payment.txt: " + e.getMessage());
-        }
-        return totals;
+        return revenueHelper.returnMonthlyRevenue(year);
     }
 
     public double[] returnYearsRevenue(int anchorYear) {
-        int span = 10;
-        int startYear = anchorYear - (span - 1);  // e.g. 2025 - 9 = 2016
-        double[] totals = new double[span];
-        Path paymentData = Paths.get("src", "txt", "payment.txt");
-        DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        try {
-            for (String line : Files.readAllLines(paymentData)) {
-                String[] parts = line.trim().split(",", 4);
-                double amount = Double.parseDouble(parts[1]);
-                LocalDate date = LocalDate.parse(parts[2], df);
-                int y = date.getYear();
-                int idx = y - startYear;      // 2016→0, 2017→1, …, 2025→9
-                if (0 <= idx && idx < span) {
-                    totals[idx] += amount;
-                }
-            }
-        } catch (IOException e) {
-            System.err.println("Error reading payment.txt: " + e.getMessage());
-        }
-        return totals;
+        return revenueHelper.returnYearsRevenue(anchorYear);
     }
 }

@@ -9,6 +9,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Arrays;
 import javax.swing.border.Border;
 import javax.swing.table.DefaultTableCellRenderer;
 
@@ -223,9 +224,11 @@ public class StaffManagement extends JPanel {
         // Inactive User
         miInact.addActionListener(evt -> {
             int row = table.getSelectedRow();
-            String[] staff = staffData.get(row);
+            String[] oldData = staffData.get(row);
+            String[] newData = Arrays.copyOf(oldData, oldData.length);
+            newData[newData.length - 1] = "Inactive"; 
 
-            managerActions.InactiveStaff(staff);
+            managerActions.InactiveStaff(oldData,newData);
             refreshTable();
         });
 

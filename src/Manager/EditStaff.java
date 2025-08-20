@@ -89,7 +89,7 @@ public class EditStaff extends JFrame {
                 staffGender,
                 staffEmail,
                 staffPhone,
-                staffAge
+                staffAge,
             };
             managerActions.editStaff(_currentData, newData);
 
@@ -214,7 +214,8 @@ public class EditStaff extends JFrame {
                 staffGender,
                 staffEmail,
                 staffPhone,
-                staffAge
+                staffAge,
+                "Active",
             };
             managerActions.editStaff(_currentData, newData);
 

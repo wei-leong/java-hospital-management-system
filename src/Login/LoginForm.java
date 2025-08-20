@@ -19,7 +19,6 @@ public class LoginForm extends JFrame {
     private static final float titleSize = 25f;
     private static final float labelSize = 12f;
     private static final float inputSize = 18f;
-    private static final Color backColor = Color.WHITE;
     private static final Insets insets = new Insets(8, 8, 8, 8);
     private ImageScaler imgScale = new ImageScaler();
 
