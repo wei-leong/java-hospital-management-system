@@ -40,20 +40,21 @@ import static javax.swing.WindowConstants.DISPOSE_ON_CLOSE;
  */
 public class BasicNav extends JFrame {
 
-    // Own Staff Details - Remove own profile from StaffManagement page
+    // Own Staff Details - Used to remove own profile from StaffManagement page
     protected final String[] _staffDetails;
-    protected final ImageScaler imgScale = new ImageScaler();
-
+    
+    // UI Elements
     protected final JPanel sidebar;
     protected final CardLayout cards = new CardLayout();
     protected final JPanel content = new JPanel(cards);
     protected final JLabel lblTitle = new JLabel();
 
     // Image Setup
+    private final ImageScaler imgScale = new ImageScaler();
     protected final ImageIcon toggleIcon = imgScale.returnScaledImageIcon("/image/nav-menu.png", 24, 24);
-    Image windowIcon = imgScale.returnScaledImage("/image/APU_Med_Cen_Assignment.png", 128, 128);
-    Icon iconProfile = imgScale.returnScaledImageIcon("/image/profile-user.png", 32, 32);
-    Icon iconProfileLarge = imgScale.returnScaledImageIcon("/image/profile-user.png", 50, 50);
+    private final Image windowIcon = imgScale.returnScaledImage("/image/APU_Med_Cen_Assignment.png", 128, 128);
+    private final Icon iconProfile = imgScale.returnScaledImageIcon("/image/profile-user.png", 32, 32);
+    private final Icon iconProfileLarge = imgScale.returnScaledImageIcon("/image/profile-user.png", 50, 50);
 
     // Button Attributes
     protected final JButton btnToggle = new JButton(toggleIcon);
@@ -93,7 +94,8 @@ public class BasicNav extends JFrame {
 
         setVisible(true); // Ensure the NavManager page is visible
     }
-
+    
+    // Button for Navigating through other panel ( Dashboard, View Feedback, Staff Management, View Appointment )
     protected JButton makeSidebarButton(String text, Icon icon, ActionListener act) {
         JButton b = new JButton(text, icon);
         b.setMaximumSize(new Dimension(Integer.MAX_VALUE, 40));
@@ -108,7 +110,8 @@ public class BasicNav extends JFrame {
         b.addActionListener(act);
         return b;
     }
-
+    
+    // To store toggle sidebar button, panel title and profile button
     protected JToolBar buildToolbar() {
         // Title Bar 
         JToolBar titleBar = new JToolBar();
@@ -117,14 +120,16 @@ public class BasicNav extends JFrame {
         // Hamburger Button Toggle
         titleBar.add(btnToggle);
         titleBar.addSeparator();
-        btnToggleSettings();
-
-        // Title - APU Medical Centre
+        
+        // Show Current Panel Title ( Dashboard, Staff Management )
         titleBar.add(lblTitle);
         titleBar.add(Box.createHorizontalGlue());
 
         // Button Profile to Open Staff Details
         titleBar.add(btnProfile);
+        
+        // Configure Button Settings
+        btnToggleSettings();
         btnProfileSettings();
 
         return titleBar;
@@ -259,8 +264,6 @@ public class BasicNav extends JFrame {
         btnProfile.setBorder(null);
         btnProfile.setContentAreaFilled(false);
         btnProfile.setIcon(iconProfile);
-
-        // Show Own Profile Details and Enable user to edit their own profile
-        btnProfile.addActionListener(e -> showProfileDialog());
+        btnProfile.addActionListener(e -> showProfileDialog()); // Show Own Profile Details and Enable user to edit their own profile
     }
 }
