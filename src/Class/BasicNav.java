@@ -61,7 +61,9 @@ public class BasicNav extends JFrame {
     protected final JButton btnLogout = new JButton("Logout");
     protected final JButton btnEdit = new JButton("Edit Profile");
     protected final JButton btnProfile = new JButton();
-
+    
+    // Used to Store Page Name with SideBar Button ("Dashboard" , "Staff Management")
+    // Allows quick lookup and management for sidebar button
     protected final Map<String, JButton> sidebarButtons = new LinkedHashMap<>();
 
     public BasicNav(String windowTitle, String[] staffDetails) {
