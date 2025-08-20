@@ -42,12 +42,13 @@ public class BasicNav extends JFrame {
 
     // Own Staff Details - Used to remove own profile from StaffManagement page
     protected final String[] _staffDetails;
-    
+
     // UI Elements
     protected final JPanel sidebar;
     protected final CardLayout cards = new CardLayout();
     protected final JPanel content = new JPanel(cards);
     protected final JLabel lblTitle = new JLabel();
+    protected final JPanel menuPanel = new JPanel(); // For Dynamic Menu Buttons added from addPage() method
 
     // Image Setup
     private final ImageScaler imgScale = new ImageScaler();
@@ -61,7 +62,7 @@ public class BasicNav extends JFrame {
     protected final JButton btnLogout = new JButton("Logout");
     protected final JButton btnEdit = new JButton("Edit Profile");
     protected final JButton btnProfile = new JButton();
-    
+
     // Used to Store Page Name with SideBar Button ("Dashboard" , "Staff Management")
     // Allows quick lookup and management for sidebar button
     protected final Map<String, JButton> sidebarButtons = new LinkedHashMap<>();
@@ -96,7 +97,7 @@ public class BasicNav extends JFrame {
 
         setVisible(true); // Ensure the NavManager page is visible
     }
-    
+
     // Button for Navigating through other panel ( Dashboard, View Feedback, Staff Management, View Appointment )
     protected JButton makeSidebarButton(String text, Icon icon, ActionListener act) {
         JButton b = new JButton(text, icon);
@@ -112,7 +113,7 @@ public class BasicNav extends JFrame {
         b.addActionListener(act);
         return b;
     }
-    
+
     // To store toggle sidebar button, panel title and profile button
     protected JToolBar buildToolbar() {
         // Title Bar 
@@ -122,14 +123,14 @@ public class BasicNav extends JFrame {
         // Hamburger Button Toggle
         titleBar.add(btnToggle);
         titleBar.addSeparator();
-        
+
         // Show Current Panel Title ( Dashboard, Staff Management )
         titleBar.add(lblTitle);
         titleBar.add(Box.createHorizontalGlue());
 
         // Button Profile to Open Staff Details
         titleBar.add(btnProfile);
-        
+
         // Configure Button Settings
         btnToggleSettings();
         btnProfileSettings();
@@ -139,13 +140,15 @@ public class BasicNav extends JFrame {
 
     protected JPanel buildSidebar() {
         Color sidebarBack = Color.BLACK;
-        
-        // Add sidebar button with the panel from addPage method
-        JPanel bar = new JPanel();
-        bar.setPreferredSize(new Dimension(200, getHeight()));
+
+        // Create JPanel bar with BorderLayout to align element with NORTH/CENTER/SOUTH
+        JPanel bar = new JPanel(new BorderLayout());
+        bar.setPreferredSize(new Dimension(200,0));
         bar.setBackground(sidebarBack);
-        bar.setLayout(new BoxLayout(bar, BoxLayout.Y_AXIS));
-        bar.add(Box.createVerticalGlue()); // Glue the sidebar button at the top of the sidebar
+        
+        // Stack menuPanel components vertically
+        menuPanel.setLayout(new BoxLayout(menuPanel, BoxLayout.Y_AXIS));
+        bar.add(menuPanel, BorderLayout.NORTH);
 
         // Bottom panel contain btnLogout
         JPanel bottom = new JPanel(new BorderLayout(10, 10));
@@ -154,35 +157,33 @@ public class BasicNav extends JFrame {
         bottom.add(btnLogout, BorderLayout.SOUTH);
         btnLogoutSettings(bar);
 
-        bar.add(bottom); // Add bottom area to sidebar
+        bar.add(bottom, BorderLayout.SOUTH); // Add bottom area with Logout Button
         return bar;
     }
-    
+
     // Add Panel function 
     protected void addPage(String name, JPanel panel, Icon icon) {
-        content.add(panel, name); 
-                
+        content.add(panel, name);
+
         // Create Navigation Button to Panel
         JButton b = makeSidebarButton(name, icon, e -> {
             cards.show(content, name); // Open the panel when the button is pressed
             titleChanger(name); // Change the title to selected page
         });
-        
-        // Insert button before the last component to prevent button showing at the top
-        int insertIndex = Math.max(0, sidebar.getComponentCount() - 1); 
-        sidebar.add(b, insertIndex); 
-        
-        // Lets swing recalculate sidebar and repaints new button
-        sidebar.revalidate(); 
-        sidebar.repaint();
-        sidebarButtons.put(name, b);
+
+        // Add to the top menu area (menuPanel), not directly to sidebar
+        menuPanel.add(b);
+        menuPanel.revalidate();
+        menuPanel.repaint();
+
+        sidebarButtons.put(name, b); // Add name and buttons to Map<String,JButton> sidebarButtons
     }
-    
+
     // Chance title when accessing new Panel
     protected void titleChanger(String newTitle) {
         lblTitle.setText(newTitle);
     }
-    
+
     // Show Profile Details ( Staff ID, Staff Role, Name, Age ) when btnProfile is pressed
     protected void showProfileDialog() {
         // Create dialog to show Staff Details
@@ -227,7 +228,7 @@ public class BasicNav extends JFrame {
         dlg.setLocation(loc.x + this.getWidth() - dlg.getWidth() - 10, loc.y + 10);
         dlg.setVisible(true);
     }
-    
+
     // Button Style and Function Settings
     protected void btnToggleSettings() {
         btnToggle.setFocusable(false);
