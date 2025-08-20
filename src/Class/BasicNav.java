@@ -164,8 +164,8 @@ public class BasicNav extends JFrame {
                 
         // Create Navigation Button to Panel
         JButton b = makeSidebarButton(name, icon, e -> {
-            cards.show(content, name);
-            titleChanger(name);
+            cards.show(content, name); // Open the panel when the button is pressed
+            titleChanger(name); // Change the title to selected page
         });
         
         // Insert button before the last component to prevent button showing at the top
