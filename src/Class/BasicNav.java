@@ -158,14 +158,20 @@ public class BasicNav extends JFrame {
     
     // Add Panel function 
     protected void addPage(String name, Component component, Icon icon) {
-        content.add(component, name);
+        content.add(component, name); 
+        
+        // Create Navigation Button to Panel
         JButton b = makeSidebarButton(name, icon, e -> {
             cards.show(content, name);
             titleChanger(name);
         });
-        int insertIndex = Math.max(0, sidebar.getComponentCount() - 1);
-        sidebar.add(b, insertIndex);
-        sidebar.revalidate();
+        
+        // Insert button before the last component to prevent button showing at the top
+        int insertIndex = Math.max(0, sidebar.getComponentCount() - 1); 
+        sidebar.add(b, insertIndex); 
+        
+        // Lets swing recalculate sidebar and repaints new button
+        sidebar.revalidate(); 
         sidebar.repaint();
         sidebarButtons.put(name, b);
     }
