@@ -109,27 +109,6 @@ public class EditOwnProfile extends JDialog{
         btnBack.setContentAreaFilled(false);
         btnBack.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         btnBack.addActionListener(e -> {
-            String staffGender = rbM.isSelected() ? "Male" : "Female";
-            String staffAge = String.valueOf(ageField.getValue());
-
-            Manager managerActions = new Manager();
-
-            String staffName = nameField.getText().trim();
-            String staffEmail = emailField.getText().trim();
-            String staffPhone = phoneField.getText().trim();
-            String staffPass = passField.getText().trim();
-
-            String[] newData = new String[]{
-                currentId,
-                currentRole,
-                staffName,
-                staffPass,
-                staffGender,
-                staffEmail,
-                staffPhone,
-                staffAge,
-            };
-            managerActions.editStaff(_currentData, newData);
             
             this.updatedData = null;
             this.dispose();
