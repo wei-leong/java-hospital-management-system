@@ -115,7 +115,7 @@ public class CustomerManagement extends JPanel{
         northWrapper.add(headerBar);
         add(northWrapper, BorderLayout.NORTH);
         
-
+        // Table for showing the needed data
         model = new DefaultTableModel(cols, 0) {
             @Override
             public boolean isCellEditable(int r, int c) {
@@ -130,7 +130,7 @@ public class CustomerManagement extends JPanel{
         
         TableStyle.applyStyle(table);
         
-        //Edit Button
+        //Edit icon Button (use for edit customer information)
         table.getColumnModel().getColumn(model.getColumnCount() - 1).setCellRenderer(new DefaultTableCellRenderer() {
         ImageIcon rawIcon = new ImageIcon(getClass().getResource("/image/edit_profile.png"));
         Image img = rawIcon.getImage().getScaledInstance(20, 20, Image.SCALE_SMOOTH);
@@ -168,7 +168,8 @@ public class CustomerManagement extends JPanel{
 
         refreshTable();
     }
-    
+        
+       //While new customer data is get in, the function use to refresh the table. Let user can see the new data in the table at the first time
        public void refreshTable() {
         if (model == null) return;
         model.setRowCount(0);

@@ -29,7 +29,7 @@ public class AppointmentsManagement extends JPanel{
         filters.setBackground(Color.WHITE);
         filters.setBorder(BorderFactory.createEmptyBorder());
         
-        // 2) Add and Edit customer Button
+        // 1) Create Appointment Button
         JPanel Button1 = new JPanel();
         Button1.setLayout(new FlowLayout(FlowLayout.RIGHT,10,5));
         Button1.setForeground(Color.white);
@@ -45,6 +45,7 @@ public class AppointmentsManagement extends JPanel{
         btn.setOpaque(true);                                     
         btn.setFocusPainted(false);                               
         
+        //Call out Create Appointment Function
         btnAdd.addActionListener(e -> {
             CreateAppointment dialog = new CreateAppointment(AppointmentsManagement.this);
             dialog.setLocationRelativeTo(this);
@@ -54,7 +55,7 @@ public class AppointmentsManagement extends JPanel{
         Button1.add(btnAdd);
         
         // 2) Column headers
-        String[] cols = {"Appointments ID", "Docter ID", "Customer ID", "Date & Time","Status","Edit"};
+        String[] cols = {"Appointments ID", "Docter ID", "Customer ID", "Date & Time","Status","Cancel"};
         JPanel headerBar = new JPanel(new GridLayout(1, cols.length, 12, 0));
         headerBar.setBackground(Color.WHITE);
         headerBar.setBorder(BorderFactory.createEmptyBorder());  
@@ -77,6 +78,8 @@ public class AppointmentsManagement extends JPanel{
         northWrapper.add(headerBar);
         add(northWrapper, BorderLayout.NORTH);
         
+        
+        //Table for showing appointment data
         model = new DefaultTableModel(cols, 0) {
             @Override
             public boolean isCellEditable(int r, int c) {
@@ -89,15 +92,16 @@ public class AppointmentsManagement extends JPanel{
         table.setShowGrid(false);
         table.setIntercellSpacing(new Dimension(0, 10));
         
+        //Table style use to control the table size
         TableStyle.applyStyle(table);
         
         table.addMouseListener(new java.awt.event.MouseAdapter() {
         @Override
         public void mouseClicked(java.awt.event.MouseEvent e) {
-            int row = table.rowAtPoint(e.getPoint());    // 获取点击的行
-            int col = table.columnAtPoint(e.getPoint()); // 获取点击的列
+            int row = table.rowAtPoint(e.getPoint());    // get the row u click
+            int col = table.columnAtPoint(e.getPoint()); // get the column u click
 
-            // 如果点击的是最后一列（Delete图标所在列）
+            // Click for the last column (Cause that the function icon is put on the last column)
             if (col == model.getColumnCount() - 1 && row >= 0) {
                 int confirm = JOptionPane.showConfirmDialog(
                         AppointmentsManagement.this,
@@ -107,25 +111,26 @@ public class AppointmentsManagement extends JPanel{
                 );
 
                 if (confirm == JOptionPane.YES_OPTION) {
-                    // 获取要删除的 Appointment ID（假设第一列是 ID）
+                    // get the appointment id that u want to delete
                     String appointmentId = (String) model.getValueAt(row, 0);
 
-                    // 从 JTable 删除
+                    // remove from table
                     model.removeRow(row);
 
-                    // 同步删除 appointment.txt 文件里的对应数据
+                    // remove the data from the txt file
                     removeAppointmentFromFile(appointmentId);
                 }
             }
         }
     });
         
+        //put the icon image into the last column on the table
         table.getColumnModel().getColumn(model.getColumnCount() - 1).setCellRenderer(new DefaultTableCellRenderer() {
         ImageIcon rawIcon = new ImageIcon(getClass().getResource("/image/delete.png"));
         Image img = rawIcon.getImage().getScaledInstance(20, 20, Image.SCALE_SMOOTH);
         Icon editIcon = new ImageIcon(img); 
         
-        
+        //use to add the icon to the table 
         @Override
         public Component getTableCellRendererComponent(JTable table,
                                                        Object value, boolean isSelected,
@@ -135,7 +140,8 @@ public class AppointmentsManagement extends JPanel{
             return lbl;
         }
     });
-
+        
+        //set the data have an border on the table
         DefaultTableCellRenderer cellRend = new DefaultTableCellRenderer() {
             @Override
             public Component getTableCellRendererComponent(JTable table,
@@ -158,40 +164,43 @@ public class AppointmentsManagement extends JPanel{
         refreshAppointmentTable();
     }
     
-public void refreshAppointmentTable() {
-    if (model == null) return;
-    model.setRowCount(0);  // 清空旧数据
+    
+    //Use for refresh the appointment showing table
+    public void refreshAppointmentTable() {
+        if (model == null) return;
+        model.setRowCount(0);  // clear all of the old data
 
-    try (BufferedReader br = new BufferedReader(new FileReader("D:\\USER BACKUP\\Documents\\NetBeansProjects\\JavaAssignment\\apu-medical-centre\\src\\txt\\appointment.txt"))) {
-        String line;
-        while ((line = br.readLine()) != null) {
-            // 跳过空行
-            if (line.trim().isEmpty()) continue;
+        try (BufferedReader br = new BufferedReader(new FileReader("D:\\USER BACKUP\\Documents\\NetBeansProjects\\JavaAssignment\\apu-medical-centre\\src\\txt\\appointment.txt"))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                // if the line is empty, keep continue the function
+                if (line.trim().isEmpty()) continue;
 
-            // 按逗号分隔字段
-            String[] row = line.split(",");
+                // all the data is use "," to save
+                String[] row = line.split(",");
 
-            // 确保数据足够长（至少有4个字段）
-            if (row.length >= 4) {
-             
-                Object[] newRow = {
-                    row[0].trim(),  
-                    row[1].trim(),  
-                    row[2].trim(),
-                    row[3].trim(),
-                    row[4].trim(),
-                    ""              
-                };
-                model.addRow(newRow);
+                // make sure the lenght of the data is biggest than 4
+                if (row.length >= 4) {
+
+                    Object[] newRow = {
+                        row[0].trim(),  
+                        row[1].trim(),  
+                        row[2].trim(),
+                        row[3].trim(),
+                        row[4].trim(),
+                        ""              
+                    };
+                    model.addRow(newRow);
+                }
             }
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(this, 
+                "Error reading : " + e.getMessage(),
+                "File Error", JOptionPane.ERROR_MESSAGE);
         }
-    } catch (IOException e) {
-        JOptionPane.showMessageDialog(this, 
-            "Error reading appointments.txt: " + e.getMessage(),
-            "File Error", JOptionPane.ERROR_MESSAGE);
     }
-}
-
+    
+    //This function use to delete the data i delete form table on the appoint txt file
     private void removeAppointmentFromFile(String appointmentId) {
         String filePath = "D:\\USER BACKUP\\Documents\\NetBeansProjects\\JavaAssignment\\apu-medical-centre\\src\\txt\\appointment.txt";
         List<String> lines = new ArrayList<>();
@@ -200,7 +209,7 @@ public void refreshAppointmentTable() {
             String line;
             while ((line = br.readLine()) != null) {
                 if (!line.startsWith(appointmentId + ",")) { 
-                    lines.add(line); // 保留非删除的行
+                    lines.add(line); // keep the data of the line is not delete
                 }
             }
         } catch (IOException e) {

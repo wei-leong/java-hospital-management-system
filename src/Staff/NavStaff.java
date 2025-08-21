@@ -133,7 +133,7 @@ public class NavStaff extends JFrame{
         }));
         bar.add(makeSidebarButton("Finance Report", iconFinanceReport, e -> {
             cards.show(content, "Finance Report");
-            titleChanger("Receive Generated and Payment Collection");
+            titleChanger("Receipts Generate and Payment Collection");
         }));
 
         JPanel bottom = new JPanel(new BorderLayout(10, 10));

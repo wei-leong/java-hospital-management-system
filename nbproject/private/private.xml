@@ -34,6 +34,13 @@
             <file>file:/D:/USER%20BACKUP/Documents/NetBeansProjects/JavaAssignment/apu-medical-centre/src/Staff/CreateAppointment.java</file>
             <file>file:/D:/USER%20BACKUP/Documents/NetBeansProjects/JavaAssignment/apu-medical-centre/src/Class/DocterFilterManagement.java</file>
             <file>file:/D:/USER%20BACKUP/Documents/NetBeansProjects/JavaAssignment/apu-medical-centre/src/txt/doctor_worktime.txt</file>
+            <file>file:/D:/USER%20BACKUP/Documents/NetBeansProjects/JavaAssignment/apu-medical-centre/src/Staff/ReceiptsHistoryTable.java</file>
+            <file>file:/D:/USER%20BACKUP/Documents/NetBeansProjects/JavaAssignment/apu-medical-centre/src/Staff/GenerateReceipts.java</file>
+            <file>file:/D:/USER%20BACKUP/Documents/NetBeansProjects/JavaAssignment/apu-medical-centre/src/txt/receipt.txt</file>
+            <file>file:/D:/USER%20BACKUP/Documents/NetBeansProjects/JavaAssignment/apu-medical-centre/src/txt/receipt_item.txt</file>
+            <file>file:/D:/USER%20BACKUP/Documents/NetBeansProjects/JavaAssignment/apu-medical-centre/src/txt/payment.txt</file>
+            <file>file:/D:/USER%20BACKUP/Documents/NetBeansProjects/JavaAssignment/apu-medical-centre/src/txt/medicine.txt</file>
+            <file>file:/D:/USER%20BACKUP/Documents/NetBeansProjects/JavaAssignment/apu-medical-centre/src/Class/Showreceipts.java</file>
         </group>
     </open-files>
 </project-private>
