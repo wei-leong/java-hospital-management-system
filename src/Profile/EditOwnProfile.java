@@ -24,6 +24,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JSpinner;
@@ -35,7 +36,8 @@ import static javax.swing.WindowConstants.DISPOSE_ON_CLOSE;
  *
  * @author Wlhoe
  */
-public class EditOwnProfile extends JDialog{
+public class EditOwnProfile extends JDialog {
+
     private final JTextField nameField = new JTextField(20);
     private final JTextField emailField = new JTextField(20);
     private final JTextField passField = new JTextField(20);
@@ -44,8 +46,8 @@ public class EditOwnProfile extends JDialog{
     private final JRadioButton rbM = new JRadioButton("Male");
     private final JRadioButton rbF = new JRadioButton("Female");
     private String[] updatedData = null;
-    
-    public String[] getUpdatedData(){
+
+    public String[] getUpdatedData() {
         return updatedData;
     }
 
@@ -58,14 +60,13 @@ public class EditOwnProfile extends JDialog{
     private final String currentEmail;
     private final String currentPhone;
     private final int currentAge;
-    
 
     // Add attributes here
-    public EditOwnProfile(Window parent,String[] currentData) {
+    public EditOwnProfile(Window parent, String[] currentData) {
         super(parent, "Edit Profile", Dialog.ModalityType.APPLICATION_MODAL);
-        
+
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-        
+
         this._currentData = currentData;
         this.currentId = _currentData[0];
         this.currentRole = _currentData[1];
@@ -109,9 +110,19 @@ public class EditOwnProfile extends JDialog{
         btnBack.setContentAreaFilled(false);
         btnBack.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         btnBack.addActionListener(e -> {
-            
-            this.updatedData = null;
-            this.dispose();
+            int choice = javax.swing.JOptionPane.showConfirmDialog(
+                    EditOwnProfile.this, // Parent Component
+                    "Going back will discard any unsaved changes.\nDo you want to continue?", // 
+                    "Discard changes?", // title
+                    javax.swing.JOptionPane.YES_NO_OPTION, // options
+                    javax.swing.JOptionPane.WARNING_MESSAGE // icon
+            );
+
+            if (choice == javax.swing.JOptionPane.YES_OPTION) {
+                // user confirmed => cancel editing (do not save) and close
+                this.updatedData = null;
+                this.dispose();
+            }
         });
         topBar.add(btnBack);
 
@@ -233,8 +244,7 @@ public class EditOwnProfile extends JDialog{
                 staffEmail,
                 staffPhone,
                 staffAge,
-                "Active",
-            };
+                "Active",};
             managerActions.editStaff(_currentData, newData);
             this.updatedData = newData;
 
