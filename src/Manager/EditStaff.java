@@ -6,47 +6,66 @@ import java.awt.*;
 import static javax.swing.WindowConstants.DISPOSE_ON_CLOSE;
 
 public class EditStaff extends JFrame {
-    
+
     private final JTextField nameField = new JTextField(20);
     private final JTextField emailField = new JTextField(20);
     private final JTextField passField = new JTextField(20);
-    private final JSpinner ageField = new JSpinner(new SpinnerNumberModel(18,16,100,1));
+    private final JSpinner ageField = new JSpinner(new SpinnerNumberModel(18, 16, 100, 1));
     private final JTextField phoneField = new JTextField(20);
     private final JRadioButton rbM = new JRadioButton("Male");
     private final JRadioButton rbF = new JRadioButton("Female");
-    
+
+    private final String[] _currentData;
+    private final String currentId;
+    private final String currentRole;
+    private final String currentName;
+    private final String currentPass;
+    private final String currentGender;
+    private final String currentEmail;
+    private final String currentPhone;
+    private final int currentAge;
+
     // Add attributes here
     public EditStaff(String[] currentData) {
         super("Edit Staff");
-        
-        // Staff Data
-        String currentId = currentData[0];
-        String currentRole = currentData[1];
-        String currentName = currentData[2];
-        String currentPass = currentData[3];
-        String currentGender = currentData[4];
-        String currentEmail = currentData[5];
-        String currentPhone = currentData[6];
-        int currentAge = Integer.parseInt(currentData[7]);
-        
+        this._currentData = currentData;
+        this.currentId = _currentData[0];
+        this.currentRole = _currentData[1];
+        this.currentName = _currentData[2];
+        this.currentPass = _currentData[3];
+        this.currentGender = _currentData[4];
+        this.currentEmail = _currentData[5];
+        this.currentPhone = _currentData[6];
+        this.currentAge = Integer.parseInt(_currentData[7]);
+
         // Window settings
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         setResizable(false);
         setMinimumSize(new Dimension(700, 600)); // Fixed Width and Height
         getContentPane().setBackground(Color.WHITE);
-        setLayout(new BorderLayout(10,10));
+        setLayout(new BorderLayout(10, 10));
 
+        add(topBar(), BorderLayout.NORTH); // Return Button + Edit Staff Title
+        add(form(), BorderLayout.CENTER); // Staff Data Form 
+        add(bottomBar(), BorderLayout.SOUTH); // Edit Staff button
+
+        pack();
+        setSize(600, 500);
+        setLocationRelativeTo(null);
+    }
+
+    private JPanel topBar() {
         // Top Bar Panel for Return Button
         JPanel topBar = new JPanel(new FlowLayout(FlowLayout.LEFT, 8, 8));
         topBar.setBackground(Color.WHITE);
 
         // Return Button
         ImageIcon backIcon = new ImageIcon(
-            getClass().getResource("/image/back.png")
+                getClass().getResource("/image/back.png")
         );
         Image scaleIcon = backIcon.getImage().getScaledInstance(24, 24, Image.SCALE_SMOOTH);
         ImageIcon scaledReturnIcon = new ImageIcon(scaleIcon);
-        
+
         JButton btnBack = new JButton(scaledReturnIcon);
         btnBack.setBorder(null);
         btnBack.setContentAreaFilled(false);
@@ -54,14 +73,14 @@ public class EditStaff extends JFrame {
         btnBack.addActionListener(e -> {
             String staffGender = rbM.isSelected() ? "Male" : "Female";
             String staffAge = String.valueOf(ageField.getValue());
-            
+
             Manager managerActions = new Manager();
-            
+
             String staffName = nameField.getText().trim();
             String staffEmail = emailField.getText().trim();
             String staffPhone = phoneField.getText().trim();
             String staffPass = passField.getText().trim();
-            
+
             String[] newData = new String[]{
                 currentId,
                 currentRole,
@@ -70,34 +89,36 @@ public class EditStaff extends JFrame {
                 staffGender,
                 staffEmail,
                 staffPhone,
-                staffAge
+                staffAge,
             };
-            managerActions.editStaff(currentData,newData);
-            
+            managerActions.editStaff(_currentData, newData);
+
             this.dispose();
         });
         topBar.add(btnBack);
-        
+
         // Top Bar Label
         JLabel lblTitle = new JLabel("Edit Staff");
         lblTitle.setFont(lblTitle.getFont().deriveFont(Font.BOLD, 18f));
         topBar.add(lblTitle);
+        return topBar;
+    }
 
-        add(topBar, BorderLayout.NORTH);
-
+    private JPanel form() {
         // Form
         JPanel form = new JPanel(new GridBagLayout());
         form.setBackground(Color.WHITE);
         GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets    = new Insets(8,8,8,8);
-        gbc.anchor    = GridBagConstraints.WEST;
-        gbc.fill      = GridBagConstraints.HORIZONTAL;
-        gbc.weightx   = 1.0;
+        gbc.insets = new Insets(8, 8, 8, 8);
+        gbc.anchor = GridBagConstraints.WEST;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.weightx = 1.0;
 
         int row = 0;
 
         // Name Title
-        gbc.gridx = 0; gbc.gridy = row++;
+        gbc.gridx = 0;
+        gbc.gridy = row++;
         form.add(new JLabel("Name"), gbc);
         gbc.gridy = row++;
         nameField.setText(currentName);
@@ -105,9 +126,9 @@ public class EditStaff extends JFrame {
 
         // Age + Role Grid Layout
         gbc.gridy = row++;
-        JPanel ageRole = new JPanel(new GridLayout(1,2,10,0));
+        JPanel ageRole = new JPanel(new GridLayout(1, 2, 10, 0));
         ageRole.setBackground(Color.WHITE);
-        
+
         // Age
         gbc.gridy = row++;
         form.add(new JLabel("Age"), gbc);
@@ -138,11 +159,12 @@ public class EditStaff extends JFrame {
         rbM.setBackground(Color.WHITE);
         rbF.setBackground(Color.WHITE);
         ButtonGroup bg = new ButtonGroup();
-        bg.add(rbM); bg.add(rbF);
+        bg.add(rbM);
+        bg.add(rbF);
         genderPanel.add(rbM);
         genderPanel.add(rbF);
         form.add(genderPanel, gbc);
-        
+
         if ("Male".equalsIgnoreCase(currentGender)) {
             rbM.setSelected(true);
         } else if ("Female".equalsIgnoreCase(currentGender)) {
@@ -155,9 +177,10 @@ public class EditStaff extends JFrame {
         gbc.gridy = row++;
         passField.setText(currentPass);
         form.add(passField, gbc);
+        return form;
+    }
 
-        add(form, BorderLayout.CENTER);
-
+    private JPanel bottomBar() {
         // Bottom Bar with Add Staff Button
         JButton btnAdd = new JButton("Edit Staff");
         btnAdd.setFont(btnAdd.getFont().deriveFont(Font.BOLD, 14f));
@@ -175,14 +198,14 @@ public class EditStaff extends JFrame {
         btnAdd.addActionListener(e -> {
             String staffGender = rbM.isSelected() ? "Male" : "Female";
             String staffAge = String.valueOf(ageField.getValue());
-            
+
             Manager managerActions = new Manager();
-            
+
             String staffName = nameField.getText().trim();
             String staffEmail = emailField.getText().trim();
             String staffPhone = phoneField.getText().trim();
             String staffPass = passField.getText().trim();
-            
+
             String[] newData = new String[]{
                 currentId,
                 currentRole,
@@ -191,15 +214,14 @@ public class EditStaff extends JFrame {
                 staffGender,
                 staffEmail,
                 staffPhone,
-                staffAge
+                staffAge,
+                "Active",
             };
-            managerActions.editStaff(currentData,newData);
-            
+            managerActions.editStaff(_currentData, newData);
+
             this.dispose();
         });
 
-        pack();
-        setSize(600, 500);
-        setLocationRelativeTo(null);
+        return bottom;
     }
 }

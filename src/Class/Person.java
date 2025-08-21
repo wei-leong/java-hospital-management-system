@@ -14,7 +14,7 @@ import java.util.List;
  *
  * @author Wlhoe
  */
-// Person has the ability to Login ( Abstraction ) 
+// Person has the ability to Login ( Interfaces ) 
 public class Person implements Login{
     private String _email;
     private String _password;
@@ -29,7 +29,7 @@ public class Person implements Login{
     }
     
     @Override
-    public String[] login(){
+    public String[] loginValidate(){
         Path staffData = Paths.get("src","txt", "profile.txt");
         try{
             List<String> lines = Files.readAllLines(staffData);
