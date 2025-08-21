@@ -4,6 +4,7 @@
  */
 package Class;
 
+import Profile.EditOwnProfile;
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Color;
@@ -41,7 +42,7 @@ import static javax.swing.WindowConstants.DISPOSE_ON_CLOSE;
 public class BasicNav extends JFrame {
 
     // Own Staff Details - Used to remove own profile from StaffManagement page
-    protected final String[] _staffDetails;
+    protected String[] _staffDetails;
 
     // UI Elements
     protected final JPanel sidebar;
@@ -49,6 +50,15 @@ public class BasicNav extends JFrame {
     protected final JPanel content = new JPanel(cards);
     protected final JLabel lblTitle = new JLabel();
     protected final JPanel menuPanel = new JPanel(); // For Dynamic Menu Buttons added from addPage() method
+
+    // Attributes Used by Own Profile Dialog
+    private JDialog dlgOwnProfile = new JDialog(this, "Profile", true);
+    private JLabel lblStaffId;
+    private JLabel lblStaffRole;
+    private JLabel lblStaffName;
+    private JLabel lblStaffEmail;
+    private JLabel lblStaffPhone;
+    private JLabel lblStaffAge;
 
     // Image Setup
     private final ImageScaler imgScale = new ImageScaler();
@@ -143,9 +153,9 @@ public class BasicNav extends JFrame {
 
         // Create JPanel bar with BorderLayout to align element with NORTH/CENTER/SOUTH
         JPanel bar = new JPanel(new BorderLayout());
-        bar.setPreferredSize(new Dimension(200,0));
+        bar.setPreferredSize(new Dimension(200, 0));
         bar.setBackground(sidebarBack);
-        
+
         // Stack menuPanel components vertically
         menuPanel.setLayout(new BoxLayout(menuPanel, BoxLayout.Y_AXIS));
         bar.add(menuPanel, BorderLayout.NORTH);
@@ -186,10 +196,20 @@ public class BasicNav extends JFrame {
 
     // Show Profile Details ( Staff ID, Staff Role, Name, Age ) when btnProfile is pressed
     protected void showProfileDialog() {
+        // Clear Previous Record
+        dlgOwnProfile.getContentPane().removeAll();
+
         // Create dialog to show Staff Details
-        JDialog dlg = new JDialog(this, "Profile", true);
-        dlg.setLayout(new BorderLayout(10, 10));
-        dlg.setResizable(false);
+        dlgOwnProfile.setLayout(new BorderLayout(10, 10));
+        dlgOwnProfile.setResizable(false);
+
+        // Set data to label
+        lblStaffId = new JLabel(_staffDetails[0]);
+        lblStaffRole = new JLabel(_staffDetails[1]);
+        lblStaffName = new JLabel(_staffDetails[2]);
+        lblStaffEmail = new JLabel(_staffDetails[5]);
+        lblStaffPhone = new JLabel(_staffDetails[6]);
+        lblStaffAge = new JLabel(_staffDetails[7]);
 
         // Header (Profile Picture + Staff Id and Staff Role)
         JLabel picLabel = new JLabel(iconProfileLarge);
@@ -197,36 +217,36 @@ public class BasicNav extends JFrame {
 
         // Create JPanel to group profile picture, staff id and staff role together
         JPanel idRole = new JPanel(new GridLayout(0, 1, 5, 5));
-        idRole.add(new JLabel(_staffDetails[0])); // Staff ID
-        idRole.add(new JLabel(_staffDetails[1])); // Staff Role
+        idRole.add(lblStaffId); // Staff ID
+        idRole.add(lblStaffRole); // Staff Role
 
         JPanel header = new JPanel(new BorderLayout(10, 10));
         header.add(picLabel, BorderLayout.WEST);
         header.add(idRole, BorderLayout.CENTER);
-        dlg.add(header, BorderLayout.NORTH);
+        dlgOwnProfile.add(header, BorderLayout.NORTH);
 
         // Details (in the CENTER so it expands naturally)
         JPanel details = new JPanel(new GridLayout(0, 1, 5, 5));
         details.setBorder(BorderFactory.createEmptyBorder(0, 20, 0, 20));
-        details.add(new JLabel(_staffDetails[2])); // Staff Name
-        details.add(new JLabel(_staffDetails[5])); // Staff Email
-        details.add(new JLabel(_staffDetails[6])); // Staff Phone Number
-        details.add(new JLabel(_staffDetails[7])); // Staff Age
-        dlg.add(details, BorderLayout.CENTER);
+        details.add(lblStaffName); // Staff Name
+        details.add(lblStaffEmail); // Staff Email
+        details.add(lblStaffPhone); // Staff Phone Number
+        details.add(lblStaffAge); // Staff Age
+        dlgOwnProfile.add(details, BorderLayout.CENTER);
 
         // Edit Profile Button 
         JPanel bottom = new JPanel(new BorderLayout(10, 10));
 
         bottom.add(btnEdit, BorderLayout.CENTER);
         bottom.setBorder(BorderFactory.createEmptyBorder(0, 20, 20, 20));
-        dlg.add(bottom, BorderLayout.SOUTH);
+        dlgOwnProfile.add(bottom, BorderLayout.SOUTH);
         btnEditSettings();
 
         // Finalize size & position
-        dlg.setSize(300, 250);  // fixed size you prefer
+        dlgOwnProfile.setSize(300, 250);  // fixed size you prefer
         Point loc = this.getLocationOnScreen();
-        dlg.setLocation(loc.x + this.getWidth() - dlg.getWidth() - 10, loc.y + 10);
-        dlg.setVisible(true);
+        dlgOwnProfile.setLocation(loc.x + this.getWidth() - dlgOwnProfile.getWidth() - 10, loc.y + 10);
+        dlgOwnProfile.setVisible(true);
     }
 
     // Button Style and Function Settings
@@ -260,6 +280,33 @@ public class BasicNav extends JFrame {
         });
     }
 
+    protected void refreshProfileDisplay() {
+        SwingUtilities.invokeLater(() -> {
+            if (dlgOwnProfile != null && dlgOwnProfile.isShowing()) {
+                if (dlgOwnProfile != null) {
+                    lblStaffId.setText(_staffDetails[0]);
+                }
+                if (dlgOwnProfile != null) {
+                    lblStaffRole.setText(_staffDetails[1]);
+                }
+                if (dlgOwnProfile != null) {
+                    lblStaffName.setText(_staffDetails[2]);
+                }
+                if (dlgOwnProfile != null) {
+                    lblStaffEmail.setText(_staffDetails[5]);
+                }
+                if (dlgOwnProfile != null) {
+                    lblStaffPhone.setText(_staffDetails[6]);
+                }
+                if (dlgOwnProfile != null) {
+                    lblStaffAge.setText(_staffDetails[7]);
+                }
+                dlgOwnProfile.validate();
+                dlgOwnProfile.repaint();
+            }
+        });
+    }
+
     protected void btnEditSettings() {
         btnEdit.setBackground(Color.white);
         btnEdit.setForeground(Color.BLACK);
@@ -269,7 +316,18 @@ public class BasicNav extends JFrame {
         btnEdit.setContentAreaFilled(true);
         btnEdit.setFocusPainted(false);
         btnEdit.addActionListener(e -> {
-            // Edit Own Profile Logic Here
+            // Open modal dialog centered on parent
+            EditOwnProfile dlg = new EditOwnProfile(SwingUtilities.getWindowAncestor(btnEdit), _staffDetails);
+            dlg.setVisible(true); // because dialog is modal, this call blocks until dialog.dispose()
+
+            // after dialog closes, read result
+            String[] updated = dlg.getUpdatedData();
+            if (updated != null) {
+                // update local cache of details
+                _staffDetails = updated; // if _staffDetails is final, copy into it instead
+                // refresh UI so profile dialog / any labels show new info
+                refreshProfileDisplay();    // implement to update showProfileDialog() labels
+            }
         });
     }
 
