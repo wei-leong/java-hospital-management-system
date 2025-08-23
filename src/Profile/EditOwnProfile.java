@@ -83,7 +83,7 @@ public class EditOwnProfile extends JDialog {
         this.currentPhone = _currentData[6];
         this.currentAge = Integer.parseInt(_currentData[7]);
 
-        this.validateInput = new ValidateStaffInput(currentName, currentEmail, currentPhone);
+        this.validateInput = new ValidateStaffInput(currentName, currentEmail, currentPhone,currentPass);
 
         // Window settings
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
@@ -247,6 +247,7 @@ public class EditOwnProfile extends JDialog {
             validateInput.setName(staffName);
             validateInput.setEmail(staffEmail);
             validateInput.setPhone(staffPhone);
+            validateInput.setPassword(staffPass);
 
             if (validateInput.returnErrorMsg(currentEmail,currentPhone) != null) {
                 ErrorDialog(validateInput.returnErrorMsg(currentEmail,currentPhone));

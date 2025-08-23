@@ -1,6 +1,7 @@
 package Manager;
 
 import Class.Manager;
+import Class.ValidateStaffInput;
 import javax.swing.*;
 import java.awt.*;
 import static javax.swing.WindowConstants.DISPOSE_ON_CLOSE;
@@ -14,6 +15,7 @@ public class EditStaff extends JFrame {
     private final JTextField phoneField = new JTextField(20);
     private final JRadioButton rbM = new JRadioButton("Male");
     private final JRadioButton rbF = new JRadioButton("Female");
+    private ValidateStaffInput validateInput;
 
     private final String[] _currentData;
     private final String currentId;
@@ -37,6 +39,8 @@ public class EditStaff extends JFrame {
         this.currentEmail = _currentData[5];
         this.currentPhone = _currentData[6];
         this.currentAge = Integer.parseInt(_currentData[7]);
+
+        this.validateInput = new ValidateStaffInput(currentName, currentEmail, currentPhone,currentPass);
 
         // Window settings
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
@@ -89,8 +93,7 @@ public class EditStaff extends JFrame {
                 staffGender,
                 staffEmail,
                 staffPhone,
-                staffAge,
-            };
+                staffAge,};
             managerActions.editStaff(_currentData, newData);
 
             this.dispose();
@@ -206,22 +209,40 @@ public class EditStaff extends JFrame {
             String staffPhone = phoneField.getText().trim();
             String staffPass = passField.getText().trim();
 
-            String[] newData = new String[]{
-                currentId,
-                currentRole,
-                staffName,
-                staffPass,
-                staffGender,
-                staffEmail,
-                staffPhone,
-                staffAge,
-                "Active",
-            };
-            managerActions.editStaff(_currentData, newData);
+            // Set Name, Email, Phone to new value for Validate Staff Input
+            validateInput.setName(staffName);
+            validateInput.setEmail(staffEmail);
+            validateInput.setPhone(staffPhone);
+            validateInput.setPassword(staffPass);
 
-            this.dispose();
+            if (validateInput.returnErrorMsg(currentEmail, currentPhone) != null) {
+                ErrorDialog(validateInput.returnErrorMsg(currentEmail, currentPhone));
+            } else {
+                String[] newData = new String[]{
+                    currentId,
+                    currentRole,
+                    staffName,
+                    staffPass,
+                    staffGender,
+                    staffEmail,
+                    staffPhone,
+                    staffAge,
+                    "Active",};
+                managerActions.editStaff(_currentData, newData);
+
+                this.dispose();
+            }
         });
 
         return bottom;
+    }
+
+    private void ErrorDialog(String msg) {
+        JOptionPane.showMessageDialog(
+                this,
+                msg,
+                "Validation Error",
+                JOptionPane.ERROR_MESSAGE
+        );
     }
 }
