@@ -5,6 +5,7 @@
 package Profile;
 
 import Class.Manager;
+import Class.ValidateStaffInput;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Cursor;
@@ -50,6 +51,7 @@ public class EditOwnProfile extends JDialog {
     private final JRadioButton rbF = new JRadioButton("Female");
     private String[] updatedData = null;
     private final Manager managerActions = new Manager();
+    private ValidateStaffInput validateInput;
 
     public String[] getUpdatedData() {
         return updatedData;

@@ -21,6 +21,11 @@ public class ValidateStaffInput extends ProfileActions{
         this._phone = phone;
     }
     
+    // Add setters to override new values
+    public void setName(String name)   { this._name  = name; }
+    public void setEmail(String email) { this._email = email; }
+    public void setPhone(String phone) { this._phone = phone; }
+    
     public String returnErrorMsg(){
         // Validate Name
         if(_name.isEmpty()){
