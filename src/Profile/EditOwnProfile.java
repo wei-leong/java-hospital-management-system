@@ -18,6 +18,8 @@ import java.awt.GridLayout;
 import java.awt.Image;
 import java.awt.Insets;
 import java.awt.Window;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
 import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
@@ -30,6 +32,7 @@ import javax.swing.JRadioButton;
 import javax.swing.JSpinner;
 import javax.swing.JTextField;
 import javax.swing.SpinnerNumberModel;
+import javax.swing.SwingUtilities;
 import static javax.swing.WindowConstants.DISPOSE_ON_CLOSE;
 
 /**
@@ -46,6 +49,7 @@ public class EditOwnProfile extends JDialog {
     private final JRadioButton rbM = new JRadioButton("Male");
     private final JRadioButton rbF = new JRadioButton("Female");
     private String[] updatedData = null;
+    private final Manager managerActions = new Manager();
 
     public String[] getUpdatedData() {
         return updatedData;
@@ -252,5 +256,15 @@ public class EditOwnProfile extends JDialog {
         });
 
         return bottom;
+    }
+    
+        
+    private void ErrorDialog(String msg) {
+        JOptionPane.showMessageDialog(
+                this,
+                msg,
+                "Validation Error",
+                JOptionPane.ERROR_MESSAGE
+        );
     }
 }
