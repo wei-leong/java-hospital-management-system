@@ -16,8 +16,8 @@ public class AddStaff extends JFrame {
     private final JTextField phoneField = new JTextField(20);
     private final JButton btnAdd = new JButton("+ Add Staff");
     private final JButton btnBack;
-    private final JRadioButton rbM = new JRadioButton("Male");
-    private final JRadioButton rbF = new JRadioButton("Female");
+    private final JRadioButton rbM = new JRadioButton("Male",true);
+    private final JRadioButton rbF = new JRadioButton("Female",false);
     private final Manager managerActions = new Manager();
 
     private final ImageScaler imgScale = new ImageScaler();

@@ -9,3 +9,5 @@ M3,Manager,Alston Tan Jia Jie,tan40123,Male,atjj1@mail.apu.com,0188887763,40,Ina
 S2,Staff,Tan HJH,S221,Female,thjh@mail.apu.com,0188877654,21,Inactive
 
 D3,Doctor,Tan Gay Jia Jie,D322,Female,tgay@mail.apu.com,0177762341,22,Inactive
+
+M4,Manager,Tan Gay JJ,M418,Male,tgayjj@mail.apu.com,0188877734,18,Active
