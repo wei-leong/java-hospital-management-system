@@ -1,13 +1,46 @@
-package Manager;
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ */
+package Profile;
 
 import Class.Manager;
 import Class.ValidateStaffInput;
-import Profile.EditOwnProfile;
-import javax.swing.*;
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Cursor;
+import java.awt.Dialog;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.Font;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.GridLayout;
+import java.awt.Image;
+import java.awt.Insets;
+import java.awt.Window;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
+import javax.swing.BorderFactory;
+import javax.swing.ButtonGroup;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JDialog;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JRadioButton;
+import javax.swing.JSpinner;
+import javax.swing.JTextField;
+import javax.swing.SpinnerNumberModel;
+import javax.swing.SwingUtilities;
 import static javax.swing.WindowConstants.DISPOSE_ON_CLOSE;
 
-public class EditStaff extends JFrame {
+/**
+ *
+ * @author Wlhoe
+ */
+public class EditOwnProfile extends JDialog {
 
     private final JTextField nameField = new JTextField(20);
     private final JTextField emailField = new JTextField(20);
@@ -16,7 +49,13 @@ public class EditStaff extends JFrame {
     private final JTextField phoneField = new JTextField(20);
     private final JRadioButton rbM = new JRadioButton("Male");
     private final JRadioButton rbF = new JRadioButton("Female");
+    private String[] updatedData = null;
+    private final Manager managerActions = new Manager();
     private ValidateStaffInput validateInput;
+
+    public String[] getUpdatedData() {
+        return updatedData;
+    }
 
     private final String[] _currentData;
     private final String currentId;
@@ -29,8 +68,11 @@ public class EditStaff extends JFrame {
     private final int currentAge;
 
     // Add attributes here
-    public EditStaff(String[] currentData) {
-        super("Edit Staff");
+    public EditOwnProfile(Window parent, String[] currentData) {
+        super(parent, "Edit Profile", Dialog.ModalityType.APPLICATION_MODAL);
+
+        setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+
         this._currentData = currentData;
         this.currentId = _currentData[0];
         this.currentRole = _currentData[1];
@@ -77,7 +119,7 @@ public class EditStaff extends JFrame {
         btnBack.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         btnBack.addActionListener(e -> {
             int choice = javax.swing.JOptionPane.showConfirmDialog(
-                    this, // Parent Component
+                    EditOwnProfile.this, // Parent Component
                     "Going back will discard any unsaved changes.\nDo you want to continue?", // 
                     "Discard changes?", // title
                     javax.swing.JOptionPane.YES_NO_OPTION, // options
@@ -86,6 +128,7 @@ public class EditStaff extends JFrame {
 
             if (choice == javax.swing.JOptionPane.YES_OPTION) {
                 // user confirmed => cancel editing (do not save) and close
+                this.updatedData = null;
                 this.dispose();
             }
         });
@@ -176,7 +219,7 @@ public class EditStaff extends JFrame {
 
     private JPanel bottomBar() {
         // Bottom Bar with Add Staff Button
-        JButton btnAdd = new JButton("Edit Staff");
+        JButton btnAdd = new JButton("Save Changes");
         btnAdd.setFont(btnAdd.getFont().deriveFont(Font.BOLD, 14f));
         btnAdd.setPreferredSize(new Dimension(300, 40));
         btnAdd.setBackground(Color.WHITE);
@@ -206,8 +249,8 @@ public class EditStaff extends JFrame {
             validateInput.setPhone(staffPhone);
             validateInput.setPassword(staffPass);
 
-            if (validateInput.returnErrorMsg(currentEmail, currentPhone) != null) {
-                ErrorDialog(validateInput.returnErrorMsg(currentEmail, currentPhone));
+            if (validateInput.returnErrorMsg(currentEmail,currentPhone) != null) {
+                ErrorDialog(validateInput.returnErrorMsg(currentEmail,currentPhone));
             } else {
                 String[] newData = new String[]{
                     currentId,
@@ -220,6 +263,7 @@ public class EditStaff extends JFrame {
                     staffAge,
                     "Active",};
                 managerActions.editStaff(_currentData, newData);
+                this.updatedData = newData;
 
                 this.dispose();
             }

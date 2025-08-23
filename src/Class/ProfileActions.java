@@ -150,6 +150,10 @@ public class ProfileActions extends FileActions {
         return phone != null && phone.length() == 10 && phone.chars().allMatch(Character::isDigit);
     }
     
+    public boolean checkPassword(String password) {
+        return password != null && password.length() >= 6;
+    }
+    
     public List<String[]> ReturnAllStaffData(){
         return returnAllDataFromFile(txt_len);
     }
