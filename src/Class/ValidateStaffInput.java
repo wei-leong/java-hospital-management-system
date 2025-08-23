@@ -51,15 +51,4 @@ public class ValidateStaffInput extends ProfileActions{
         
         return null;
     }
-    
-    // Add ErrorDialog here with 
-    
-//    private void ErrorDialog( this, logi here) {
-//        JOptionPane.showMessageDialog(
-//                this,
-//                returnErrorMsg,
-//                "Validation Error",
-//                JOptionPane.ERROR_MESSAGE
-//        );
-//    }
 }
