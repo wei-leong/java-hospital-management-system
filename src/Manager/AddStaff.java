@@ -128,7 +128,20 @@ public class AddStaff extends JFrame {
         btnBack.setBorder(null);
         btnBack.setContentAreaFilled(false);
         btnBack.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-        btnBack.addActionListener(e -> this.dispose()); // Dispose Add Staff page and return to StaffManagement
+        btnBack.addActionListener(e -> {
+            int choice = javax.swing.JOptionPane.showConfirmDialog(
+                    this, // Parent Component
+                    "Going back will discard any unsaved changes.\nDo you want to continue?", // 
+                    "Discard changes?", // title
+                    javax.swing.JOptionPane.YES_NO_OPTION, // options
+                    javax.swing.JOptionPane.WARNING_MESSAGE // icon
+            );
+
+            if (choice == javax.swing.JOptionPane.YES_OPTION) {
+                // user confirmed => cancel editing (do not save) and close
+                this.dispose();
+            }
+        });
     }
 
     private JPanel topBar() {
