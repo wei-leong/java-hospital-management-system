@@ -2,6 +2,7 @@ package Manager;
 
 import Class.Manager;
 import Class.ValidateStaffInput;
+import Profile.EditOwnProfile;
 import javax.swing.*;
 import java.awt.*;
 import static javax.swing.WindowConstants.DISPOSE_ON_CLOSE;
@@ -75,28 +76,18 @@ public class EditStaff extends JFrame {
         btnBack.setContentAreaFilled(false);
         btnBack.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         btnBack.addActionListener(e -> {
-            String staffGender = rbM.isSelected() ? "Male" : "Female";
-            String staffAge = String.valueOf(ageField.getValue());
+            int choice = javax.swing.JOptionPane.showConfirmDialog(
+                    this, // Parent Component
+                    "Going back will discard any unsaved changes.\nDo you want to continue?", // 
+                    "Discard changes?", // title
+                    javax.swing.JOptionPane.YES_NO_OPTION, // options
+                    javax.swing.JOptionPane.WARNING_MESSAGE // icon
+            );
 
-            Manager managerActions = new Manager();
-
-            String staffName = nameField.getText().trim();
-            String staffEmail = emailField.getText().trim();
-            String staffPhone = phoneField.getText().trim();
-            String staffPass = passField.getText().trim();
-
-            String[] newData = new String[]{
-                currentId,
-                currentRole,
-                staffName,
-                staffPass,
-                staffGender,
-                staffEmail,
-                staffPhone,
-                staffAge,};
-            managerActions.editStaff(_currentData, newData);
-
-            this.dispose();
+            if (choice == javax.swing.JOptionPane.YES_OPTION) {
+                // user confirmed => cancel editing (do not save) and close
+                this.dispose();
+            }
         });
         topBar.add(btnBack);
 
