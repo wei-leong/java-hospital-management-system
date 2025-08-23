@@ -26,7 +26,7 @@ public class ValidateStaffInput extends ProfileActions{
     public void setEmail(String email) { this._email = email; }
     public void setPhone(String phone) { this._phone = phone; }
     
-    public String returnErrorMsg(){
+    public String returnErrorMsg(String currentEmail, String currentPhone){
         // Validate Name
         if(_name.isEmpty()){
             return "Please enter a name";
@@ -39,7 +39,7 @@ public class ValidateStaffInput extends ProfileActions{
         if(!isEmailEndsWith(_email,"@mail.apu.com")){
             return "Email must end with @mail.apu.com.";
         }
-        if(!isEmailUnique(_email)){
+        if(!_email.equalsIgnoreCase(currentEmail) && !isEmailUnique(_email)){
             return "This email is already in use.";
         }
         
@@ -50,7 +50,7 @@ public class ValidateStaffInput extends ProfileActions{
         if(!checkPhone(_phone)){
             return "Phone Number must be exactly 10 digits";
         }
-        if(!isPhoneUnique(_phone)){
+        if(!_phone.equalsIgnoreCase(currentPhone) && !isPhoneUnique(_phone)){
             return "Phone Number is already in use";
         }
         

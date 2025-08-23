@@ -82,8 +82,8 @@ public class EditOwnProfile extends JDialog {
         this.currentEmail = _currentData[5];
         this.currentPhone = _currentData[6];
         this.currentAge = Integer.parseInt(_currentData[7]);
-        
-        this.validateInput = new ValidateStaffInput(currentName,currentEmail,currentPhone);
+
+        this.validateInput = new ValidateStaffInput(currentName, currentEmail, currentPhone);
 
         // Window settings
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
@@ -243,26 +243,34 @@ public class EditOwnProfile extends JDialog {
             String staffPhone = phoneField.getText().trim();
             String staffPass = passField.getText().trim();
 
-            String[] newData = new String[]{
-                currentId,
-                currentRole,
-                staffName,
-                staffPass,
-                staffGender,
-                staffEmail,
-                staffPhone,
-                staffAge,
-                "Active",};
-            managerActions.editStaff(_currentData, newData);
-            this.updatedData = newData;
+            // Set Name, Email, Phone to new value for Validate Staff Input
+            validateInput.setName(staffName);
+            validateInput.setEmail(staffEmail);
+            validateInput.setPhone(staffPhone);
 
-            this.dispose();
+            if (validateInput.returnErrorMsg(currentEmail,currentPhone) != null) {
+                ErrorDialog(validateInput.returnErrorMsg(currentEmail,currentPhone));
+            } else {
+                String[] newData = new String[]{
+                    currentId,
+                    currentRole,
+                    staffName,
+                    staffPass,
+                    staffGender,
+                    staffEmail,
+                    staffPhone,
+                    staffAge,
+                    "Active",};
+                managerActions.editStaff(_currentData, newData);
+                this.updatedData = newData;
+
+                this.dispose();
+            }
         });
 
         return bottom;
     }
-    
-        
+
     private void ErrorDialog(String msg) {
         JOptionPane.showMessageDialog(
                 this,
