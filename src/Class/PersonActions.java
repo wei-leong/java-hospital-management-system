@@ -8,10 +8,12 @@ package Class;
  *
  * @author Wlhoe
  */
-public interface Login {
+public interface PersonActions {
     /**
      * Check whether the given credentials are valid.
      * @return the staff details if login succeeds
      */
     String[] loginValidate();
+    
+    void editProfile(String[] oldData, String[] newData);
 }

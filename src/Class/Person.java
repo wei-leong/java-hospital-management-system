@@ -14,8 +14,8 @@ import java.util.List;
  *
  * @author Wlhoe
  */
-// Person has the ability to Login ( Interfaces ) 
-public class Person implements Login{
+// Person has the ability to Login & Edit Own Profile( Interfaces ) 
+public class Person extends ProfileActions implements PersonActions{
     private String _email;
     private String _password;
     
@@ -43,5 +43,10 @@ public class Person implements Login{
             System.err.println("Error reading profile.txt: " + e.getMessage());
         }
         return null;
+    }
+    
+    @Override
+    public void editProfile(String[] oldData, String[] newData){
+        EditProfile(oldData, newData);
     }
 }
