@@ -69,4 +69,36 @@ public class ValidateStaffInput extends ProfileActions {
 
         return null;
     }
+    
+    // Used in Add Staff
+    public String returnMsgAddProfile() {
+        // Validate Name
+        if (_name.isEmpty()) {
+            return "Please enter a name";
+        }
+
+        // Validate Email
+        if (_email.isEmpty()) {
+            return "Please enter a email address";
+        }
+        if (!isEmailEndsWith(_email, "@mail.apu.com")) {
+            return "Email must end with @mail.apu.com.";
+        }
+        if (!isEmailUnique(_email)) {
+            return "This email is already in use.";
+        }
+
+        // Validate Phone
+        if (_phone.isEmpty()) {
+            return "Please enter a phone number";
+        }
+        if (!checkPhone(_phone)) {
+            return "Phone Number must be exactly 10 digits";
+        }
+        if (!isPhoneUnique(_phone)) {
+            return "Phone Number is already in use";
+        }
+
+        return null;
+    }
 }
