@@ -273,7 +273,7 @@ public class Dashboard extends JPanel {
 
         // Initialise lblCountNum
         JLabel lblCountNum = new JLabel(
-                String.valueOf(managerActions.returnTotalAppointment(apptFilter)),
+                String.valueOf(managerActions.returnCustomerAverageAge()),
                 SwingConstants.CENTER
         );
 
