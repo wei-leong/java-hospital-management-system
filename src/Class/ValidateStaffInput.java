@@ -16,6 +16,8 @@ public class ValidateStaffInput extends ProfileActions {
     private String _email;
     private String _phone;
     private String _password;
+    
+    public ValidateStaffInput(){}
 
     public ValidateStaffInput(String name, String email, String phone, String password) {
         this._name = name;

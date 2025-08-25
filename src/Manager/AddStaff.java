@@ -20,7 +20,7 @@ public class AddStaff extends JFrame {
     private final JRadioButton rbM = new JRadioButton("Male",true);
     private final JRadioButton rbF = new JRadioButton("Female",false);
     private final Manager managerActions = new Manager();
-    private ValidateStaffInput validateInput;
+    private final ValidateStaffInput validateInput = new ValidateStaffInput();;
 
     private final ImageScaler imgScale = new ImageScaler();
     ImageIcon returnIcon = imgScale.returnScaledImageIcon("/image/back.png", 24, 24);
@@ -65,7 +65,7 @@ public class AddStaff extends JFrame {
         btnAdd.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         btnAdd.addActionListener(e -> {
             String staffGender = rbM.isSelected() ? "Male" : "Female";
-            String staffAge = String.valueOf(ageField.getValue());
+            int staffAge = (int) ageField.getValue();
 
             Manager managerActions = new Manager();
 
@@ -90,8 +90,8 @@ public class AddStaff extends JFrame {
             validateInput.setPhone(staffPhone);
             validateInput.setPassword(" ");
 
-            if (validateInput.returnErrorMsg(null, null) != null) {
-                ErrorDialog(validateInput.returnErrorMsg(null, null));
+            if (validateInput.returnMsgAddProfile() != null) {
+                ErrorDialog(validateInput.returnMsgAddProfile());
             } else {
                 
                 managerActions.addStaff(staffName, staffEmail, staffAge, staffRole, staffPhone, staffId, staffGender);
@@ -100,42 +100,6 @@ public class AddStaff extends JFrame {
             }
         });
     }
-
-//    private void phoneInputListener() {
-//        phoneField.addFocusListener(new FocusAdapter() {
-//            @Override
-//            public void focusLost(FocusEvent e) {
-//                String phone = phoneField.getText().trim();
-//                if (!phone.isEmpty()) {
-//                    if (!managerActions.isPhoneValid(phone)) {
-//                        ErrorDialog("Phone Number must be exactly 10 digits");
-//                        SwingUtilities.invokeLater(() -> phoneField.requestFocusInWindow());
-//                    } else if (!managerActions.isPhoneUnique(phone)) {
-//                        ErrorDialog("Phone Number is already in use");
-//                        SwingUtilities.invokeLater(() -> phoneField.requestFocusInWindow());
-//                    }
-//                }
-//            }
-//        });
-//    }
-//
-//    private void emailInputListener() {
-//        emailField.addFocusListener(new FocusAdapter() {
-//            @Override
-//            public void focusLost(FocusEvent e) {
-//                String email = emailField.getText().trim();
-//                if (!email.isEmpty()) {
-//                    if (!managerActions.isEmailUnique(email)) {
-//                        ErrorDialog("This email is already in use");
-//                        SwingUtilities.invokeLater(() -> emailField.requestFocusInWindow());
-//                    } else if (!managerActions.isEmailEnds(email, "@mail.apu.com")) {
-//                        ErrorDialog("Email must ends with @mail.apu.com");
-//                        SwingUtilities.invokeLater(() -> emailField.requestFocusInWindow());
-//                    }
-//                }
-//            }
-//        });
-//    }
 
     private void btnBackSettings() {
         btnBack.setBorder(null);
