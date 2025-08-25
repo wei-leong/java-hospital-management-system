@@ -81,7 +81,7 @@ public class Dashboard extends JPanel {
         // middle area wrapped in a fixed-size panel
         JPanel middleWrapper = new JPanel(new BorderLayout());
         middleWrapper.setBackground(Color.WHITE);
-        middleWrapper.setPreferredSize(new Dimension(900, 380)); // FIXED WIDTH & HEIGHT for middle section
+        middleWrapper.setPreferredSize(new Dimension(300, 180)); // FIXED WIDTH & HEIGHT for middle section
         middleWrapper.add(middleSection(), BorderLayout.CENTER);
         content.add(middleWrapper, BorderLayout.CENTER);
 
@@ -91,7 +91,7 @@ public class Dashboard extends JPanel {
         // Put the content panel inside a scroll pane so whole dashboard becomes scrollable
         JScrollPane sc = new JScrollPane(content,
                 JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
-                JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+                JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         sc.getViewport().setBackground(Color.WHITE);
         sc.setBorder(BorderFactory.createEmptyBorder());
         // Slight performance/useful hints:
