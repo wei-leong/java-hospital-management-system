@@ -4,7 +4,7 @@
  */
 package Profile;
 
-import Class.Manager;
+import Class.Person;
 import Class.ValidateStaffInput;
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -50,7 +50,7 @@ public class EditOwnProfile extends JDialog {
     private final JRadioButton rbM = new JRadioButton("Male");
     private final JRadioButton rbF = new JRadioButton("Female");
     private String[] updatedData = null;
-    private final Manager managerActions = new Manager();
+    private final Person personActions = new Person();;
     private ValidateStaffInput validateInput;
 
     public String[] getUpdatedData() {
@@ -236,8 +236,6 @@ public class EditOwnProfile extends JDialog {
             String staffGender = rbM.isSelected() ? "Male" : "Female";
             String staffAge = String.valueOf(ageField.getValue());
 
-            Manager managerActions = new Manager();
-
             String staffName = nameField.getText().trim();
             String staffEmail = emailField.getText().trim();
             String staffPhone = phoneField.getText().trim();
@@ -249,8 +247,8 @@ public class EditOwnProfile extends JDialog {
             validateInput.setPhone(staffPhone);
             validateInput.setPassword(staffPass);
 
-            if (validateInput.returnErrorMsg(currentEmail,currentPhone) != null) {
-                ErrorDialog(validateInput.returnErrorMsg(currentEmail,currentPhone));
+            if (validateInput.returnMsgEditProfile(currentEmail,currentPhone) != null) {
+                ErrorDialog(validateInput.returnMsgEditProfile(currentEmail,currentPhone));
             } else {
                 String[] newData = new String[]{
                     currentId,
@@ -262,7 +260,7 @@ public class EditOwnProfile extends JDialog {
                     staffPhone,
                     staffAge,
                     "Active",};
-                managerActions.editStaff(_currentData, newData);
+                personActions.editProfile(_currentData,newData);
                 this.updatedData = newData;
 
                 this.dispose();

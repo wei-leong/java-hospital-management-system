@@ -206,8 +206,8 @@ public class EditStaff extends JFrame {
             validateInput.setPhone(staffPhone);
             validateInput.setPassword(staffPass);
 
-            if (validateInput.returnErrorMsg(currentEmail, currentPhone) != null) {
-                ErrorDialog(validateInput.returnErrorMsg(currentEmail, currentPhone));
+            if (validateInput.returnMsgEditProfile(currentEmail, currentPhone) != null) {
+                ErrorDialog(validateInput.returnMsgEditProfile(currentEmail, currentPhone));
             } else {
                 String[] newData = new String[]{
                     currentId,

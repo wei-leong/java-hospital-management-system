@@ -48,7 +48,7 @@ public class ProfileActions extends FileActions {
         }
 
         String newId = id + (maxId + 1);
-        String password = newId + newAge;
+        String password = newId + newPhone;
 
         String[] newStaff = {
             newId,
