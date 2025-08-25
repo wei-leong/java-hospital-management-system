@@ -207,7 +207,7 @@ public class Manager extends Person{
         return revenueHelper.returnYearsRevenue(anchorYear);
     }
     
-//    public double returnCustomerAverageAge(){
-//        
-//    }
+    public int returnCustomerAverageAge(){
+        return profileHelper.returnCustomerAverageAge();
+    }
 }
