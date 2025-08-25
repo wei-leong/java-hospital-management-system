@@ -149,17 +149,6 @@ public class Dashboard extends JPanel {
         return middleRow;
     }
 
-    private JPanel bottomSection() {
-        // Panel for Storing Total Appointments ( WEST ) + Average Rating ( CENTER ) 
-        JPanel bottomRow = new JPanel(new BorderLayout(20, 0));
-        bottomRow.setBackground(Color.WHITE);
-        
-        bottomRow.add(returnAverageRatingTable(), BorderLayout.CENTER); // Add AverageRating 
-        bottomRow.add(returnAppointmentCard(), BorderLayout.EAST); // Add AppointmentCard 
-
-        return bottomRow;
-    }
-
     private JPanel returnAppointmentCard() {
         // Appointment card JPanel
         JPanel apptCard = new JPanel(new BorderLayout(0, 4));
@@ -263,6 +252,45 @@ public class Dashboard extends JPanel {
         // Add Table
         fbCard.add(tblScroll, BorderLayout.CENTER);
         return fbCard;
+    }
+    
+    private JPanel bottomSection() {
+        // Panel for Storing Total Appointments ( WEST ) + Average Rating ( CENTER ) 
+        JPanel bottomRow = new JPanel(new BorderLayout(20, 0));
+        bottomRow.setBackground(Color.WHITE);
+        
+        bottomRow.add(returnAverageRatingTable(), BorderLayout.CENTER); // Add AverageRating 
+        bottomRow.add(returnCustomerAvgAgeCard(), BorderLayout.EAST); // Add AppointmentCard 
+
+        return bottomRow;
+    }
+    
+    private JPanel returnCustomerAvgAgeCard(){
+        // Customer Average Age card JPanel
+        JPanel avgCard = new JPanel(new BorderLayout(0, 4));
+        avgCard.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY));
+        avgCard.setBackground(Color.WHITE);
+
+        // Initialise lblCountNum
+        JLabel lblCountNum = new JLabel(
+                String.valueOf(managerActions.returnTotalAppointment(apptFilter)),
+                SwingConstants.CENTER
+        );
+
+        // Header: Total Appointment Title ( WEST ) + Filter Options ( EAST )
+        JPanel avgHeader = new JPanel(new BorderLayout());
+
+        // Appointments Count Label
+        JLabel lblAvgAgeTitle = new JLabel("Customer Average Age", SwingConstants.CENTER);
+        lblAvgAgeTitle.setFont(lblAvgAgeTitle.getFont().deriveFont(Font.BOLD, 15f));
+        avgHeader.add(lblAvgAgeTitle, BorderLayout.CENTER);
+        avgCard.add(avgHeader, BorderLayout.NORTH);
+
+        // Total Appointments Number
+        lblCountNum.setFont(lblCountNum.getFont().deriveFont(Font.BOLD, 25f));
+        avgCard.add(lblCountNum, BorderLayout.CENTER);
+
+        return avgCard;
     }
 
     // Filter Button for Revenue, Total Appointment, Average Rating Section
