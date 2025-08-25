@@ -56,24 +56,52 @@ public class Dashboard extends JPanel {
     private final int anchorYear = LocalDate.now().getYear();
 
     public Dashboard() {
-        setLayout(new BorderLayout(20, 20));
+        setLayout(new BorderLayout());
         setBackground(Color.WHITE);
 
         double[] monthlyData = managerActions.returnMonthlyRevenue(anchorYear);
-        chartPanel = new RevenueChartPanel(monthLabels, monthlyData); // Initialise Revenue Chart in the Constructor
-        revenueSection();
-        
-        // Initialise Table Model in the Constructor
+        chartPanel = new RevenueChartPanel(monthLabels, monthlyData);
+
+        // Initialize model (same as before)
         model = new DefaultTableModel(docCols, 0) {
             @Override
             public boolean isCellEditable(int r, int c) {
                 return false;
             }
         };
-        
-        add(revenueSection(), BorderLayout.NORTH); // Add the middle section at CENTER of Dashboard() JPanel
-        add(middleSection(), BorderLayout.CENTER); // Add the middle section at CENTER of Dashboard() JPanel
 
+        // Build content into an inner panel so the scroll pane can scroll the whole thing
+        JPanel content = new JPanel(new BorderLayout(20, 20));
+        content.setBackground(Color.WHITE);
+        content.setBorder(BorderFactory.createEmptyBorder(12, 12, 12, 12));
+
+        // revenue at top
+        content.add(revenueSection(), BorderLayout.NORTH);
+
+        // middle area wrapped in a fixed-size panel
+        JPanel middleWrapper = new JPanel(new BorderLayout());
+        middleWrapper.setBackground(Color.WHITE);
+        middleWrapper.setPreferredSize(new Dimension(900, 380)); // FIXED WIDTH & HEIGHT for middle section
+        middleWrapper.add(middleSection(), BorderLayout.CENTER);
+        content.add(middleWrapper, BorderLayout.CENTER);
+
+        // bottom (optional extra info) - keep as before (you had bottomSection())
+        content.add(bottomSection(), BorderLayout.SOUTH);
+
+        // Put the content panel inside a scroll pane so whole dashboard becomes scrollable
+        JScrollPane sc = new JScrollPane(content,
+                JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
+                JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        sc.getViewport().setBackground(Color.WHITE);
+        sc.setBorder(BorderFactory.createEmptyBorder());
+        // Slight performance/useful hints:
+        sc.getVerticalScrollBar().setUnitIncrement(16); // smoother scrolling
+
+        // Add scroll pane to this Dashboard panel
+        this.setLayout(new BorderLayout());
+        this.add(sc, BorderLayout.CENTER);
+
+        // final population
         refreshTable();
     }
 
@@ -102,10 +130,10 @@ public class Dashboard extends JPanel {
                 }),
                 BorderLayout.EAST
         );
-        
+
         revenuePanel.add(revenueFilterRow, BorderLayout.NORTH); // Add Revenue chart at NORTH
         revenuePanel.add(chartPanel, BorderLayout.CENTER); // Add the Revenue chart at CENTER
-        
+
         return revenuePanel;
     }
 
@@ -114,14 +142,25 @@ public class Dashboard extends JPanel {
         // Panel for Storing Total Appointments ( WEST ) + Average Rating ( CENTER ) 
         JPanel middleRow = new JPanel(new BorderLayout(20, 0));
         middleRow.setBackground(Color.WHITE);
-        
+
         middleRow.add(returnAppointmentCard(), BorderLayout.WEST); // Add AppointmentCard 
         middleRow.add(returnAverageRatingTable(), BorderLayout.CENTER); // Add AverageRating 
 
         return middleRow;
     }
-    
-    private JPanel returnAppointmentCard(){
+
+    private JPanel bottomSection() {
+        // Panel for Storing Total Appointments ( WEST ) + Average Rating ( CENTER ) 
+        JPanel bottomRow = new JPanel(new BorderLayout(20, 0));
+        bottomRow.setBackground(Color.WHITE);
+
+        bottomRow.add(returnAppointmentCard(), BorderLayout.WEST); // Add AppointmentCard 
+        bottomRow.add(returnAverageRatingTable(), BorderLayout.CENTER); // Add AverageRating 
+
+        return bottomRow;
+    }
+
+    private JPanel returnAppointmentCard() {
         // Appointment card JPanel
         JPanel apptCard = new JPanel(new BorderLayout(0, 4));
         apptCard.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY));
@@ -151,7 +190,7 @@ public class Dashboard extends JPanel {
                 ),
                 BorderLayout.EAST
         );
-        
+
         // Appointments Count Label
         JLabel lblCountTitle = new JLabel("Appointments Count", SwingConstants.CENTER);
         lblCountTitle.setFont(lblCountTitle.getFont().deriveFont(Font.BOLD, 15f));
@@ -168,7 +207,7 @@ public class Dashboard extends JPanel {
         return apptCard;
     }
 
-    private JPanel returnAverageRatingTable(){
+    private JPanel returnAverageRatingTable() {
         // Build table model & table
         JTable tbl = new JTable(model);
         tbl.setShowGrid(false);
@@ -225,7 +264,7 @@ public class Dashboard extends JPanel {
         fbCard.add(tblScroll, BorderLayout.CENTER);
         return fbCard;
     }
-    
+
     // Filter Button for Revenue, Total Appointment, Average Rating Section
     private JButton createFilterButton(String title, String[] options, Consumer<String> onSelect) {
         JButton btn = new JButton();
