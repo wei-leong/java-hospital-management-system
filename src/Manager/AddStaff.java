@@ -2,6 +2,7 @@ package Manager;
 
 import Class.ImageScaler;
 import Class.Manager;
+import Class.ValidateStaffInput;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.FocusAdapter;
@@ -19,6 +20,7 @@ public class AddStaff extends JFrame {
     private final JRadioButton rbM = new JRadioButton("Male",true);
     private final JRadioButton rbF = new JRadioButton("Female",false);
     private final Manager managerActions = new Manager();
+    private ValidateStaffInput validateInput;
 
     private final ImageScaler imgScale = new ImageScaler();
     ImageIcon returnIcon = imgScale.returnScaledImageIcon("/image/back.png", 24, 24);
@@ -62,10 +64,14 @@ public class AddStaff extends JFrame {
         btnAdd.setFocusPainted(false);
         btnAdd.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         btnAdd.addActionListener(e -> {
+            String staffGender = rbM.isSelected() ? "Male" : "Female";
+            String staffAge = String.valueOf(ageField.getValue());
 
-            String gender = rbM.isSelected() ? "Male" : "Female";
-            int age = (int) ageField.getValue();
+            Manager managerActions = new Manager();
 
+            String staffName = nameField.getText().trim();
+            String staffEmail = emailField.getText().trim();
+            String staffPhone = phoneField.getText().trim();
             String staffId;
             String staffRole = roleField.getSelectedItem().toString();
             if ("Manager".equals(staffRole)) {
@@ -78,51 +84,58 @@ public class AddStaff extends JFrame {
                 staffId = "N";
             }
 
-            String staffName = nameField.getText().trim();
-            String staffEmail = emailField.getText().trim();
-            String staffPhone = phoneField.getText().trim();
+            // Set Name, Email, Phone to new value for Validate Staff Input
+            validateInput.setName(staffName);
+            validateInput.setEmail(staffEmail);
+            validateInput.setPhone(staffPhone);
+            validateInput.setPassword(" ");
 
-            managerActions.addStaff(staffName, staffEmail, age, staffRole, staffPhone, staffId, gender);
+            if (validateInput.returnErrorMsg(null, null) != null) {
+                ErrorDialog(validateInput.returnErrorMsg(null, null));
+            } else {
+                
+                managerActions.addStaff(staffName, staffEmail, staffAge, staffRole, staffPhone, staffId, staffGender);
 
-            this.dispose();
-        });
-    }
-
-    private void phoneInputListener() {
-        phoneField.addFocusListener(new FocusAdapter() {
-            @Override
-            public void focusLost(FocusEvent e) {
-                String phone = phoneField.getText().trim();
-                if (!phone.isEmpty()) {
-                    if (!managerActions.isPhoneValid(phone)) {
-                        ErrorDialog("Phone Number must be exactly 10 digits");
-                        SwingUtilities.invokeLater(() -> phoneField.requestFocusInWindow());
-                    } else if (!managerActions.isPhoneUnique(phone)) {
-                        ErrorDialog("Phone Number is already in use");
-                        SwingUtilities.invokeLater(() -> phoneField.requestFocusInWindow());
-                    }
-                }
+                this.dispose();
             }
         });
     }
 
-    private void emailInputListener() {
-        emailField.addFocusListener(new FocusAdapter() {
-            @Override
-            public void focusLost(FocusEvent e) {
-                String email = emailField.getText().trim();
-                if (!email.isEmpty()) {
-                    if (!managerActions.isEmailUnique(email)) {
-                        ErrorDialog("This email is already in use");
-                        SwingUtilities.invokeLater(() -> emailField.requestFocusInWindow());
-                    } else if (!managerActions.isEmailEnds(email, "@mail.apu.com")) {
-                        ErrorDialog("Email must ends with @mail.apu.com");
-                        SwingUtilities.invokeLater(() -> emailField.requestFocusInWindow());
-                    }
-                }
-            }
-        });
-    }
+//    private void phoneInputListener() {
+//        phoneField.addFocusListener(new FocusAdapter() {
+//            @Override
+//            public void focusLost(FocusEvent e) {
+//                String phone = phoneField.getText().trim();
+//                if (!phone.isEmpty()) {
+//                    if (!managerActions.isPhoneValid(phone)) {
+//                        ErrorDialog("Phone Number must be exactly 10 digits");
+//                        SwingUtilities.invokeLater(() -> phoneField.requestFocusInWindow());
+//                    } else if (!managerActions.isPhoneUnique(phone)) {
+//                        ErrorDialog("Phone Number is already in use");
+//                        SwingUtilities.invokeLater(() -> phoneField.requestFocusInWindow());
+//                    }
+//                }
+//            }
+//        });
+//    }
+//
+//    private void emailInputListener() {
+//        emailField.addFocusListener(new FocusAdapter() {
+//            @Override
+//            public void focusLost(FocusEvent e) {
+//                String email = emailField.getText().trim();
+//                if (!email.isEmpty()) {
+//                    if (!managerActions.isEmailUnique(email)) {
+//                        ErrorDialog("This email is already in use");
+//                        SwingUtilities.invokeLater(() -> emailField.requestFocusInWindow());
+//                    } else if (!managerActions.isEmailEnds(email, "@mail.apu.com")) {
+//                        ErrorDialog("Email must ends with @mail.apu.com");
+//                        SwingUtilities.invokeLater(() -> emailField.requestFocusInWindow());
+//                    }
+//                }
+//            }
+//        });
+//    }
 
     private void btnBackSettings() {
         btnBack.setBorder(null);
@@ -214,14 +227,12 @@ public class AddStaff extends JFrame {
         form.add(new JLabel("Email Address"), gbc);
         gbc.gridy = row++;
         form.add(emailField, gbc);
-        emailInputListener();
 
         // Phone
         gbc.gridy = row++;
         form.add(new JLabel("Phone Number"), gbc);
         gbc.gridy = row++;
         form.add(phoneField, gbc);
-        phoneInputListener();
 
         // Gender
         gbc.gridy = row++;
