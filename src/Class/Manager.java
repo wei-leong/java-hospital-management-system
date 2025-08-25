@@ -206,4 +206,8 @@ public class Manager extends Person{
     public double[] returnYearsRevenue(int anchorYear) {
         return revenueHelper.returnYearsRevenue(anchorYear);
     }
+    
+    public double returnCustomerAverageAge(){
+        
+    }
 }

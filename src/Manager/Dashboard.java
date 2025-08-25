@@ -153,9 +153,9 @@ public class Dashboard extends JPanel {
         // Panel for Storing Total Appointments ( WEST ) + Average Rating ( CENTER ) 
         JPanel bottomRow = new JPanel(new BorderLayout(20, 0));
         bottomRow.setBackground(Color.WHITE);
-
-        bottomRow.add(returnAppointmentCard(), BorderLayout.WEST); // Add AppointmentCard 
+        
         bottomRow.add(returnAverageRatingTable(), BorderLayout.CENTER); // Add AverageRating 
+        bottomRow.add(returnAppointmentCard(), BorderLayout.EAST); // Add AppointmentCard 
 
         return bottomRow;
     }
