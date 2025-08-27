@@ -32,7 +32,8 @@ public class CreateAppointment extends JDialog {
     Color defaultColor = Color.WHITE;  
     Color hoverColor = Color.LIGHT_GRAY;
     
-        public CreateAppointment(AppointmentsManagement refresh) {
+    
+        public CreateAppointment(AppointmentsManagement refresh) {  
         this.refresh = refresh;
         setTitle("Create Appointment");
         setSize(500, 350);
@@ -68,10 +69,10 @@ public class CreateAppointment extends JDialog {
         
 
         //Appointment Start Time
-        JLabel ageLabel = new JLabel("Age:");
-        ageLabel.setFont(nameLabel.getFont().deriveFont(20f));
-        ageLabel.setBounds(50, 125,100, 50);
-        add(ageLabel);
+        JLabel DnTLabel = new JLabel("Date:");
+        DnTLabel.setFont(nameLabel.getFont().deriveFont(20f));
+        DnTLabel.setBounds(50, 125,100, 50);
+        add(DnTLabel);
         
         // JDateChooser
         dateChooser = new JDateChooser();
@@ -155,9 +156,11 @@ public class CreateAppointment extends JDialog {
     String Appointmentid = generateAppointmentID();
     String customerid = (String) CustomerName.getSelectedItem();
     String docterid = (String) DocterName.getSelectedItem();
-    String status = "ongoing";
-    String paymentid = null;
+    String Astatus = "ongoing";
+    String Pstatus = "pending";
+    String paymentid = generaPaymentID();
     String commentid = null;
+    Integer amount = 0;
     
     //check the date of the user choose
     java.util.Date selectedDate = dateChooser.getDate();
@@ -169,10 +172,20 @@ public class CreateAppointment extends JDialog {
     
     try (BufferedWriter writer = new BufferedWriter(
         new FileWriter("D:\\USER BACKUP\\Documents\\NetBeansProjects\\JavaAssignment\\apu-medical-centre\\src\\txt\\appointment.txt", true))) {
-        writer.write(Appointmentid + "," + docterid + "," + customerid + "," + datetime + "," + status + "," + paymentid + "," + commentid);
+        writer.write(Appointmentid + "," + docterid + "," + customerid + "," + datetime + "," + Astatus + "," + paymentid + "," + commentid);
         writer.newLine();
         writer.flush();
         JOptionPane.showMessageDialog(this, "Appointment "+ Appointmentid +" Create successfully!");
+    } catch (IOException ex) {
+        JOptionPane.showMessageDialog(this, "Error saving file: " + ex.getMessage());
+    }
+    
+    try (BufferedWriter writer = new BufferedWriter(
+        new FileWriter("D:\\USER BACKUP\\Documents\\NetBeansProjects\\JavaAssignment\\apu-medical-centre\\src\\txt\\payment.txt", true))) {
+        writer.write(paymentid + "," + amount + "," + dateStr + "," + Pstatus);
+        writer.newLine();
+        writer.flush();
+        JOptionPane.showMessageDialog(this, "Appointment "+ paymentid +" Create successfully!");
     } catch (IOException ex) {
         JOptionPane.showMessageDialog(this, "Error saving file: " + ex.getMessage());
     }
@@ -281,4 +294,32 @@ public class CreateAppointment extends JDialog {
             }
         }
     }
+        
+    //Generate Payment ID
+        private String generaPaymentID() {
+        File file = new File("D:\\USER BACKUP\\Documents\\NetBeansProjects\\JavaAssignment\\apu-medical-centre\\src\\txt\\payment.txt");
+        int maxPaymentId = 0;
+
+        if (file.exists()) {
+            try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    String[] parts = line.split(",");
+                    if (parts.length > 0 && parts[0].startsWith("P")) {
+                        try {
+                            int num = Integer.parseInt(parts[0].substring(1));
+                            if (num > maxPaymentId) {
+                                maxPaymentId = num;
+                            }
+                        } catch (NumberFormatException ignored) {
+
+                        }
+                    }
+                }
+            } catch (IOException e) {
+                JOptionPane.showMessageDialog(this, "Error:" + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        }
+        return "P" + (maxPaymentId + 1);
+        }
 }

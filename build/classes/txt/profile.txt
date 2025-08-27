@@ -3,16 +3,5 @@ C1,Customer,customer,1234,Male,customer@gmail.com,0111111111,20,Active
 D2,Doctor,Wilson Tee Xing Yang,D2100,Male,wilson@mail.apu.com,0188888883,100,Inactive
 M1,Manager,manager,1234,Male,manager@mail.apu.com,0111111111,20,Active
 S1,Staff,staff,1234,Male,staff@mail.apu.com,0111111111,20,Active
-<<<<<<< HEAD
-D1,Doctor,doctor,1234,Male,doctor@mail.apu.com,0111111111,20,Active
-C1,Customer,customer,1234,Male,customer@mail.apu.com,0111111111,20,Active
-D2,Doctor,doctor,1234,Male,doctor@mail.apu.com,0111111111,20,Active
-M2,Manager,Tan Jia Jie,M222,Female,tjj@mail.apu.com,0188888886,22,Inactive
-C2,Customer,Seah Si Wei,1234,Female,siweiseah@mail.com,1111111111,28,Active
-C3,Customer,jj,1234,Male,jj@mail.com,1111111111,18,Active
-C4,Customer,wl,1234,Tank,wl@mail.com,1111111111,20,Active
-C5,Customer,Kye Huang,ky123,Male,ky@mail.com,0106389999,22,Active
-=======
-M2,Manager,Tan Jia Jie,tjjisgay1111,Female,tjj@mail.apu.com,0188888886,51,Active
-M3,Manager,Alston Tan Jia Jie,tan40123,Male,atjj1@mail.apu.com,0188887763,40,Inactive
->>>>>>> 603d353950315511eec38e8560bcb37e52ced4e1
+C2,Customer,JJ Chao,1234,Male,jj@mail.apu.com,1111111111,20,Active
+C3,Customer,Seah Si Wei,1234,Male,siweiseah@mail.com,1111111111,21,Active

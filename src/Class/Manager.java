@@ -206,8 +206,4 @@ public class Manager extends Person{
     public double[] returnYearsRevenue(int anchorYear) {
         return revenueHelper.returnYearsRevenue(anchorYear);
     }
-
-    public List<String[]> returnAppointmentsList(String _selectedRange) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
 }

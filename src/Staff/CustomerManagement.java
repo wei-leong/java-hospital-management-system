@@ -2,6 +2,7 @@ package Staff;
 
 import Class.Staff;
 import Class.TableStyle;
+import Manager.EditStaff;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
@@ -12,15 +13,16 @@ import javax.swing.border.Border;
 import javax.swing.table.DefaultTableCellRenderer;
 
 public class CustomerManagement extends JPanel{
-    
-    private String _selectedRole = "All";
+    private final Staff StaffActions;
+    private String _selectedRole = "Active";
     private List<String[]> CustomerData = List.of();
     private DefaultTableModel model;
     private JTable table;
     Staff CustomerDetails = new Staff();
     private JButton AddCustomerbtn;
             
-    public CustomerManagement() {
+    public CustomerManagement(String[] ownProfile) {
+    StaffActions = new Staff(ownProfile);
     setLayout(new BorderLayout());
        //Checkbox
         List<JCheckBox> boxes = new ArrayList<>();
@@ -33,7 +35,7 @@ public class CustomerManagement extends JPanel{
         filters.setBorder(BorderFactory.createEmptyBorder());
 
         String[] tags = {
-            "All", "Customer","Inactive"
+           "Active","Inactive"
         };
 
         for (String t : tags) {
@@ -130,6 +132,29 @@ public class CustomerManagement extends JPanel{
         
         TableStyle.applyStyle(table);
         
+        table.addMouseListener(new java.awt.event.MouseAdapter() {
+        @Override
+        public void mouseClicked(java.awt.event.MouseEvent e) {
+            int row = table.rowAtPoint(e.getPoint());
+            int col = table.columnAtPoint(e.getPoint());
+
+            if (col == model.getColumnCount() - 1 && row >= 0) {
+                String[] customer = CustomerData.get(row);
+
+                EditStaff edit = new EditStaff(customer);
+
+                edit.addWindowListener(new java.awt.event.WindowAdapter() {
+                    @Override
+                    public void windowClosed(java.awt.event.WindowEvent e) {
+                        refreshTable();
+                    }
+                });
+
+                SwingUtilities.invokeLater(() -> edit.setVisible(true));
+            }
+        }
+});
+        
         //Edit icon Button (use for edit customer information)
         table.getColumnModel().getColumn(model.getColumnCount() - 1).setCellRenderer(new DefaultTableCellRenderer() {
         ImageIcon rawIcon = new ImageIcon(getClass().getResource("/image/edit_profile.png"));
@@ -168,7 +193,7 @@ public class CustomerManagement extends JPanel{
 
         refreshTable();
     }
-        
+       
        //While new customer data is get in, the function use to refresh the table. Let user can see the new data in the table at the first time
        public void refreshTable() {
         if (model == null) return;
@@ -189,3 +214,4 @@ public class CustomerManagement extends JPanel{
     }   
        
 }
+

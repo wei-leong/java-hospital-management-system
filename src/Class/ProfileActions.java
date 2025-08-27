@@ -93,6 +93,26 @@ public class ProfileActions extends FileActions {
         }
         return filteredData;
     }
+    
+    public List<String[]> ShowCustomerProfile(String filterRole) {
+        List<String[]> allData = returnAllDataFromFile(txt_len);
+        List<String[]> filteredData = new ArrayList<>(txt_len);
+
+        for (String[] row : allData) {
+            if (row.length == 9 && row[idx_status].equals("Active")) {
+                // if "All" or matches the role
+                if (filterRole.equalsIgnoreCase("Active")
+                        || row[idx_role].equals(filterRole)) {
+                    filteredData.add(row);
+                }
+            } else if (row.length == 9 && filterRole.equalsIgnoreCase("Inactive")) {
+                if (row[idx_status].equalsIgnoreCase("Inactive")) {
+                    filteredData.add(row);
+                }
+            }
+        }
+        return filteredData;
+    }
 
     public void EditProfile(String[] oldData, String[] newData) {
         editRowFromFile(txt_len, oldData, newData);
@@ -152,13 +172,5 @@ public class ProfileActions extends FileActions {
     
     public List<String[]> ReturnAllStaffData(){
         return returnAllDataFromFile(txt_len);
-    }
-
-    String[] returnCustomerProfile(String customerId) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
-
-    String[] returnStaffProfile(String staffOrDocId) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 }

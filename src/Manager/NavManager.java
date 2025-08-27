@@ -12,6 +12,7 @@ import Class.BasicNav;
 import Class.ImageScaler;
 import javax.swing.Icon;
 
+
 public class NavManager extends BasicNav {
     
     private final ImageScaler imgScale = new ImageScaler();
