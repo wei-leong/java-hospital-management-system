@@ -18,13 +18,14 @@ import java.util.List;
  *
  * @author Wlhoe
  */
-public class Manager extends Person{
+public class Manager extends Person {
+
     // Composition  -> Manager has ProfileAction, FeedbackAction and RevenueActions
     private final ProfileActions profileHelper = new ProfileActions();
     private final FeedbackActions feedbackHelper = new FeedbackActions();
     private final RevenueActions revenueHelper = new RevenueActions();
     private final String[] _ownProfile;
-    
+
     // Polymorphism ( Constructor Overloading ) 
     public Manager(String email, String password) {
         super(email, password);
@@ -34,7 +35,7 @@ public class Manager extends Person{
     public Manager() {
         this._ownProfile = null;
     }
-    
+
     public Manager(String[] ownProfile) {
         this._ownProfile = ownProfile;
     }
@@ -51,8 +52,8 @@ public class Manager extends Person{
         profileHelper.EditProfile(oldData, newData);
     }
 
-    public void InactiveStaff(String[] oldData,String[] staffDetails) {
-        profileHelper.InactiveProfile(oldData,staffDetails);
+    public void InactiveStaff(String[] oldData, String[] staffDetails) {
+        profileHelper.InactiveProfile(oldData, staffDetails);
     }
 
     public int FeedbackSummary(String staffRole) {
@@ -206,8 +207,16 @@ public class Manager extends Person{
     public double[] returnYearsRevenue(int anchorYear) {
         return revenueHelper.returnYearsRevenue(anchorYear);
     }
-    
-    public int returnCustomerAverageAge(){
+
+    public int returnCustomerAverageAge() {
         return profileHelper.returnCustomerAverageAge();
+    }
+
+    public List<String[]> returnPendingPayment() {
+        FileActions appointmentData = new FileActions("appointment.txt");
+        FileActions paymentData = new FileActions("payment.txt");
+        FileActions customerData = new FileActions("profile.txt");
+        
+        return null;
     }
 }
