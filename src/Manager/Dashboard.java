@@ -52,7 +52,7 @@ public class Dashboard extends JPanel {
         "Jan", "Feb", "Mar", "Apr", "May", "Jun",
         "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
     };
-    private final String[] docCols = {"Doctor ID", "Doctor Name", "Avg Rating"};
+    private final String[] ratingCols = {"Person ID", "Person Name", "Avg Rating"};
     private final String[] paymentCols = {"Customer ID","Customer Name","Amount"};
     private final int anchorYear = LocalDate.now().getYear();
 
@@ -64,7 +64,7 @@ public class Dashboard extends JPanel {
         chartPanel = new RevenueChartPanel(monthLabels, monthlyData);
 
         // Initialize model (same as before)
-        model = new DefaultTableModel(docCols, 0) {
+        model = new DefaultTableModel(ratingCols, 0) {
             @Override
             public boolean isCellEditable(int r, int c) {
                 return false;
@@ -220,9 +220,9 @@ public class Dashboard extends JPanel {
         tbl.setDefaultRenderer(Object.class, centerRenderer);
 
         // Custom Header
-        JPanel customHeader = new JPanel(new GridLayout(1, docCols.length));
+        JPanel customHeader = new JPanel(new GridLayout(1, ratingCols.length));
         customHeader.setBackground(Color.WHITE);
-        for (String h : docCols) {
+        for (String h : ratingCols) {
             JLabel lbl = new JLabel(h, SwingConstants.CENTER);
             lbl.setFont(lbl.getFont().deriveFont(Font.BOLD, 14f));
             customHeader.add(lbl);
