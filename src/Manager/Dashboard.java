@@ -53,6 +53,7 @@ public class Dashboard extends JPanel {
         "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
     };
     private final String[] docCols = {"Doctor ID", "Doctor Name", "Avg Rating"};
+    private final String[] paymentCols = {"Customer ID","Customer Name","Amount"};
     private final int anchorYear = LocalDate.now().getYear();
 
     public Dashboard() {
@@ -259,10 +260,54 @@ public class Dashboard extends JPanel {
         JPanel bottomRow = new JPanel(new BorderLayout(20, 0));
         bottomRow.setBackground(Color.WHITE);
         
-        bottomRow.add(returnAverageRatingTable(), BorderLayout.CENTER); // Add AverageRating 
+        bottomRow.add(returnPendingPaymentsTable(), BorderLayout.CENTER); // Add AverageRating 
         bottomRow.add(returnCustomerAvgAgeCard(), BorderLayout.EAST); // Add AppointmentCard 
 
         return bottomRow;
+    }
+    
+    private JPanel returnPendingPaymentsTable() {
+        // Build table model & table
+        JTable tbl = new JTable(model);
+        tbl.setShowGrid(false);
+        tbl.setTableHeader(null);
+        tbl.setIntercellSpacing(new Dimension(0, 0));
+        tbl.setRowHeight(24);
+        tbl.setFillsViewportHeight(true);
+        tbl.setBackground(Color.WHITE);
+
+        // Strip built-in header
+        JScrollPane tblScroll = new JScrollPane(tbl,
+                JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
+                JScrollPane.HORIZONTAL_SCROLLBAR_NEVER
+        );
+        tblScroll.setColumnHeaderView(null);
+        tblScroll.setBorder(BorderFactory.createEmptyBorder());
+
+        DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
+        centerRenderer.setHorizontalAlignment(SwingConstants.CENTER);
+        tbl.setDefaultRenderer(Object.class, centerRenderer);
+
+        // Custom Header
+        JPanel customHeader = new JPanel(new GridLayout(1, paymentCols.length));
+        customHeader.setBackground(Color.WHITE);
+        for (String h : paymentCols) {
+            JLabel lbl = new JLabel(h, SwingConstants.CENTER);
+            lbl.setFont(lbl.getFont().deriveFont(Font.BOLD, 14f));
+            customHeader.add(lbl);
+        }
+
+        // Feedback Card Container
+        JPanel fbCard = new JPanel(new BorderLayout(0, 4));
+        fbCard.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY));
+        fbCard.setBackground(Color.WHITE);
+
+        // Add Customized Table Header
+        fbCard.add(customHeader, BorderLayout.NORTH);
+
+        // Add Table
+        fbCard.add(tblScroll, BorderLayout.CENTER);
+        return fbCard;
     }
     
     private JPanel returnCustomerAvgAgeCard(){
