@@ -1,12 +1,10 @@
 package Doctor;
 
+import Class.FileActions;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ItemEvent;
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 import java.time.temporal.WeekFields;
@@ -26,6 +24,11 @@ public class ViewFeedback extends JPanel {
 	private JButton clearButton;
 	private ButtonGroup filterGroup;
 
+	// **HIGHLIGHTED**: Add a member variable for the FileActions class
+	private FileActions fileActions;
+	// **HIGHLIGHTED**: Define the expected length of a feedback record
+	private static final int FEEDBACK_RECORD_LENGTH = 6;
+
 	// Doctor information passed from login
 	private String doctorId;
 
@@ -33,7 +36,7 @@ public class ViewFeedback extends JPanel {
 	private List<String[]> allDoctorFeedbacks = new ArrayList<>();
 
 	// Paths to image and text files
-	private static final String FEEDBACK_FILE_PATH = "src/txt/feedback.txt";
+	private static final String FEEDBACK_FILE_PATH = "feedback.txt"; // **HIGHLIGHTED**: Adjusted path for FileActions class
 	private static final String STAR_IMAGE_PATH = "src/image/star.png";
 	private static final String STAR_GLOW_IMAGE_PATH = "src/image/star-glow.png";
 	private static final int RATING_COUNT = 5; // Total number of stars to display
@@ -55,6 +58,9 @@ public class ViewFeedback extends JPanel {
 				"Error", JOptionPane.ERROR_MESSAGE);
 			return;
 		}
+
+		// **HIGHLIGHTED**: Initialize the FileActions object
+		this.fileActions = new FileActions(FEEDBACK_FILE_PATH);
 
 		// Use BorderLayout for the main content pane
 		this.setLayout(new BorderLayout());
@@ -165,23 +171,23 @@ public class ViewFeedback extends JPanel {
 	 */
 	private void loadAllFeedbackForDoctor() {
 		allDoctorFeedbacks.clear();
-		try (BufferedReader br = new BufferedReader(new FileReader(FEEDBACK_FILE_PATH))) {
-			String line;
-			while ((line = br.readLine()) != null) {
-				// Split the line by comma, and remove leading/trailing spaces
-				String[] parts = line.split("\\s*,\\s*");
-				if (parts.length >= 6) {
-					String staffOrDoctorId = parts[4];
-					if (staffOrDoctorId.equals(this.doctorId)) {
-						allDoctorFeedbacks.add(parts);
-					}
+		// **HIGHLIGHTED**: Use the FileActions object to read all data from the file
+		List<String[]> allFeedbacks = fileActions.returnAllDataFromFile(FEEDBACK_RECORD_LENGTH);
+		// **HIGHLIGHTED**: Check for errors in file reading. The return value is empty if an error occurs.
+		if (allFeedbacks.isEmpty()) {
+			JOptionPane.showMessageDialog(this, "Error reading feedback file or file is empty.",
+				"File Error", JOptionPane.ERROR_MESSAGE);
+			return;
+		}
+
+		// **HIGHLIGHTED**: Filter the data returned by FileActions
+		for (String[] feedback : allFeedbacks) {
+			if (feedback.length >= FEEDBACK_RECORD_LENGTH) {
+				String staffOrDoctorId = feedback[4];
+				if (staffOrDoctorId.equals(this.doctorId)) {
+					allDoctorFeedbacks.add(feedback);
 				}
 			}
-		} catch (IOException e) {
-			// Handle file not found or read error
-			JOptionPane.showMessageDialog(this, "Error reading feedback file: " + e.getMessage(),
-				"File Error", JOptionPane.ERROR_MESSAGE);
-			e.printStackTrace();
 		}
 	}
 
@@ -262,7 +268,7 @@ public class ViewFeedback extends JPanel {
 			}
 		}
 
-		return validRatingsCount > 0 ? totalRating / validRatingsCount : 0.0;
+		return validRatingsCount > 0 ? (double) totalRating / validRatingsCount : 0.0;
 	}
 
 	/**
