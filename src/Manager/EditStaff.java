@@ -1,6 +1,7 @@
 package Manager;
 
 import Class.Manager;
+import Class.Staff;
 import javax.swing.*;
 import java.awt.*;
 import static javax.swing.WindowConstants.DISPOSE_ON_CLOSE;
@@ -75,6 +76,7 @@ public class EditStaff extends JFrame {
             String staffAge = String.valueOf(ageField.getValue());
 
             Manager managerActions = new Manager();
+            Staff staffActions = new Staff();
 
             String staffName = nameField.getText().trim();
             String staffEmail = emailField.getText().trim();
@@ -92,6 +94,7 @@ public class EditStaff extends JFrame {
                 staffAge,
             };
             managerActions.editStaff(_currentData, newData);
+            staffActions.editStaff(_currentData, newData);
 
             this.dispose();
         });
@@ -200,6 +203,7 @@ public class EditStaff extends JFrame {
             String staffAge = String.valueOf(ageField.getValue());
 
             Manager managerActions = new Manager();
+            Staff staffActions = new Staff();
 
             String staffName = nameField.getText().trim();
             String staffEmail = emailField.getText().trim();
@@ -218,6 +222,7 @@ public class EditStaff extends JFrame {
                 "Active",
             };
             managerActions.editStaff(_currentData, newData);
+            staffActions.editStaff(_currentData, newData);
 
             this.dispose();
         });

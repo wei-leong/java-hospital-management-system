@@ -36,7 +36,7 @@ public class Staff extends Person{
     }
     
     
-    public void editCustomer(String[] oldData, String[] newData){
+    public void editStaff(String[] oldData, String[] newData) {
         profileHelper.EditProfile(oldData, newData);
     }
     

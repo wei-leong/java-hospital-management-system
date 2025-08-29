@@ -7,8 +7,12 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ItemEvent;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Arrays;
 import javax.swing.border.Border;
 import javax.swing.table.DefaultTableCellRenderer;
 
@@ -33,7 +37,7 @@ public class CustomerManagement extends JPanel{
         JPanel filters = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 5));
         filters.setBackground(Color.WHITE);
         filters.setBorder(BorderFactory.createEmptyBorder());
-
+                                
         String[] tags = {
            "Active","Inactive"
         };
@@ -132,28 +136,64 @@ public class CustomerManagement extends JPanel{
         
         TableStyle.applyStyle(table);
         
+        //Extend manager edit staff class
+        JPopupMenu popup = new JPopupMenu();
+        JMenuItem miEdit = new JMenuItem("Edit");
+        JMenuItem miInact = new JMenuItem("Inactive User");
+        popup.add(miEdit);
+        popup.add(miInact);
+
+        final String[] selectedCustomerId = {null};
+
         table.addMouseListener(new java.awt.event.MouseAdapter() {
-        @Override
-        public void mouseClicked(java.awt.event.MouseEvent e) {
-            int row = table.rowAtPoint(e.getPoint());
-            int col = table.columnAtPoint(e.getPoint());
+            @Override
+            public void mouseClicked(java.awt.event.MouseEvent e) {
+                int viewRow = table.rowAtPoint(e.getPoint());
+                int col = table.columnAtPoint(e.getPoint());
+                if (viewRow < 0) return; 
 
-            if (col == model.getColumnCount() - 1 && row >= 0) {
-                String[] customer = CustomerData.get(row);
+                // use to check use is clicking the last column
+                if (col == model.getColumnCount() - 1) {
+                    int modelRow = table.convertRowIndexToModel(viewRow);
+                    selectedCustomerId[0] = (String) model.getValueAt(modelRow, 0);       
+                    table.setRowSelectionInterval(viewRow, viewRow);
 
-                EditStaff edit = new EditStaff(customer);
+                    //Cleck to show the edit menu
+                    popup.show(e.getComponent(), e.getX(), e.getY());
+                }
+            }
+        });
 
-                edit.addWindowListener(new java.awt.event.WindowAdapter() {
-                    @Override
-                    public void windowClosed(java.awt.event.WindowEvent e) {
-                        refreshTable();
-                    }
-                });
 
-                SwingUtilities.invokeLater(() -> edit.setVisible(true));
+        miEdit.addActionListener(evt -> {
+            if (selectedCustomerId[0] != null) {
+                String[] customer = findCustomerById(selectedCustomerId[0]);
+                if (customer != null) {
+                    EditStaff edit = new EditStaff(customer);
+                    edit.addWindowListener(new java.awt.event.WindowAdapter() {
+                        @Override
+                        public void windowClosed(java.awt.event.WindowEvent e) {
+                            refreshTable(); 
+                        }
+                    });
+                    SwingUtilities.invokeLater(() -> edit.setVisible(true));
+                }
+            }
+        });
+
+        
+        miInact.addActionListener(evt -> {
+        if (selectedCustomerId[0] != null) {
+            String[] oldData = findCustomerById(selectedCustomerId[0]);
+            if (oldData != null) {
+                String[] newData = Arrays.copyOf(oldData, oldData.length);
+                newData[newData.length - 1] = "Inactive";  
+
+                StaffActions.InactiveCustomer(oldData, newData); 
+                refreshTable(); 
             }
         }
-});
+    });
         
         //Edit icon Button (use for edit customer information)
         table.getColumnModel().getColumn(model.getColumnCount() - 1).setCellRenderer(new DefaultTableCellRenderer() {
@@ -211,7 +251,17 @@ public class CustomerManagement extends JPanel{
                 model.addRow(newRow);
             });
         }
-    }   
-       
+    } 
+    
+    //Use to find customer by search the ID
+    private String[] findCustomerById(String id) {
+    for (String[] c : CustomerData) {
+        if (c[0].equals(id)) { 
+            return c;
+        }
+    }
+    return null;
+}
+           
 }
 
