@@ -7,26 +7,10 @@ import java.awt.*;
 public class Dashboard extends JPanel{
     
     public Dashboard() {
-                setLayout(new BorderLayout(10,10));
-        setBorder(BorderFactory.createEmptyBorder(10,10,10,10));
-
-        JPanel revenue = new JPanel();
-        revenue.setBorder(new TitledBorder("Revenue"));
-        revenue.add(new JLabel("<< Revenue Chart Here >>"));
-        add(revenue, BorderLayout.NORTH);
-
-        JPanel bottom = new JPanel(new GridLayout(1,2,10,0));
-        JPanel appoint = new JPanel(new BorderLayout());
-        appoint.setBorder(new TitledBorder("Appointment Count"));
-        appoint.add(new JLabel("100 This Month", SwingConstants.CENTER), BorderLayout.CENTER);
-        bottom.add(appoint);
-
-        JPanel feed = new JPanel(new BorderLayout());
-        feed.setBorder(new TitledBorder("Feedback for Doctor/Staff"));
-        feed.add(new JLabel("<< Feedback Table Here >>", SwingConstants.CENTER), BorderLayout.CENTER);
-        bottom.add(feed);
-
-        add(bottom, BorderLayout.CENTER);
-    }
+        setBackground(Color.WHITE);
+        JLabel dashboard = new JLabel("<html>Healthy is the life key<br>Good rest for better work state</html>");
+        dashboard.setFont(new Font("Time New Roman", Font.BOLD, 30));
+        add(dashboard);
+    }   
     
 }

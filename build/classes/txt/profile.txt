@@ -3,6 +3,6 @@ C1,Customer,customer,1234,Male,customer@gmail.com,0111111111,20,Active
 D2,Doctor,Wilson Tee Xing Yang,D2100,Male,wilson@mail.apu.com,0188888883,100,Inactive
 M1,Manager,manager,1234,Male,manager@mail.apu.com,0111111111,20,Inactive
 S1,Staff,staff,1234,Male,staff@mail.apu.com,0111111111,20,Active
-C2,Customer,JJ Chao,1234,Male,jj@mail.apu.com,1111111111,20,Active
+C2,Customer,JJ Chao,1234,Male,jj@mail.apu.com,1111111111,20,Inactive
 C3,Customer,Seah Si Wei,1234,Male,siweiseah@mail.com,1111111111,21,Inactive
 C4,Customer,Kye,1234,Male,KyeHuang@mail.com,0130067892,25,Active
