@@ -20,6 +20,7 @@ import java.awt.event.ActionListener;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import Class.FileActions;
+import Doctor.IDGenerator;
 
 public class CheckAppointment extends JPanel {
 
@@ -251,10 +252,9 @@ public class CheckAppointment extends JPanel {
 		}
 	}
 
-	// reads comments data from the text file and stores it in a map.
+	// read comments data from the text file and stores it in hashmap
 	private void loadCommentData() {
 		commentMap = new HashMap<>();
-		// use FileActions to read all data from comments.txt
 		List<String[]> commentData = commentActions.returnAllDataFromFile(3);
 		for (String[] data : commentData) {
 			if (data.length >= 2) {
@@ -268,7 +268,6 @@ public class CheckAppointment extends JPanel {
 	private void loadAppointmentData() {
 		allAppointments = new ArrayList<>();
 		rawAppointments = new HashMap<>();
-		// use FileActions to read all data from "appointment.txt"
 		List<String[]> dataLines = appointmentActions.returnAllDataFromFile(7);
 
 		for (String[] data : dataLines) {
@@ -296,7 +295,7 @@ public class CheckAppointment extends JPanel {
 		loadOngoingAppointments();
 	}
 
-	// populates the table with all the appointments from the loaded data
+	// populate the table with all the appointments from the loaded data
 	private void loadAllAppointments() {
 		tableModel.setRowCount(0); // Clear the table
 		for (String[] rowData : allAppointments) {
@@ -304,7 +303,7 @@ public class CheckAppointment extends JPanel {
 		}
 	}
 
-	// populates the table with only appointments that have "ongoing" status
+	// populate the table with only appointments that have "ongoing" status
 	private void loadOngoingAppointments() {
 		tableModel.setRowCount(0); // Clear the table
 		for (String[] rowData : allAppointments) {
@@ -314,8 +313,7 @@ public class CheckAppointment extends JPanel {
 		}
 	}
 
-	// filters the table content based on the selected date filter
-	// @param: filter, the type of filter to apply (Today, Tomorrow, This Week, This Month)
+	// filter the table content based on the selected date filter
 	private void filterAppointmentsByDate(String filter) {
 		tableModel.setRowCount(0); // clear the table
 		LocalDate now = LocalDate.now();
@@ -436,10 +434,10 @@ public class CheckAppointment extends JPanel {
 
 		// create a new comment entry 
 		if (!newCommentMessage.isEmpty()) {
-			GenerateID idGenerator = new GenerateID("G");
-			newCommentId = idGenerator.generateId("src/txt/comments.txt");
+			IDGenerator idGenerator = new IDGenerator("G", "src/txt/comments.txt");
+			newCommentId = idGenerator.generateNextId();
 
-			// use FileActions to add the new comment row
+			// add new comment row in text file
 			commentActions.addRowToFile(new String[]{newCommentId, newCommentMessage, customerIdLabel.getText().replace("Customer ID: ", "")});
 			commentMap.put(newCommentId, newCommentMessage);
 		}
@@ -466,10 +464,10 @@ public class CheckAppointment extends JPanel {
 
 				if (oldPaymentData != null) {
 					String[] newPaymentData = new String[4];
-					newPaymentData[0] = oldPaymentData[0]; // paymentID
-					newPaymentData[1] = newPaymentAmount;   // new amount
-					newPaymentData[2] = oldPaymentData[2]; // issued date
-					newPaymentData[3] = "completed";        // new status
+					newPaymentData[0] = oldPaymentData[0];
+					newPaymentData[1] = newPaymentAmount; // new amount
+					newPaymentData[2] = oldPaymentData[2];
+					newPaymentData[3] = "completed"; // new status
 
 					paymentActions.editRowFromFile(4, oldPaymentData, newPaymentData);
 
@@ -480,47 +478,12 @@ public class CheckAppointment extends JPanel {
 
 			rawAppointment[6] = newCommentId; // update the commentID
 
-			// Use FileActions to update the appointment row
+			// update the appointment row in text file
 			appointmentActions.editRowFromFile(7, oldAppointmentData, rawAppointment);
 
 			JOptionPane.showMessageDialog(this, "Appointment updated successfully!", "Success", JOptionPane.INFORMATION_MESSAGE);
 		}
 
 		loadAllData();
-	}
-}
-
-// to generate sequential IDs based on existing IDs in the file
-class GenerateID {
-
-	private String prefix;
-
-	public GenerateID(String prefix) {
-		this.prefix = prefix;
-	}
-
-	public String generateId(String filePath) {
-		int highestNumber = 0;
-		Pattern pattern = Pattern.compile("^" + Pattern.quote(prefix) + "(\\d+)$");
-
-		try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
-			String line;
-			while ((line = reader.readLine()) != null) {
-				String[] data = line.split(",", 2);
-				if (data.length > 0) {
-					Matcher matcher = pattern.matcher(data[0].trim());
-					if (matcher.matches()) {
-						int currentNumber = Integer.parseInt(matcher.group(1));
-						if (currentNumber > highestNumber) {
-							highestNumber = currentNumber;
-						}
-					}
-				}
-			}
-		} catch (IOException e) {
-			System.err.println("Error reading file to generate ID: " + e.getMessage());
-		}
-
-		return prefix + (highestNumber + 1);
 	}
 }

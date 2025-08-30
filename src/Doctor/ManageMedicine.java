@@ -7,18 +7,12 @@ import java.io.*;
 import java.util.Vector;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-// Import the FileActions class
 import Class.FileActions;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import Doctor.IDGenerator;
 
-/**
- *  * A Java AWT/Swing application for a doctor to manage medicine records. The
- *  * system allows adding, editing, and deleting medicine data stored in a text
- *  * file. The GUI features a JTable to display the data and text fields for  *
- * input.  
- */
 public class ManageMedicine extends JPanel {
 
 	private static final String FILE_NAME = "medicine.txt";
@@ -27,23 +21,23 @@ public class ManageMedicine extends JPanel {
 	private JTextField idField, nameField, priceField;
 	private JButton addButton, editButton, deleteButton, clearButton;
 	private final String ID_PREFIX = "Q";
-	private final int DATA_LENGTH = 3; // Number of columns
+	private final int DATA_LENGTH = 3;
 
-	// Create an instance of the FileActions class
 	private final FileActions _fileActions = new FileActions(FILE_NAME);
 
+	
+	// constructor for the ManageMedicine
 	public ManageMedicine() {
 		initComponents();
 		loadDataFromFile();
 	}
 
-	/**
-	 * Initializes all GUI components and sets up the layout.
-	 */
+
+	// initialize all GUI component and set up the layout
 	private void initComponents() {
 		setLayout(new BorderLayout(10, 10));
 
-		// ------------------ Top Table Panel ------------------
+		// panel for the top table 
 		String[] columnNames = {"Medicine ID", "Name", "Price (RM)"};
 		tableModel = new DefaultTableModel(columnNames, 0) {
 			@Override
@@ -61,7 +55,7 @@ public class ManageMedicine extends JPanel {
 			}
 		});
 
-		// ------------------ Bottom Control Panel ------------------
+		// panel for the bottom control 
 		JPanel controlPanel = new JPanel();
 		controlPanel.setLayout(new BoxLayout(controlPanel, BoxLayout.Y_AXIS));
 		controlPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 30, 10));
@@ -94,20 +88,18 @@ public class ManageMedicine extends JPanel {
 
 		add(controlPanel, BorderLayout.SOUTH);
 
-		// ------------------ Button Actions ------------------
+		// button action listener
 		addButton.addActionListener(e -> addMedicine());
 		editButton.addActionListener(e -> editMedicine());
 		deleteButton.addActionListener(e -> deleteMedicine());
 		clearButton.addActionListener(e -> clearFields());
 	}
 
-	/**
-	 * Loads medicine data from the text file into the JTable.
-	 */
+
+	// load medicine data from the text file into the JTable
 	private void loadDataFromFile() {
-		// Use the returnAllDataFromFile method from FileActions
 		List<String[]> data = _fileActions.returnAllDataFromFile(DATA_LENGTH);
-		tableModel.setRowCount(0); // Clear existing data
+		tableModel.setRowCount(0);
 		if (data.isEmpty()) {
 			JOptionPane.showMessageDialog(this, "The medicine data file is empty or not found.", "No Data Found", JOptionPane.INFORMATION_MESSAGE);
 			return;
@@ -129,20 +121,8 @@ public class ManageMedicine extends JPanel {
 		}
 	}
 
-	/**
-	 * Saves the current data from the JTable back to the text file. NOTE: This
-	 * method is no longer needed since addRowToFile and editRowFromFile handle
-	 * file I/O directly. The logic is now within the addMedicine, editMedicine,
-	 * and deleteMedicine methods.
-	 */
-	private void saveDataToFile() {
-		// This method is now obsolete with the new approach.
-		// Its logic has been replaced by the methods in FileActions.
-	}
 
-	/**
-	 * Populates the text fields with the data from the selected table row.
-	 */
+	// populate the text fields with data from selected table row
 	private void displaySelectedData() {
 		int selectedRow = medicineTable.getSelectedRow();
 		if (selectedRow != -1) {
@@ -152,30 +132,28 @@ public class ManageMedicine extends JPanel {
 		}
 	}
 
-	/**
-	 * Adds a new medicine record.
-	 */
+
+	// add new medicine
 	private void addMedicine() {
 		if (nameField.getText().trim().isEmpty() || priceField.getText().trim().isEmpty()) {
 			JOptionPane.showMessageDialog(this, "Please enter both medicine name and price.", "Validation Error", JOptionPane.WARNING_MESSAGE);
 			return;
 		}
 
-		String newId = generateNextId();
+		IDGenerator idGenerator = new IDGenerator(ID_PREFIX, "src/txt/" + FILE_NAME);
+		String newId = idGenerator.generateNextId();
 
-		// Use the addRowToFile method from FileActions
 		String[] newData = {newId, nameField.getText().trim(), priceField.getText().trim()};
 		_fileActions.addRowToFile(newData);
 
-		// Re-load data from file to update the table
+		// to update the table
 		loadDataFromFile();
 		clearFields();
 		JOptionPane.showMessageDialog(this, "Medicine added successfully!", "Success", JOptionPane.INFORMATION_MESSAGE);
 	}
 
-	/**
-	 * Edits the selected medicine record.
-	 */
+
+	// edit the selected medicine
 	private void editMedicine() {
 		int selectedRow = medicineTable.getSelectedRow();
 		if (selectedRow == -1) {
@@ -188,7 +166,6 @@ public class ManageMedicine extends JPanel {
 			return;
 		}
 
-		// Use the editRowFromFile method from FileActions
 		String[] oldData = new String[DATA_LENGTH];
 		for (int i = 0; i < DATA_LENGTH; i++) {
 			oldData[i] = (String) tableModel.getValueAt(selectedRow, i);
@@ -201,15 +178,14 @@ public class ManageMedicine extends JPanel {
 		};
 		_fileActions.editRowFromFile(DATA_LENGTH, oldData, newData);
 
-		// Re-load data from file to update the table
+		// to update the table
 		loadDataFromFile();
 		clearFields();
 		JOptionPane.showMessageDialog(this, "Medicine edited successfully!", "Success", JOptionPane.INFORMATION_MESSAGE);
 	}
 
-	/**
-	 * Deletes the selected medicine record.
-	 */
+
+	// delete selected medicine
 	private void deleteMedicine() {
 		int selectedRow = medicineTable.getSelectedRow();
 		if (selectedRow == -1) {
@@ -217,14 +193,12 @@ public class ManageMedicine extends JPanel {
 			return;
 		}
 
-		// Retrieve data for the row to be deleted
+		// retrieve data for the row to be deleted
 		String[] dataToDelete = new String[DATA_LENGTH];
 		for (int i = 0; i < DATA_LENGTH; i++) {
 			dataToDelete[i] = (String) tableModel.getValueAt(selectedRow, i);
 		}
 
-		// Use the delete logic from editRowFromFile by replacing the line with an empty one
-		// or by filtering out the data from the list
 		List<String[]> allData = _fileActions.returnAllDataFromFile(DATA_LENGTH);
 		List<String[]> updatedData = new ArrayList<>();
 		for (String[] rowData : allData) {
@@ -233,9 +207,6 @@ public class ManageMedicine extends JPanel {
 			}
 		}
 
-		// This is a simple but effective way to handle deletion. 
-		// If you have a specific method for deletion in FileActions, you should use that instead.
-		// For now, let's just re-write the file.
 		try (BufferedWriter writer = new BufferedWriter(new FileWriter("src/txt/" + FILE_NAME))) {
 			for (String[] row : updatedData) {
 				writer.write(String.join(",", row));
@@ -245,15 +216,13 @@ public class ManageMedicine extends JPanel {
 			JOptionPane.showMessageDialog(this, "An error occurred while deleting the record: " + ex.getMessage(), "File Save Error", JOptionPane.ERROR_MESSAGE);
 		}
 
-		// Re-load data from file to update the table
+		// to update the table
 		loadDataFromFile();
 		clearFields();
 		JOptionPane.showMessageDialog(this, "Medicine deleted successfully!", "Success", JOptionPane.INFORMATION_MESSAGE);
 	}
 
-	/**
-	 * Clears the input fields and selection.
-	 */
+	// clear the input field and selection
 	private void clearFields() {
 		idField.setText("");
 		nameField.setText("");
@@ -262,33 +231,4 @@ public class ManageMedicine extends JPanel {
 		addButton.setEnabled(true);
 	}
 
-	/**
-	 * Generates a new, unique medicine ID based on the highest existing ID in
-	 * the file.
-	 */
-	public String generateNextId() {
-		int highestNumber = 0;
-		// Use the returnAllDataFromFile method to read data for ID generation
-		List<String[]> allData = _fileActions.returnAllDataFromFile(DATA_LENGTH);
-
-		for (String[] data : allData) {
-			if (data.length > 0) {
-				String idPart = data[0].trim();
-				Pattern pattern = Pattern.compile("^" + Pattern.quote(ID_PREFIX) + "(\\d+)$");
-				Matcher matcher = pattern.matcher(idPart);
-				if (matcher.matches()) {
-					try {
-						int currentNumber = Integer.parseInt(matcher.group(1));
-						if (currentNumber > highestNumber) {
-							highestNumber = currentNumber;
-						}
-					} catch (NumberFormatException e) {
-						System.err.println("Skipping malformed ID: " + data[0]);
-					}
-				}
-			}
-		}
-
-		return ID_PREFIX + (highestNumber + 1);
-	}
 }

@@ -26,7 +26,6 @@ public class DoctorWorkTime extends JPanel {
 
 	// data and file path
 	private String doctorId;
-	private String doctorName;
 	private static final String WORKTIME_FILE = "doctor_worktime.txt"; // **<-- Changed path**
 	private static final int FILE_LENGTH = 3; // **<-- Added file length constant**
 
@@ -39,10 +38,8 @@ public class DoctorWorkTime extends JPanel {
 
 	
 	// constructor for the DoctorWorkTime
-	// @param: staffDetails (an array of strings storing user information)
 	public DoctorWorkTime(String[] staffDetails) {
 		this.doctorId = staffDetails[0];
-		this.doctorName = staffDetails[2];
 		this.workTimeFile = new FileActions(WORKTIME_FILE); 
 		
 		// main content panel
