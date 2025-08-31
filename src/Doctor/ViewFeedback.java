@@ -291,7 +291,7 @@ public class ViewFeedback extends JPanel {
 	private void updateTable(List<String[]> feedbacks) {
 		tableModel.setRowCount(0); // Clear existing table data
 		if (feedbacks.isEmpty()) {
-			tableModel.addRow(new Object[]{"No feedbacks found for this filter.", "", "", "", "", ""});
+			tableModel.addRow(new Object[]{"No feedbacks found", "", "", "", "", ""});
 		} else {
 			for (String[] feedback : feedbacks) {
 				tableModel.addRow(feedback);

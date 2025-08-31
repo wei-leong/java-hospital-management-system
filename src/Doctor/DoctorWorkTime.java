@@ -179,7 +179,7 @@ public class DoctorWorkTime extends JPanel {
 			endTime = LocalTime.parse(newEndTimeInput, INPUT_FORMATTER);
 		} catch (DateTimeParseException e) {
 			JOptionPane.showMessageDialog(this,
-				"Invalid time format. Please enter a 4-digit number (e.g., 0930).",
+				"Invalid time format. Please enter a 4-digit number (exp: 0930).",
 				"Invalid Input", JOptionPane.ERROR_MESSAGE);
 			return;
 		}
