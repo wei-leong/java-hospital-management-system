@@ -1,3 +1,4 @@
-Q1, panadol paracetamol, 15
-Q2, antibiotic, 20
-Q3, aspirin, 25
+Q1,panadol paracetamol,15
+Q2,antibiotic,20
+Q3,aspirin,25
+
