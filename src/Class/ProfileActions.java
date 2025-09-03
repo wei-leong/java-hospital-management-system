@@ -93,6 +93,27 @@ public class ProfileActions extends FileActions {
         }
         return filteredData;
     }
+    
+    //Use to show customer Profile
+    public List<String[]> ShowCustomerProfile(String filterRole) {
+        List<String[]> allData = returnAllDataFromFile(txt_len);
+        List<String[]> filteredData = new ArrayList<>(txt_len);
+
+        for (String[] row : allData) {
+            if (row.length == 9 && row[idx_status].equals("Active")) {
+                // if "All" or matches the role
+                if (filterRole.equalsIgnoreCase("Active")
+                        || row[idx_role].equals(filterRole)) {
+                    filteredData.add(row);
+                }
+            } else if (row.length == 9 && filterRole.equalsIgnoreCase("Inactive")) {
+                if (row[idx_status].equalsIgnoreCase("Inactive")) {
+                    filteredData.add(row);
+                }
+            }
+        }
+        return filteredData;
+    }
 
     public void EditProfile(String[] oldData, String[] newData) {
         editRowFromFile(txt_len, oldData, newData);
