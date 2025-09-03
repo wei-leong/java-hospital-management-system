@@ -26,10 +26,10 @@ public class FeedbackActions extends FileActions {
     private static final int idx_date = 5;
     private static final int txt_len = 6;
 
-    public int returnAverageRating(String staffId) {
+    public double returnAverageRating(String staffId) {
         List<String[]> allData = returnAllDataFromFile(txt_len);
-        int totalRating = 0;
-        int counts = 0;
+        double totalRating = 0;
+        double counts = 0;
         for (String[] row : allData) {
             if (row.length == txt_len && row[4].startsWith(staffId)) {
                 totalRating += Integer.parseInt(row[idx_rating]);

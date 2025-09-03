@@ -56,7 +56,7 @@ public class Manager extends Person {
         profileHelper.InactiveProfile(oldData, staffDetails);
     }
 
-    public int FeedbackSummary(String staffRole) {
+    public double FeedbackSummary(String staffRole) {
         return feedbackHelper.returnAverageRating(staffRole);
     }
 
@@ -212,11 +212,5 @@ public class Manager extends Person {
         return profileHelper.returnCustomerAverageAge();
     }
 
-    public List<String[]> returnPendingPayment() {
-        FileActions appointmentData = new FileActions("appointment.txt");
-        FileActions paymentData = new FileActions("payment.txt");
-        FileActions customerData = new FileActions("profile.txt");
-        
-        return null;
-    }
+    
 }
