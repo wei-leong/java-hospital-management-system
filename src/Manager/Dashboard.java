@@ -103,7 +103,7 @@ public class Dashboard extends JPanel {
         this.add(sc, BorderLayout.CENTER);
 
         // final population
-        refreshTable();
+        refreshAvgRatingTable();
     }
 
     private JPanel revenueSection() {
@@ -243,7 +243,7 @@ public class Dashboard extends JPanel {
                         new String[]{"Doctor", "Staff"},
                         sel -> {
                             avgFilter = sel;
-                            refreshTable();
+                            refreshAvgRatingTable();
                         }
                 ),
                 BorderLayout.EAST
@@ -473,7 +473,7 @@ public class Dashboard extends JPanel {
         }
     }
 
-    private void refreshTable() {
+    private void refreshAvgRatingTable() {
         model.setRowCount(0);// Remove old records
         List<String[]> rows = managerActions
                 .returnAverageRatingList(avgFilter);// Retrive new records
