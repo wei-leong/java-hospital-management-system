@@ -196,8 +196,59 @@ public class Manager extends Person {
         }
     }
     
-    public int returnDoctorAppointmentRanking(String range){
+    public int returnDoctorTotalAppointment(String range){
+        Path appointmentData = Paths.get("src", "txt", "appointment.txt");
+        // DateTime Format
+        DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+
+        // Get Current Time
+        LocalDateTime currentTime = LocalDateTime.now();
+
+        LocalDateTime startWindow, endWindow;
+
+        switch (range) {
+            case "Today":
+                startWindow = currentTime.toLocalDate().atStartOfDay();
+                endWindow = startWindow.plusDays(1);
+
+                break;
+            case "This Week":
+                // Week starts on Monday
+                LocalDate mon = currentTime.toLocalDate().with(DayOfWeek.MONDAY);
+                startWindow = mon.atStartOfDay();
+                endWindow = startWindow.plusWeeks(1);
+                break;
+            case "This Month":
+                LocalDate thisMonth = currentTime.toLocalDate().withDayOfMonth(1);
+                startWindow = thisMonth.atStartOfDay();
+                endWindow = startWindow.plusMonths(1);
+                break;
+            case "This Year":
+                LocalDate thisYear = currentTime.toLocalDate().withDayOfYear(1);
+                startWindow = thisYear.atStartOfDay();
+                endWindow = startWindow.plusYears(1);
+                break;
+            default:
+                startWindow = currentTime.toLocalDate().atStartOfDay();
+                endWindow = startWindow.plusDays(1);
+                break;
+        }
         
+        try {
+            List<String> lines = Files.readAllLines(appointmentData);
+            int totalAppointments = 0;
+            for (String line : lines) {
+                String[] parts = line.trim().split(",", 7);
+                LocalDateTime appointment = LocalDateTime.parse(parts[3], dateFormat);
+                if (parts.length == 7 && !appointment.isBefore(startWindow) && appointment.isBefore(endWindow) && parts[4].equals("complete")) {
+                    totalAppointments += 1;
+                }
+            }
+            return totalAppointments;
+        } catch (Exception e) {
+            System.err.println("Error reading appointment.txt: " + e.getMessage());
+            return 0;
+        }
     }
 
     public List<String[]> returnAverageRatingList(String staffRole) {
