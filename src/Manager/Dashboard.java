@@ -44,8 +44,10 @@ public class Dashboard extends JPanel {
 
     private String apptFilter = "Today";
     private String avgFilter = "Doctor";
+    private String doctorRankingFilter = "Today";
     private String revenueFilter = "Monthly";
-    private final DefaultTableModel model;
+    private final DefaultTableModel modelRating;
+    private final DefaultTableModel modelRanking;
     private final Manager managerActions = new Manager();
     private final RevenueChartPanel chartPanel;
     private final String[] monthLabels = {
@@ -53,7 +55,8 @@ public class Dashboard extends JPanel {
         "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
     };
     private final String[] ratingCols = {"Person ID", "Person Name", "Avg Rating"};
-    private final String[] paymentCols = {"Customer ID","Customer Name","Amount"};
+    private final String[] paymentCols = {"Customer ID", "Customer Name", "Amount"};
+    private final String[] doctorRankingCols = {"Doctor ID","Doctor Name","Appointment Count"};
     private final int anchorYear = LocalDate.now().getYear();
 
     public Dashboard() {
@@ -64,7 +67,13 @@ public class Dashboard extends JPanel {
         chartPanel = new RevenueChartPanel(monthLabels, monthlyData);
 
         // Initialize model (same as before)
-        model = new DefaultTableModel(ratingCols, 0) {
+        modelRating = new DefaultTableModel(ratingCols, 0) {
+            @Override
+            public boolean isCellEditable(int r, int c) {
+                return false;
+            }
+        };
+        modelRating = new DefaultTableModel(ratingCols, 0) {
             @Override
             public boolean isCellEditable(int r, int c) {
                 return false;
@@ -254,20 +263,20 @@ public class Dashboard extends JPanel {
         fbCard.add(tblScroll, BorderLayout.CENTER);
         return fbCard;
     }
-    
+
     private JPanel bottomSection() {
         // Panel for Storing Total Appointments ( WEST ) + Average Rating ( CENTER ) 
         JPanel bottomRow = new JPanel(new BorderLayout(20, 0));
         bottomRow.setBackground(Color.WHITE);
-        
+
         bottomRow.add(returnDoctorRankingTable(), BorderLayout.CENTER); // Add AverageRating 
         bottomRow.add(returnCustomerAvgAgeCard(), BorderLayout.EAST); // Add AppointmentCard 
 
         return bottomRow;
     }
-    
+
     private JPanel returnDoctorRankingTable() {
-        // Build table model & table
+        // Build table model & table (we re-use the existing 'model' variable)
         JTable tbl = new JTable(model);
         tbl.setShowGrid(false);
         tbl.setTableHeader(null);
@@ -288,10 +297,10 @@ public class Dashboard extends JPanel {
         centerRenderer.setHorizontalAlignment(SwingConstants.CENTER);
         tbl.setDefaultRenderer(Object.class, centerRenderer);
 
-        // Custom Header
-        JPanel customHeader = new JPanel(new GridLayout(1, paymentCols.length));
+        // Custom Header (columns)
+        JPanel customHeader = new JPanel(new GridLayout(1, doctorRankingCols.length));
         customHeader.setBackground(Color.WHITE);
-        for (String h : paymentCols) {
+        for (String h : doctorRankingCols) {
             JLabel lbl = new JLabel(h, SwingConstants.CENTER);
             lbl.setFont(lbl.getFont().deriveFont(Font.BOLD, 14f));
             customHeader.add(lbl);
@@ -302,15 +311,37 @@ public class Dashboard extends JPanel {
         fbCard.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY));
         fbCard.setBackground(Color.WHITE);
 
-        // Add Customized Table Header
-        fbCard.add(customHeader, BorderLayout.NORTH);
+        // Header Section with custom header ( CENTER ) and filter button ( EAST )
+        JPanel fbHeader = new JPanel(new BorderLayout());
+        fbHeader.setBackground(Color.WHITE);
+        fbHeader.add(customHeader, BorderLayout.CENTER);
+
+        // Add filter button to the right of custom header:
+        fbHeader.add(
+                createFilterButton(
+                        "Doctor Ranking",
+                        new String[]{"Today", "This Week", "This Month", "This Year"},
+                        sel -> {
+                            // when user selects filter, save and refresh the table contents
+                            doctorRankingFilter = sel;
+                            refreshDoctorRankingTable(doctorRankingFilter);
+                        }
+                ),
+                BorderLayout.EAST
+        );
+
+        fbCard.add(fbHeader, BorderLayout.NORTH);
 
         // Add Table
         fbCard.add(tblScroll, BorderLayout.CENTER);
+
+        // initially populate the model for default range
+        refreshDoctorRankingTable(doctorRankingFilter);
+
         return fbCard;
     }
-    
-    private JPanel returnCustomerAvgAgeCard(){
+
+    private JPanel returnCustomerAvgAgeCard() {
         // Customer Average Age card JPanel
         JPanel avgCard = new JPanel(new BorderLayout(0, 4));
         avgCard.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY));
@@ -477,6 +508,20 @@ public class Dashboard extends JPanel {
         model.setRowCount(0);// Remove old records
         List<String[]> rows = managerActions
                 .returnAverageRatingList(avgFilter);// Retrive new records
+        for (String[] r : rows) {
+            model.addRow(r);
+        }
+    }
+
+    private void refreshDoctorRankingTable(String range) {
+        // clear model
+        model.setRowCount(0);
+
+        // fetch ranking rows from your helper/manager class
+        // expected: List<String[]> rows where each String[] is { id, name, countStr }
+        List<String[]> rows = managerActions.returnDoctorRankingList(range); // <-- adjust name if needed
+
+        // add rows to model
         for (String[] r : rows) {
             model.addRow(r);
         }
