@@ -73,7 +73,7 @@ public class Dashboard extends JPanel {
                 return false;
             }
         };
-        modelRating = new DefaultTableModel(ratingCols, 0) {
+        modelRanking = new DefaultTableModel(doctorRankingCols, 0) {
             @Override
             public boolean isCellEditable(int r, int c) {
                 return false;
@@ -208,7 +208,7 @@ public class Dashboard extends JPanel {
 
     private JPanel returnAverageRatingTable() {
         // Build table model & table
-        JTable tbl = new JTable(model);
+        JTable tbl = new JTable(modelRating);
         tbl.setShowGrid(false);
         tbl.setTableHeader(null);
         tbl.setIntercellSpacing(new Dimension(0, 0));
@@ -277,7 +277,7 @@ public class Dashboard extends JPanel {
 
     private JPanel returnDoctorRankingTable() {
         // Build table model & table (we re-use the existing 'model' variable)
-        JTable tbl = new JTable(model);
+        JTable tbl = new JTable(modelRanking);
         tbl.setShowGrid(false);
         tbl.setTableHeader(null);
         tbl.setIntercellSpacing(new Dimension(0, 0));
@@ -505,17 +505,17 @@ public class Dashboard extends JPanel {
     }
 
     private void refreshAvgRatingTable() {
-        model.setRowCount(0);// Remove old records
+        modelRating.setRowCount(0);// Remove old records
         List<String[]> rows = managerActions
                 .returnAverageRatingList(avgFilter);// Retrive new records
         for (String[] r : rows) {
-            model.addRow(r);
+            modelRating.addRow(r);
         }
     }
 
     private void refreshDoctorRankingTable(String range) {
         // clear model
-        model.setRowCount(0);
+        modelRanking.setRowCount(0);
 
         // fetch ranking rows from your helper/manager class
         // expected: List<String[]> rows where each String[] is { id, name, countStr }
@@ -523,7 +523,7 @@ public class Dashboard extends JPanel {
 
         // add rows to model
         for (String[] r : rows) {
-            model.addRow(r);
+            modelRanking.addRow(r);
         }
     }
 }
