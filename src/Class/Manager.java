@@ -4,6 +4,7 @@
  */
 package Class;
 
+import Class.ProfileActions;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -195,8 +196,42 @@ public class Manager extends Person {
             return 0;
         }
     }
-    
-    public int returnDoctorTotalAppointment(String range, String doctorId){
+
+    public List<String[]> returnDoctorRankingList(String range) {
+        List<String[]> staffData = profileHelper.ReturnAllStaffData();
+        List<String[]> results = new ArrayList<>();
+
+        for (String[] row : staffData) {
+            if (row.length == 9 && row[1].equalsIgnoreCase("Doctor") && row[8].equals("Active")) {
+                String countStr = Integer.toString(returnDoctorTotalAppointment(range, row[0]));
+                results.add(new String[]{
+                    row[0], // staff id
+                    row[2], // staff name
+                    countStr,});
+            }
+        }
+
+        int n = results.size(); // Return how many columns results have
+        for (int i = 0; i < n - 1; i++) {
+            int maxIdx = i;
+            for (int j = i + 1; j < n; j++) {
+                int valJ = Integer.parseInt(results.get(j)[2]);
+                int valMax = Integer.parseInt(results.get(maxIdx)[2]);
+                if (valJ > valMax) {
+                    maxIdx = j;
+                }
+            }
+            // swap results[i] and results[maxIdx] if needed
+            if (maxIdx != i) {
+                String[] tmp = results.get(i);
+                results.set(i, results.get(maxIdx));
+                results.set(maxIdx, tmp);
+            }
+        }
+        return results;
+    }
+
+    public int returnDoctorTotalAppointment(String range, String doctorId) {
         Path appointmentData = Paths.get("src", "txt", "appointment.txt");
         // DateTime Format
         DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
@@ -233,7 +268,7 @@ public class Manager extends Person {
                 endWindow = startWindow.plusDays(1);
                 break;
         }
-        
+
         try {
             List<String> lines = Files.readAllLines(appointmentData);
             int totalAppointments = 0;
@@ -267,5 +302,4 @@ public class Manager extends Person {
         return profileHelper.returnCustomerAverageAge();
     }
 
-    
 }
