@@ -196,7 +196,7 @@ public class Manager extends Person {
         }
     }
     
-    public int returnDoctorTotalAppointment(String range){
+    public int returnDoctorTotalAppointment(String range, String doctorId){
         Path appointmentData = Paths.get("src", "txt", "appointment.txt");
         // DateTime Format
         DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
@@ -240,7 +240,7 @@ public class Manager extends Person {
             for (String line : lines) {
                 String[] parts = line.trim().split(",", 7);
                 LocalDateTime appointment = LocalDateTime.parse(parts[3], dateFormat);
-                if (parts.length == 7 && !appointment.isBefore(startWindow) && appointment.isBefore(endWindow) && parts[4].equals("complete")) {
+                if (parts.length == 7 && !appointment.isBefore(startWindow) && appointment.isBefore(endWindow) && parts[4].equals("complete") && parts[1].equals(doctorId)) {
                     totalAppointments += 1;
                 }
             }
