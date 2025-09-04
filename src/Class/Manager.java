@@ -195,6 +195,10 @@ public class Manager extends Person {
             return 0;
         }
     }
+    
+    public int returnDoctorAppointmentRanking(String range){
+        
+    }
 
     public List<String[]> returnAverageRatingList(String staffRole) {
         return feedbackHelper.returnAverageRatingList(staffRole);
