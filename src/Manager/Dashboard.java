@@ -260,13 +260,13 @@ public class Dashboard extends JPanel {
         JPanel bottomRow = new JPanel(new BorderLayout(20, 0));
         bottomRow.setBackground(Color.WHITE);
         
-        bottomRow.add(returnPendingPaymentsTable(), BorderLayout.CENTER); // Add AverageRating 
+        bottomRow.add(returnDoctorRankingTable(), BorderLayout.CENTER); // Add AverageRating 
         bottomRow.add(returnCustomerAvgAgeCard(), BorderLayout.EAST); // Add AppointmentCard 
 
         return bottomRow;
     }
     
-    private JPanel returnPendingPaymentsTable() {
+    private JPanel returnDoctorRankingTable() {
         // Build table model & table
         JTable tbl = new JTable(model);
         tbl.setShowGrid(false);
