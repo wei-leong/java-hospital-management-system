@@ -44,7 +44,7 @@ public class Dashboard extends JPanel {
 
     private String apptFilter = "Today";
     private String avgFilter = "Doctor";
-    private String doctorRankingFilter = "Today";
+    private String doctorRankingFilter = "This Year";
     private String revenueFilter = "Monthly";
     private final DefaultTableModel modelRating;
     private final DefaultTableModel modelRanking;
@@ -321,7 +321,7 @@ public class Dashboard extends JPanel {
         fbHeader.add(
                 createFilterButton(
                         "Doctor Ranking",
-                        new String[]{"Today", "This Week", "This Month", "This Year"},
+                        new String[]{"This Month", "This Year"},
                         sel -> {
                             // when user selects filter, save and refresh the table contents
                             doctorRankingFilter = sel;

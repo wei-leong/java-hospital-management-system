@@ -242,17 +242,6 @@ public class Manager extends Person {
         LocalDateTime startWindow, endWindow;
 
         switch (range) {
-            case "Today":
-                startWindow = currentTime.toLocalDate().atStartOfDay();
-                endWindow = startWindow.plusDays(1);
-
-                break;
-            case "This Week":
-                // Week starts on Monday
-                LocalDate mon = currentTime.toLocalDate().with(DayOfWeek.MONDAY);
-                startWindow = mon.atStartOfDay();
-                endWindow = startWindow.plusWeeks(1);
-                break;
             case "This Month":
                 LocalDate thisMonth = currentTime.toLocalDate().withDayOfMonth(1);
                 startWindow = thisMonth.atStartOfDay();
