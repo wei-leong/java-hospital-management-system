@@ -4,6 +4,7 @@
  */
 package Class;
 
+import Class.ProfileActions;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -18,13 +19,14 @@ import java.util.List;
  *
  * @author Wlhoe
  */
-public class Manager extends Person{
+public class Manager extends Person {
+
     // Composition  -> Manager has ProfileAction, FeedbackAction and RevenueActions
     private final ProfileActions profileHelper = new ProfileActions();
     private final FeedbackActions feedbackHelper = new FeedbackActions();
     private final RevenueActions revenueHelper = new RevenueActions();
     private final String[] _ownProfile;
-    
+
     // Polymorphism ( Constructor Overloading ) 
     public Manager(String email, String password) {
         super(email, password);
@@ -34,7 +36,7 @@ public class Manager extends Person{
     public Manager() {
         this._ownProfile = null;
     }
-    
+
     public Manager(String[] ownProfile) {
         this._ownProfile = ownProfile;
     }
@@ -51,11 +53,11 @@ public class Manager extends Person{
         profileHelper.EditProfile(oldData, newData);
     }
 
-    public void InactiveStaff(String[] oldData,String[] staffDetails) {
-        profileHelper.InactiveProfile(oldData,staffDetails);
+    public void InactiveStaff(String[] oldData, String[] staffDetails) {
+        profileHelper.InactiveProfile(oldData, staffDetails);
     }
 
-    public int FeedbackSummary(String staffRole) {
+    public double FeedbackSummary(String staffRole) {
         return feedbackHelper.returnAverageRating(staffRole);
     }
 
@@ -195,6 +197,84 @@ public class Manager extends Person{
         }
     }
 
+    public List<String[]> returnDoctorRankingList(String range) {
+        List<String[]> staffData = profileHelper.ReturnAllStaffData();
+        List<String[]> results = new ArrayList<>();
+
+        for (String[] row : staffData) {
+            if (row.length == 9 && row[1].equalsIgnoreCase("Doctor") && row[8].equals("Active")) {
+                String countStr = Integer.toString(returnDoctorTotalAppointment(range, row[0]));
+                results.add(new String[]{
+                    row[0], // staff id
+                    row[2], // staff name
+                    countStr,});
+            }
+        }
+
+        int n = results.size(); // Return how many columns results have
+        for (int i = 0; i < n - 1; i++) {
+            int maxIdx = i;
+            for (int j = i + 1; j < n; j++) {
+                int valJ = Integer.parseInt(results.get(j)[2]);
+                int valMax = Integer.parseInt(results.get(maxIdx)[2]);
+                if (valJ > valMax) {
+                    maxIdx = j;
+                }
+            }
+            // swap results[i] and results[maxIdx] if needed
+            if (maxIdx != i) {
+                String[] tmp = results.get(i);
+                results.set(i, results.get(maxIdx));
+                results.set(maxIdx, tmp);
+            }
+        }
+        return results;
+    }
+
+    public int returnDoctorTotalAppointment(String range, String doctorId) {
+        Path appointmentData = Paths.get("src", "txt", "appointment.txt");
+        // DateTime Format
+        DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+
+        // Get Current Time
+        LocalDateTime currentTime = LocalDateTime.now();
+
+        LocalDateTime startWindow, endWindow;
+
+        switch (range) {
+            case "This Month":
+                LocalDate thisMonth = currentTime.toLocalDate().withDayOfMonth(1);
+                startWindow = thisMonth.atStartOfDay();
+                endWindow = startWindow.plusMonths(1);
+                break;
+            case "This Year":
+                LocalDate thisYear = currentTime.toLocalDate().withDayOfYear(1);
+                startWindow = thisYear.atStartOfDay();
+                endWindow = startWindow.plusYears(1);
+                break;
+            default:
+                startWindow = currentTime.toLocalDate().atStartOfDay();
+                endWindow = startWindow.plusDays(1);
+                break;
+        }
+
+        try {
+            List<String> lines = Files.readAllLines(appointmentData);
+            int totalAppointments = 0;
+            for (String line : lines) {
+                String[] parts = line.trim().split(",", 7);
+                LocalDateTime appointment = LocalDateTime.parse(parts[3], dateFormat);
+                if (parts.length == 7 && !appointment.isBefore(startWindow) && appointment.isBefore(endWindow) && parts[4].equals("complete") && parts[1].equals(doctorId)) {
+                    totalAppointments += 1;
+                }
+            }
+            return totalAppointments;
+        } catch (Exception e) {
+            System.err.println("Error reading appointment.txt: " + e.getMessage());
+            return 0;
+        }
+    }
+
     public List<String[]> returnAverageRatingList(String staffRole) {
         return feedbackHelper.returnAverageRatingList(staffRole);
     }
@@ -206,4 +286,9 @@ public class Manager extends Person{
     public double[] returnYearsRevenue(int anchorYear) {
         return revenueHelper.returnYearsRevenue(anchorYear);
     }
+
+    public int returnCustomerAverageAge() {
+        return profileHelper.returnCustomerAverageAge();
+    }
+
 }

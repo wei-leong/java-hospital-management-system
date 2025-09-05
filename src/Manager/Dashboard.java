@@ -44,37 +44,75 @@ public class Dashboard extends JPanel {
 
     private String apptFilter = "Today";
     private String avgFilter = "Doctor";
+    private String doctorRankingFilter = "This Year";
     private String revenueFilter = "Monthly";
-    private final DefaultTableModel model;
+    private final DefaultTableModel modelRating;
+    private final DefaultTableModel modelRanking;
     private final Manager managerActions = new Manager();
     private final RevenueChartPanel chartPanel;
     private final String[] monthLabels = {
         "Jan", "Feb", "Mar", "Apr", "May", "Jun",
         "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
     };
-    private final String[] docCols = {"Doctor ID", "Doctor Name", "Avg Rating"};
+    private final String[] ratingCols = {"Person ID", "Person Name", "Avg Rating"};
+    private final String[] paymentCols = {"Customer ID", "Customer Name", "Amount"};
+    private final String[] doctorRankingCols = {"Doctor ID","Doctor Name","Appointment Count"};
     private final int anchorYear = LocalDate.now().getYear();
 
     public Dashboard() {
-        setLayout(new BorderLayout(20, 20));
+        setLayout(new BorderLayout());
         setBackground(Color.WHITE);
 
         double[] monthlyData = managerActions.returnMonthlyRevenue(anchorYear);
-        chartPanel = new RevenueChartPanel(monthLabels, monthlyData); // Initialise Revenue Chart in the Constructor
-        revenueSection();
-        
-        // Initialise Table Model in the Constructor
-        model = new DefaultTableModel(docCols, 0) {
+        chartPanel = new RevenueChartPanel(monthLabels, monthlyData);
+
+        // Initialize model (same as before)
+        modelRating = new DefaultTableModel(ratingCols, 0) {
             @Override
             public boolean isCellEditable(int r, int c) {
                 return false;
             }
         };
-        
-        add(revenueSection(), BorderLayout.NORTH); // Add the middle section at CENTER of Dashboard() JPanel
-        add(middleSection(), BorderLayout.CENTER); // Add the middle section at CENTER of Dashboard() JPanel
+        modelRanking = new DefaultTableModel(doctorRankingCols, 0) {
+            @Override
+            public boolean isCellEditable(int r, int c) {
+                return false;
+            }
+        };
 
-        refreshTable();
+        // Build content into an inner panel so the scroll pane can scroll the whole thing
+        JPanel content = new JPanel(new BorderLayout(20, 20));
+        content.setBackground(Color.WHITE);
+        content.setBorder(BorderFactory.createEmptyBorder(12, 12, 12, 12));
+
+        // revenue at top
+        content.add(revenueSection(), BorderLayout.NORTH);
+
+        // middle area wrapped in a fixed-size panel
+        JPanel middleWrapper = new JPanel(new BorderLayout());
+        middleWrapper.setBackground(Color.WHITE);
+        middleWrapper.setPreferredSize(new Dimension(300, 180)); // FIXED WIDTH & HEIGHT for middle section
+        middleWrapper.add(middleSection(), BorderLayout.CENTER);
+        content.add(middleWrapper, BorderLayout.CENTER);
+
+        // bottom (optional extra info) - keep as before (you had bottomSection())
+        content.add(bottomSection(), BorderLayout.SOUTH);
+
+        // Put the content panel inside a scroll pane so whole dashboard becomes scrollable
+        JScrollPane sc = new JScrollPane(content,
+                JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
+                JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        sc.getViewport().setBackground(Color.WHITE);
+        sc.setBorder(BorderFactory.createEmptyBorder());
+        // Slight performance/useful hints:
+        sc.getVerticalScrollBar().setUnitIncrement(16); // smoother scrolling
+
+        // Add scroll pane to this Dashboard panel
+        this.setLayout(new BorderLayout());
+        this.add(sc, BorderLayout.CENTER);
+
+        // final population
+        refreshAvgRatingTable();
     }
 
     private JPanel revenueSection() {
@@ -102,10 +140,10 @@ public class Dashboard extends JPanel {
                 }),
                 BorderLayout.EAST
         );
-        
+
         revenuePanel.add(revenueFilterRow, BorderLayout.NORTH); // Add Revenue chart at NORTH
         revenuePanel.add(chartPanel, BorderLayout.CENTER); // Add the Revenue chart at CENTER
-        
+
         return revenuePanel;
     }
 
@@ -114,14 +152,14 @@ public class Dashboard extends JPanel {
         // Panel for Storing Total Appointments ( WEST ) + Average Rating ( CENTER ) 
         JPanel middleRow = new JPanel(new BorderLayout(20, 0));
         middleRow.setBackground(Color.WHITE);
-        
+
         middleRow.add(returnAppointmentCard(), BorderLayout.WEST); // Add AppointmentCard 
         middleRow.add(returnAverageRatingTable(), BorderLayout.CENTER); // Add AverageRating 
 
         return middleRow;
     }
-    
-    private JPanel returnAppointmentCard(){
+
+    private JPanel returnAppointmentCard() {
         // Appointment card JPanel
         JPanel apptCard = new JPanel(new BorderLayout(0, 4));
         apptCard.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY));
@@ -151,7 +189,7 @@ public class Dashboard extends JPanel {
                 ),
                 BorderLayout.EAST
         );
-        
+
         // Appointments Count Label
         JLabel lblCountTitle = new JLabel("Appointments Count", SwingConstants.CENTER);
         lblCountTitle.setFont(lblCountTitle.getFont().deriveFont(Font.BOLD, 15f));
@@ -168,9 +206,9 @@ public class Dashboard extends JPanel {
         return apptCard;
     }
 
-    private JPanel returnAverageRatingTable(){
+    private JPanel returnAverageRatingTable() {
         // Build table model & table
-        JTable tbl = new JTable(model);
+        JTable tbl = new JTable(modelRating);
         tbl.setShowGrid(false);
         tbl.setTableHeader(null);
         tbl.setIntercellSpacing(new Dimension(0, 0));
@@ -191,9 +229,9 @@ public class Dashboard extends JPanel {
         tbl.setDefaultRenderer(Object.class, centerRenderer);
 
         // Custom Header
-        JPanel customHeader = new JPanel(new GridLayout(1, docCols.length));
+        JPanel customHeader = new JPanel(new GridLayout(1, ratingCols.length));
         customHeader.setBackground(Color.WHITE);
-        for (String h : docCols) {
+        for (String h : ratingCols) {
             JLabel lbl = new JLabel(h, SwingConstants.CENTER);
             lbl.setFont(lbl.getFont().deriveFont(Font.BOLD, 14f));
             customHeader.add(lbl);
@@ -214,7 +252,7 @@ public class Dashboard extends JPanel {
                         new String[]{"Doctor", "Staff"},
                         sel -> {
                             avgFilter = sel;
-                            refreshTable();
+                            refreshAvgRatingTable();
                         }
                 ),
                 BorderLayout.EAST
@@ -225,7 +263,113 @@ public class Dashboard extends JPanel {
         fbCard.add(tblScroll, BorderLayout.CENTER);
         return fbCard;
     }
-    
+
+    private JPanel bottomSection() {
+        // Panel for Storing Total Appointments ( WEST ) + Average Rating ( CENTER ) 
+        JPanel bottomRow = new JPanel(new BorderLayout(20, 0));
+        bottomRow.setBackground(Color.WHITE);
+        bottomRow.setPreferredSize(new Dimension(300, 180));
+
+        bottomRow.add(returnDoctorRankingTable(), BorderLayout.CENTER); // Add AverageRating 
+        bottomRow.add(returnCustomerAvgAgeCard(), BorderLayout.EAST); // Add AppointmentCard 
+
+        return bottomRow;
+    }
+
+    private JPanel returnDoctorRankingTable() {
+        // Build table model & table (we re-use the existing 'model' variable)
+        JTable tbl = new JTable(modelRanking);
+        tbl.setShowGrid(false);
+        tbl.setTableHeader(null);
+        tbl.setIntercellSpacing(new Dimension(0, 0));
+        tbl.setRowHeight(24);
+        tbl.setFillsViewportHeight(true);
+        tbl.setBackground(Color.WHITE);
+
+        // Strip built-in header
+        JScrollPane tblScroll = new JScrollPane(tbl,
+                JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
+                JScrollPane.HORIZONTAL_SCROLLBAR_NEVER
+        );
+        tblScroll.setColumnHeaderView(null);
+        tblScroll.setBorder(BorderFactory.createEmptyBorder());
+
+        DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
+        centerRenderer.setHorizontalAlignment(SwingConstants.CENTER);
+        tbl.setDefaultRenderer(Object.class, centerRenderer);
+
+        // Custom Header (columns)
+        JPanel customHeader = new JPanel(new GridLayout(1, doctorRankingCols.length));
+        customHeader.setBackground(Color.WHITE);
+        for (String h : doctorRankingCols) {
+            JLabel lbl = new JLabel(h, SwingConstants.CENTER);
+            lbl.setFont(lbl.getFont().deriveFont(Font.BOLD, 14f));
+            customHeader.add(lbl);
+        }
+
+        // Feedback Card Container
+        JPanel fbCard = new JPanel(new BorderLayout(0, 4));
+        fbCard.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY));
+        fbCard.setBackground(Color.WHITE);
+
+        // Header Section with custom header ( CENTER ) and filter button ( EAST )
+        JPanel fbHeader = new JPanel(new BorderLayout());
+        fbHeader.setBackground(Color.WHITE);
+        fbHeader.add(customHeader, BorderLayout.CENTER);
+
+        // Add filter button to the right of custom header:
+        fbHeader.add(
+                createFilterButton(
+                        "Doctor Ranking",
+                        new String[]{"This Month", "This Year"},
+                        sel -> {
+                            // when user selects filter, save and refresh the table contents
+                            doctorRankingFilter = sel;
+                            refreshDoctorRankingTable(doctorRankingFilter);
+                        }
+                ),
+                BorderLayout.EAST
+        );
+
+        fbCard.add(fbHeader, BorderLayout.NORTH);
+
+        // Add Table
+        fbCard.add(tblScroll, BorderLayout.CENTER);
+
+        // initially populate the model for default range
+        refreshDoctorRankingTable(doctorRankingFilter);
+
+        return fbCard;
+    }
+
+    private JPanel returnCustomerAvgAgeCard() {
+        // Customer Average Age card JPanel
+        JPanel avgCard = new JPanel(new BorderLayout(0, 4));
+        avgCard.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY));
+        avgCard.setBackground(Color.WHITE);
+
+        // Initialise lblCountNum
+        JLabel lblCountNum = new JLabel(
+                String.valueOf(managerActions.returnCustomerAverageAge()),
+                SwingConstants.CENTER
+        );
+
+        // Header: Total Appointment Title ( WEST ) + Filter Options ( EAST )
+        JPanel avgHeader = new JPanel(new BorderLayout());
+
+        // Appointments Count Label
+        JLabel lblAvgAgeTitle = new JLabel("Customer Average Age", SwingConstants.CENTER);
+        lblAvgAgeTitle.setFont(lblAvgAgeTitle.getFont().deriveFont(Font.BOLD, 15f));
+        avgHeader.add(lblAvgAgeTitle, BorderLayout.CENTER);
+        avgCard.add(avgHeader, BorderLayout.NORTH);
+
+        // Total Appointments Number
+        lblCountNum.setFont(lblCountNum.getFont().deriveFont(Font.BOLD, 25f));
+        avgCard.add(lblCountNum, BorderLayout.CENTER);
+
+        return avgCard;
+    }
+
     // Filter Button for Revenue, Total Appointment, Average Rating Section
     private JButton createFilterButton(String title, String[] options, Consumer<String> onSelect) {
         JButton btn = new JButton();
@@ -361,12 +505,26 @@ public class Dashboard extends JPanel {
         }
     }
 
-    private void refreshTable() {
-        model.setRowCount(0);// Remove old records
+    private void refreshAvgRatingTable() {
+        modelRating.setRowCount(0);// Remove old records
         List<String[]> rows = managerActions
                 .returnAverageRatingList(avgFilter);// Retrive new records
         for (String[] r : rows) {
-            model.addRow(r);
+            modelRating.addRow(r);
+        }
+    }
+
+    private void refreshDoctorRankingTable(String range) {
+        // clear model
+        modelRanking.setRowCount(0);
+
+        // fetch ranking rows from your helper/manager class
+        // expected: List<String[]> rows where each String[] is { id, name, countStr }
+        List<String[]> rows = managerActions.returnDoctorRankingList(range); // <-- adjust name if needed
+
+        // add rows to model
+        for (String[] r : rows) {
+            modelRanking.addRow(r);
         }
     }
 }

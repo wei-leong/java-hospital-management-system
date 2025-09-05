@@ -11,6 +11,8 @@ import java.awt.*;
 import java.awt.event.ItemEvent;
 import java.util.List;
 import java.util.ArrayList;
+import javax.swing.border.Border;
+import javax.swing.table.DefaultTableCellRenderer;
 
 public class ViewAppointment extends JPanel {
 
@@ -23,20 +25,20 @@ public class ViewAppointment extends JPanel {
     public ViewAppointment() {
         setLayout(new BorderLayout(10, 10));
         setBackground(Color.WHITE);
-        
+
         model = new DefaultTableModel(cols, 0) {
             @Override
             public boolean isCellEditable(int r, int c) {
                 return false;
             }
         };
-        
+
         add(northSection(), BorderLayout.NORTH);// Appointment Filter Options + Custom Table Heading
         add(appointmentTable(), BorderLayout.CENTER);// Appointments Data ( Table Data ) 
-        
+
     }
-    
-    private JPanel northSection(){
+
+    private JPanel northSection() {
         refreshTable(); // populate model
 
         JPanel headerBar = new JPanel(new GridLayout(1, cols.length, 8, 0));
@@ -79,16 +81,36 @@ public class ViewAppointment extends JPanel {
         northWrapper.setBackground(Color.WHITE);
         northWrapper.add(tagBar);
         northWrapper.add(headerBar);
-        
+
         return northWrapper;
     }
-    
-    private JTable appointmentTable(){
+
+    private JTable appointmentTable() {
         // Create JTable, hide built-in header
         JTable table = new JTable(model);
         table.setTableHeader(null);           // ← remove default header
-        table.setFillsViewportHeight(true);
-        table.setRowHeight(table.getRowHeight() + 8);
+        table.setBackground(Color.WHITE);
+        table.setFont(table.getFont().deriveFont(20f));
+        table.setShowGrid(false);
+        table.setRowHeight(40);
+        table.setIntercellSpacing(new Dimension(0, 10));
+        table.setRowHeight(table.getRowHeight() + 10);
+
+        // Call Renderer for Table Data 
+        DefaultTableCellRenderer cellRend = new DefaultTableCellRenderer() {
+            @Override
+            public Component getTableCellRendererComponent(JTable table,
+                    Object value, boolean isSelected, boolean hasFocus,
+                    int row, int column) {
+                JLabel lbl = (JLabel) super.getTableCellRendererComponent(
+                        table, value, isSelected, false, row, column);
+                Border outer = BorderFactory.createLineBorder(Color.BLACK, 1);
+                Border inner = BorderFactory.createEmptyBorder(0, 0, 0, 0);
+                lbl.setBorder(BorderFactory.createCompoundBorder(outer, inner));
+                return lbl;
+            }
+        };
+        table.setDefaultRenderer(Object.class, cellRend);
 
         return table;
     }

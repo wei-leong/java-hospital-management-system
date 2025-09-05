@@ -135,7 +135,7 @@ public class EditOwnProfile extends JDialog {
         topBar.add(btnBack);
 
         // Top Bar Label
-        JLabel lblTitle = new JLabel("Edit Staff");
+        JLabel lblTitle = new JLabel("Edit Own Profile");
         lblTitle.setFont(lblTitle.getFont().deriveFont(Font.BOLD, 18f));
         topBar.add(lblTitle);
         return topBar;

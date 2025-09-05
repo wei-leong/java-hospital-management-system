@@ -26,10 +26,10 @@ public class FeedbackActions extends FileActions {
     private static final int idx_date = 5;
     private static final int txt_len = 6;
 
-    public int returnAverageRating(String staffId) {
+    public double returnAverageRating(String staffId) {
         List<String[]> allData = returnAllDataFromFile(txt_len);
-        int totalRating = 0;
-        int counts = 0;
+        double totalRating = 0;
+        double counts = 0;
         for (String[] row : allData) {
             if (row.length == txt_len && row[4].startsWith(staffId)) {
                 totalRating += Integer.parseInt(row[idx_rating]);
@@ -89,8 +89,8 @@ public class FeedbackActions extends FileActions {
             if (row.length == 9 && row[1].equalsIgnoreCase(staffRole) && row[8].equals("Active")) {
                 String avgStr = String.format("%.2f", returnAverageStaffRating(row[0]));
                 results.add(new String[]{
-                    row[0], // appointment ID
-                    row[2], // doctorId
+                    row[0], // staff id
+                    row[2], // staff name
                     avgStr,});
             }
         }
@@ -102,7 +102,7 @@ public class FeedbackActions extends FileActions {
         double totalRating = 0;
         int count = 0;
         for (String[] row : allData) {
-            if (row.length == txt_len && row[4].equalsIgnoreCase(staffId)) {
+            if (row.length == txt_len && row[4].trim().equalsIgnoreCase(staffId.trim())) {
                 totalRating += Double.parseDouble(row[2]);
                 count += 1;
             }

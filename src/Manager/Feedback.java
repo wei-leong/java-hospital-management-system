@@ -50,8 +50,8 @@ public class Feedback extends JPanel {
         summaryBlocks.setBackground(Color.WHITE);
         summaryBlocks.setAlignmentX(Component.LEFT_ALIGNMENT);
 
-        int staffAvg = managerActions.FeedbackSummary("S");
-        int doctorAvg = managerActions.FeedbackSummary("D");
+        double staffAvg = managerActions.FeedbackSummary("S");
+        double doctorAvg = managerActions.FeedbackSummary("D");
         summaryBlocks.add(makeAverageBlock(String.valueOf(staffAvg), "To Doctor"));
         summaryBlocks.add(makeAverageBlock(String.valueOf(doctorAvg), "To Staff"));
         return summaryBlocks;

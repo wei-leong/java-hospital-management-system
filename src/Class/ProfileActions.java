@@ -178,4 +178,20 @@ public class ProfileActions extends FileActions {
     public List<String[]> ReturnAllStaffData(){
         return returnAllDataFromFile(txt_len);
     }
+    
+    public int returnCustomerAverageAge(){
+        List<String[]> allData = returnAllDataFromFile(txt_len);
+        int totalAge = 0;
+        int total = 0;
+        
+        
+        for(String[] row: allData){
+            if(row.length == txt_len){
+                totalAge += Integer.parseInt(row[idx_age]);
+                total++;
+            }
+        }
+        
+        return totalAge / total;
+    }
 }

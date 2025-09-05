@@ -36,6 +36,7 @@ public class RevenueActions extends FileActions {
                 int m = date.getMonthValue() - 1; // Jan=0, Feb=1, …
                 totals[m] += amount;
             }
+
         }
         return totals;
     }
@@ -47,16 +48,16 @@ public class RevenueActions extends FileActions {
         int span = 10;
         int startYear = anchorYear - (span - 1);  // e.g. 2025 - 9 = 2016
         double[] totals = new double[span];
-        
+
         for (String[] rows : allData) {
-                double amount = Double.parseDouble(rows[idx_amount]);
-                LocalDate date = LocalDate.parse(rows[idx_date], df);
-                int y = date.getYear();
-                int idx = y - startYear;      // 2016→0, 2017→1, …, 2025→9
-                if (0 <= idx && idx < span) {
-                    totals[idx] += amount;
-                }
+            double amount = Double.parseDouble(rows[idx_amount]);
+            LocalDate date = LocalDate.parse(rows[idx_date], df);
+            int y = date.getYear();
+            int idx = y - startYear;      // 2016→0, 2017→1, …, 2025→9
+            if (0 <= idx && idx < span) {
+                totals[idx] += amount;
             }
+        }
         return totals;
     }
 }
