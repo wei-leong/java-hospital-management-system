@@ -34,6 +34,8 @@ public class ValidateStaffInput extends ProfileActions {
     
     // Used in EditStaff and EditOwnProfile
     public String returnMsgEditProfile(String currentEmail, String currentPhone) {
+        CheckInput check = new CheckInput();
+        
         // Validate Name
         if (_name.isEmpty()) {
             return "Please enter a name";
@@ -67,6 +69,9 @@ public class ValidateStaffInput extends ProfileActions {
         }
         if (!checkPassword(_password)) {
             return "Password must be at least 6 character long";
+        }
+        if(check.checkComma(_password)){
+            return "Password cannot contain letter coma ( , ) ";
         }
 
         return null;
