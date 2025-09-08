@@ -51,6 +51,9 @@ public class ValidateStaffInput extends ProfileActions {
         if (!_email.equalsIgnoreCase(currentEmail) && !isEmailUnique(_email)) {
             return "This email is already in use.";
         }
+        if(check.checkComma(_email)){
+            return "Email cannot contain letter coma ( , )";
+        }
 
         // Validate Phone
         if (_phone.isEmpty()) {
@@ -74,7 +77,7 @@ public class ValidateStaffInput extends ProfileActions {
             return "Password must be at least 6 character long";
         }
         if(check.checkComma(_password)){
-            return "Password cannot contain letter coma ( , ) ";
+            return "Password cannot contain letter coma ( , )";
         }
 
         return null;
