@@ -16,6 +16,7 @@ public class ValidateStaffInput extends ProfileActions {
     private String _email;
     private String _phone;
     private String _password;
+    private final CheckInput check = new CheckInput();
     
     public ValidateStaffInput(){}
 
@@ -34,8 +35,6 @@ public class ValidateStaffInput extends ProfileActions {
     
     // Used in EditStaff and EditOwnProfile
     public String returnMsgEditProfile(String currentEmail, String currentPhone) {
-        CheckInput check = new CheckInput();
-        
         // Validate Name
         if (_name.isEmpty()) {
             return "Please enter a name";
@@ -91,6 +90,9 @@ public class ValidateStaffInput extends ProfileActions {
         // Validate Name
         if (_name.isEmpty()) {
             return "Please enter a name";
+        }
+        if(check.checkComma(_name)){
+            return "Name cannot contain letter coma ( , )";
         }
 
         // Validate Email
