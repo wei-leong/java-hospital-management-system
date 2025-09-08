@@ -40,6 +40,9 @@ public class ValidateStaffInput extends ProfileActions {
         if (_name.isEmpty()) {
             return "Please enter a name";
         }
+        if(check.checkComma(_name)){
+            return "Name cannot contain letter coma ( , )";
+        }
 
         // Validate Email
         if (_email.isEmpty()) {
