@@ -170,7 +170,7 @@ public class AppointmentsManagement extends JPanel{
         if (model == null) return;
         model.setRowCount(0);  // clear all of the old data
 
-        try (BufferedReader br = new BufferedReader(new FileReader("D:\\USER BACKUP\\Documents\\NetBeansProjects\\JavaAssignment\\apu-medical-centre\\src\\txt\\appointment.txt"))) {
+        try (BufferedReader br = new BufferedReader(new FileReader("D:\\USER BACKUP\\Documents\\NetBeansProjects\\apu-medical-centre1\\src\\txt\\appointment.txt"))) {
             String line;
             while ((line = br.readLine()) != null) {
                 // if the line is empty, keep continue the function
@@ -202,7 +202,7 @@ public class AppointmentsManagement extends JPanel{
     
     //This function use to delete the data i delete form table on the appoint txt file
     private void removeAppointmentFromFile(String appointmentId) {
-        String filePath = "D:\\USER BACKUP\\Documents\\NetBeansProjects\\JavaAssignment\\apu-medical-centre\\src\\txt\\appointment.txt";
+        String filePath = "D:\\USER BACKUP\\Documents\\NetBeansProjects\\apu-medical-centre1\\src\\txt\\appointment.txt";
         List<String> lines = new ArrayList<>();
 
         try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
