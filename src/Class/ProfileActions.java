@@ -147,7 +147,11 @@ public class ProfileActions extends FileActions {
     }
 
     public boolean checkPhone(String phone) {
-        return phone != null && phone.length() == 10 && phone.chars().allMatch(Character::isDigit);
+        return phone != null && phone.length() == 10;
+    }
+    
+    public boolean checkPhoneDigit(String phone){
+        return phone.chars().allMatch(Character::isDigit);
     }
     
     public boolean checkPassword(String password) {
