@@ -3,6 +3,8 @@ package login;
 import Class.ImageScaler;
 import Class.Person;
 import Manager.NavManager;
+import Doctor.NavDoctor;
+import Staff.NavStaff;
 import javax.swing.*;
 import java.awt.*;
 import static javax.swing.WindowConstants.EXIT_ON_CLOSE;
@@ -154,9 +156,17 @@ public class LoginForm extends JFrame {
                 break;
 
             case "Staff":
+                SwingUtilities.invokeLater(() -> {
+                    new NavStaff(staffDetails).setVisible(true);
+                });
+                dispose();
                 break;
 
             case "Doctor":
+                SwingUtilities.invokeLater(() -> {
+                    new NavDoctor(staffDetails).setVisible(true);
+                });
+                dispose();  // close login window
                 break;
 
             case "Customer":
