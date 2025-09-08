@@ -105,6 +105,9 @@ public class ValidateStaffInput extends ProfileActions {
         if (!isEmailUnique(_email)) {
             return "This email is already in use.";
         }
+        if(check.checkComma(_email)){
+            return "Email cannot contain letter coma ( , )";
+        }
 
         // Validate Phone
         if (_phone.isEmpty()) {
@@ -115,6 +118,9 @@ public class ValidateStaffInput extends ProfileActions {
         }
         if (!isPhoneUnique(_phone)) {
             return "Phone Number is already in use";
+        }
+        if (!checkPhoneDigit(_phone)){
+            return "Phone Number must be in number format";
         }
 
         return null;
