@@ -102,10 +102,24 @@ public class CreateAppointment extends JDialog {
         createBtn.setBounds(110, 210, 120, 60);
         createBtn.setFont(createBtn.getFont().deriveFont(20f));
         createBtn.addActionListener(e ->{
-                saveappointment();
-                refresh.refreshAppointmentTable();
-                dispose();
-                        });
+                try{
+                    String docterid = (String) DocterName.getSelectedItem();
+                    Date selectedDate = dateChooser.getDate();
+                    if (docterid == null || docterid.equals("No doctor available")) {
+                        JOptionPane.showMessageDialog(this,"Docter ID can't be Empty","Invalid Input",JOptionPane.ERROR_MESSAGE);
+                        return;
+                    }
+                    if (selectedDate == null) {
+                        JOptionPane.showMessageDialog(this,"DATE can't be Empty","Invalid Input",JOptionPane.ERROR_MESSAGE);
+                        return;
+                    }
+                    saveappointment();
+                    refresh.refreshAppointmentTable();
+                    dispose();
+                }catch(Exception ex){
+                JOptionPane.showMessageDialog(this, ex.getMessage(), "Invalid Input", JOptionPane.ERROR_MESSAGE);
+                }             
+        });
         add(createBtn);
       
         
@@ -171,7 +185,7 @@ public class CreateAppointment extends JDialog {
     String datetime = dateStr + " " + time;
     
     try (BufferedWriter writer = new BufferedWriter(
-        new FileWriter("D:\\USER BACKUP\\Documents\\NetBeansProjects\\JavaAssignment\\apu-medical-centre\\src\\txt\\appointment.txt", true))) {
+        new FileWriter("D:\\USER BACKUP\\Documents\\NetBeansProjects\\apu-medical-centre1\\src\\txt\\appointment.txt", true))) {
         writer.write(Appointmentid + "," + docterid + "," + customerid + "," + datetime + "," + Astatus + "," + paymentid + "," + commentid);
         writer.newLine();
         writer.flush();
@@ -181,11 +195,10 @@ public class CreateAppointment extends JDialog {
     }
     
     try (BufferedWriter writer = new BufferedWriter(
-        new FileWriter("D:\\USER BACKUP\\Documents\\NetBeansProjects\\JavaAssignment\\apu-medical-centre\\src\\txt\\payment.txt", true))) {
+        new FileWriter("D:\\USER BACKUP\\Documents\\NetBeansProjects\\apu-medical-centre1\\src\\txt\\payment.txt", true))) {
         writer.write(paymentid + "," + amount + "," + dateStr + "," + Pstatus);
         writer.newLine();
         writer.flush();
-        JOptionPane.showMessageDialog(this, "Appointment "+ paymentid +" Create successfully!");
     } catch (IOException ex) {
         JOptionPane.showMessageDialog(this, "Error saving file: " + ex.getMessage());
     }
@@ -193,7 +206,7 @@ public class CreateAppointment extends JDialog {
     
     //Use to generate a unique id for each appointment
     private String generateAppointmentID() {
-    File file = new File("D:\\USER BACKUP\\Documents\\NetBeansProjects\\JavaAssignment\\apu-medical-centre\\src\\txt\\appointment.txt");
+    File file = new File("D:\\USER BACKUP\\Documents\\NetBeansProjects\\apu-medical-centre1\\src\\txt\\appointment.txt");
     int maxAppointmentId = 0;
 
     if (file.exists()) {
@@ -249,7 +262,7 @@ public class CreateAppointment extends JDialog {
         List<String> validCustomers = new ArrayList<>();
 
         // read appointment.txt for checking who of the customer have an appointment status is "ongoing" (that is not suitable in the comboBox)
-        try (BufferedReader br = new BufferedReader(new FileReader("D:\\USER BACKUP\\Documents\\NetBeansProjects\\JavaAssignment\\apu-medical-centre\\src\\txt\\appointment.txt"))) {
+        try (BufferedReader br = new BufferedReader(new FileReader("D:\\USER BACKUP\\Documents\\NetBeansProjects\\apu-medical-centre1\\src\\txt\\appointment.txt"))) {
             String line;
             while ((line = br.readLine()) != null) {
                 String[] parts = line.split(",");
@@ -297,7 +310,7 @@ public class CreateAppointment extends JDialog {
         
     //Generate Payment ID
         private String generaPaymentID() {
-        File file = new File("D:\\USER BACKUP\\Documents\\NetBeansProjects\\JavaAssignment\\apu-medical-centre\\src\\txt\\payment.txt");
+        File file = new File("D:\\USER BACKUP\\Documents\\NetBeansProjects\\apu-medical-centre1\\src\\txt\\payment.txt");
         int maxPaymentId = 0;
 
         if (file.exists()) {

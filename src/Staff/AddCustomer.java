@@ -213,15 +213,38 @@ public class AddCustomer extends JDialog {
         createBtn.setBounds(260, 430, 120, 60);
         createBtn.setFont(createBtn.getFont().deriveFont(20f));
         createBtn.addActionListener(e -> {
+            try{
                 String phone = CustomerPhone.getText().trim();
                 if (phone.length() != 10) {
                     JOptionPane.showMessageDialog(this, "Phone number must be 10 digits.", "Invalid Input", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+                String name = CustomerName.getText().trim();
+                if (name.isEmpty()){
+                    JOptionPane.showMessageDialog(this, "Name can't be Empty","Invalid Input",JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+                String email = CustomerEmail.getText().trim();
+                if (email.isEmpty()){
+                    JOptionPane.showMessageDialog(this, "Email can't be Empty","Invalid Input",JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+                String password = CustomerPasswords.getText().trim();
+                if (password.isEmpty()){
+                    JOptionPane.showMessageDialog(this, "Password can't be Empty","Invalid Input",JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+                if (comboBox.getSelectedItem() == null) {
+                    JOptionPane.showMessageDialog(this,"Age can't be Empty","Invalid Input",JOptionPane.ERROR_MESSAGE);
                     return;
                 }
                 saved = true;
                 saveprofileinformation(); 
                 refresh.refreshTable();
                 dispose(); 
+            }catch(Exception ex){
+                JOptionPane.showMessageDialog(this, ex.getMessage(), "Invalid Input", JOptionPane.ERROR_MESSAGE);
+            }
         });
         add(createBtn);
         
@@ -293,13 +316,8 @@ public class AddCustomer extends JDialog {
 
     String status = "Active";
 
-    if (name.isEmpty() || phone.isEmpty() || email.isEmpty() || password.isEmpty() || gender.isEmpty()) {
-        JOptionPane.showMessageDialog(this, "Please fill in all fields before saving.");
-        return;
-    }
-
     try (BufferedWriter writer = new BufferedWriter(
-        new FileWriter("D:\\USER BACKUP\\Documents\\NetBeansProjects\\JavaAssignment\\apu-medical-centre\\src\\txt\\profile.txt", true))) {
+        new FileWriter("D:\\USER BACKUP\\Documents\\NetBeansProjects\\apu-medical-centre1\\src\\txt\\profile.txt", true))) {
         writer.write(Staffid + "," + Role + "," + name + "," + password + "," + gender + "," + email + "," + phone + "," + age + "," + status);
         writer.newLine();
     writer.flush();
@@ -311,7 +329,7 @@ public class AddCustomer extends JDialog {
     
     // Use to auto generate customerid
     private String generateStaffID() {
-    File file = new File("D:\\USER BACKUP\\Documents\\NetBeansProjects\\JavaAssignment\\apu-medical-centre\\src\\txt\\profile.txt");
+    File file = new File("D:\\USER BACKUP\\Documents\\NetBeansProjects\\apu-medical-centre1\\src\\txt\\profile.txt");
     int maxCustomerId = 0;
 
     if (file.exists()) {
