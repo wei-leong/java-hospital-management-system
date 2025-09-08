@@ -16,6 +16,7 @@ public class ValidateStaffInput extends ProfileActions {
     private String _email;
     private String _phone;
     private String _password;
+    private final CheckInput check = new CheckInput();
     
     public ValidateStaffInput(){}
 
@@ -38,6 +39,9 @@ public class ValidateStaffInput extends ProfileActions {
         if (_name.isEmpty()) {
             return "Please enter a name";
         }
+        if(check.checkComma(_name)){
+            return "Name cannot contain letter coma ( , )";
+        }
 
         // Validate Email
         if (_email.isEmpty()) {
@@ -49,16 +53,22 @@ public class ValidateStaffInput extends ProfileActions {
         if (!_email.equalsIgnoreCase(currentEmail) && !isEmailUnique(_email)) {
             return "This email is already in use.";
         }
+        if(check.checkComma(_email)){
+            return "Email cannot contain letter coma ( , )";
+        }
 
         // Validate Phone
         if (_phone.isEmpty()) {
             return "Please enter a phone number";
         }
-        if (!checkPhone(_phone)) {
+        if (!checkPhoneLength(_phone)) {
             return "Phone Number must be exactly 10 digits";
         }
         if (!_phone.equalsIgnoreCase(currentPhone) && !isPhoneUnique(_phone)) {
             return "Phone Number is already in use";
+        }
+        if (!checkPhoneDigit(_phone)){
+            return "Phone Number must be in number format";
         }
 
         // Validate Password
@@ -67,6 +77,9 @@ public class ValidateStaffInput extends ProfileActions {
         }
         if (!checkPassword(_password)) {
             return "Password must be at least 6 character long";
+        }
+        if(check.checkComma(_password)){
+            return "Password cannot contain letter coma ( , )";
         }
 
         return null;
@@ -77,6 +90,9 @@ public class ValidateStaffInput extends ProfileActions {
         // Validate Name
         if (_name.isEmpty()) {
             return "Please enter a name";
+        }
+        if(check.checkComma(_name)){
+            return "Name cannot contain letter coma ( , )";
         }
 
         // Validate Email
@@ -89,16 +105,22 @@ public class ValidateStaffInput extends ProfileActions {
         if (!isEmailUnique(_email)) {
             return "This email is already in use.";
         }
+        if(check.checkComma(_email)){
+            return "Email cannot contain letter coma ( , )";
+        }
 
         // Validate Phone
         if (_phone.isEmpty()) {
             return "Please enter a phone number";
         }
-        if (!checkPhone(_phone)) {
+        if (!checkPhoneLength(_phone)) {
             return "Phone Number must be exactly 10 digits";
         }
         if (!isPhoneUnique(_phone)) {
             return "Phone Number is already in use";
+        }
+        if (!checkPhoneDigit(_phone)){
+            return "Phone Number must be in number format";
         }
 
         return null;
