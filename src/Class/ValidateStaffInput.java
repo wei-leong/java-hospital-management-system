@@ -62,6 +62,9 @@ public class ValidateStaffInput extends ProfileActions {
         if (!_phone.equalsIgnoreCase(currentPhone) && !isPhoneUnique(_phone)) {
             return "Phone Number is already in use";
         }
+        if (!checkPhoneDigit(_phone)){
+            return "Phone Number must be in number format";
+        }
 
         // Validate Password
         if (_password.isEmpty()) {
