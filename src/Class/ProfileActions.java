@@ -146,7 +146,7 @@ public class ProfileActions extends FileActions {
         return true;
     }
 
-    public boolean checkPhone(String phone) {
+    public boolean checkPhoneLength(String phone) {
         return phone != null && phone.length() == 10;
     }
     

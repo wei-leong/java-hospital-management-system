@@ -56,7 +56,7 @@ public class ValidateStaffInput extends ProfileActions {
         if (_phone.isEmpty()) {
             return "Please enter a phone number";
         }
-        if (!checkPhone(_phone)) {
+        if (!checkPhoneLength(_phone)) {
             return "Phone Number must be exactly 10 digits";
         }
         if (!_phone.equalsIgnoreCase(currentPhone) && !isPhoneUnique(_phone)) {
@@ -99,7 +99,7 @@ public class ValidateStaffInput extends ProfileActions {
         if (_phone.isEmpty()) {
             return "Please enter a phone number";
         }
-        if (!checkPhone(_phone)) {
+        if (!checkPhoneLength(_phone)) {
             return "Phone Number must be exactly 10 digits";
         }
         if (!isPhoneUnique(_phone)) {

@@ -78,7 +78,7 @@ public class Manager extends Person {
     }
 
     public boolean isPhoneValid(String phone) {
-        return profileHelper.checkPhone(phone);
+        return profileHelper.checkPhoneLength(phone);
     }
 
     public List<String[]> returnAppointmentsList(String range) {
