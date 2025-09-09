@@ -1,6 +1,6 @@
 package Staff;
 
-import Class.DocterFilterManagement;
+import Class.DocterAction;
 import static Staff.AddCustomer.applyHoverEffect;
 import Staff.AppointmentsManagement;
 import Staff.FinanceReport;
@@ -244,7 +244,7 @@ public class CreateAppointment extends JDialog {
         DocterName.removeAllItems();
 
         // Use the DocterFitterManagement class to do the fitter docter function
-        java.util.List<String> availableDoctors = DocterFilterManagement.getAvailableDoctors(selectedDate, selectedTime);
+        java.util.List<String> availableDoctors = DocterAction.getAvailableDoctors(selectedDate, selectedTime);
         
         //if no docter availble in that time show "No Available Docter"
         if (availableDoctors.isEmpty()) {

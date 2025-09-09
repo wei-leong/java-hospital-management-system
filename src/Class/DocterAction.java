@@ -10,7 +10,7 @@ import java.util.*;
 import javax.swing.JComboBox;
 import javax.swing.JOptionPane;
 
-public class DocterFilterManagement {
+public class DocterAction {
     // Bring date & time to fillter the available docter name
     public static List<String> getAvailableDoctors(Date selectedDate, String selectedTime) {
     List<String> availableDoctors = new ArrayList<>();
