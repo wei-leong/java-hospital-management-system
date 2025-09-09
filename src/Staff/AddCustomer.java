@@ -1,5 +1,6 @@
 package Staff;
 
+import Class.CheckInput;
 import Staff.AppointmentsManagement;
 import Staff.FinanceReport;
 import Staff.CustomerManagement;
@@ -24,6 +25,7 @@ public class AddCustomer extends JDialog {
     Color defaultColor = Color.WHITE;  
     Color hoverColor = Color.LIGHT_GRAY;
     private JPanel Role;
+    private final CheckInput check = new CheckInput();
 
         public AddCustomer(CustomerManagement refresh) {
         this.refresh = refresh;
@@ -215,21 +217,37 @@ public class AddCustomer extends JDialog {
         createBtn.addActionListener(e -> {
             try{
                 String phone = CustomerPhone.getText().trim();
+                if (check.checkComma(phone)){
+                    JOptionPane.showMessageDialog(this, "Phone Number cannot have (,).", "Invalid Input", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
                 if (phone.length() != 10) {
                     JOptionPane.showMessageDialog(this, "Phone number must be 10 digits.", "Invalid Input", JOptionPane.ERROR_MESSAGE);
                     return;
                 }
                 String name = CustomerName.getText().trim();
+                if (check.checkComma(name)){
+                    JOptionPane.showMessageDialog(this, "Name cannot have (,).", "Invalid Input", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
                 if (name.isEmpty()){
                     JOptionPane.showMessageDialog(this, "Name can't be Empty","Invalid Input",JOptionPane.ERROR_MESSAGE);
                     return;
                 }
                 String email = CustomerEmail.getText().trim();
+                if (check.checkComma(email)){
+                    JOptionPane.showMessageDialog(this, "Email cannot have (,).", "Invalid Input", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
                 if (email.isEmpty()){
                     JOptionPane.showMessageDialog(this, "Email can't be Empty","Invalid Input",JOptionPane.ERROR_MESSAGE);
                     return;
                 }
                 String password = CustomerPasswords.getText().trim();
+                if (check.checkComma(password)){
+                    JOptionPane.showMessageDialog(this, "Password cannot have (,).", "Invalid Input", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
                 if (password.isEmpty()){
                     JOptionPane.showMessageDialog(this, "Password can't be Empty","Invalid Input",JOptionPane.ERROR_MESSAGE);
                     return;
