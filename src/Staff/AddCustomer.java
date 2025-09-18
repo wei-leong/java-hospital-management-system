@@ -1,6 +1,7 @@
 package Staff;
 
 import Class.CheckInput;
+import Class.CustomerAction;
 import Staff.AppointmentsManagement;
 import Staff.FinanceReport;
 import Staff.CustomerManagement;
@@ -26,6 +27,7 @@ public class AddCustomer extends JDialog {
     Color hoverColor = Color.LIGHT_GRAY;
     private JPanel Role;
     private final CheckInput check = new CheckInput();
+    private final CustomerAction action = new CustomerAction();
 
         public AddCustomer(CustomerManagement refresh) {
         this.refresh = refresh;
@@ -256,8 +258,16 @@ public class AddCustomer extends JDialog {
                     JOptionPane.showMessageDialog(this,"Age can't be Empty","Invalid Input",JOptionPane.ERROR_MESSAGE);
                     return;
                 }
+                String gender = "";
+                if (CheckGender1.isSelected()) {
+                    gender = "Male";
+                } else if (CheckGender2.isSelected()) {
+                    gender = "Female";
+                }
                 saved = true;
-                saveprofileinformation(); 
+                String staffId = action.generateStaffID();
+                action.saveProfileInformation(staffId, "Customer", name, password, gender, email, phone,
+                        (Integer) comboBox.getSelectedItem(), "Active", this);
                 refresh.refreshTable();
                 dispose(); 
             }catch(Exception ex){
@@ -311,66 +321,5 @@ public class AddCustomer extends JDialog {
                 btn.setBackground(defaultColor);
             }
         });
-}
-        
-    //Function about save New Customer Profile Information into txt file
-    private void saveprofileinformation() {
-    String Staffid = generateStaffID();
-    String Role = "Customer";
-    String name = CustomerName.getText().trim();
-    String phone = CustomerPhone.getText().trim();
-    String email = CustomerEmail.getText().trim();
-    String password = CustomerPasswords.getText().trim();
-    Integer age = (Integer) comboBox.getSelectedItem();
-
-    String gender = "";
-    if (CheckGender1.isSelected()) {
-        gender = "Male";
-    } else if (CheckGender2.isSelected()) {
-        gender = "Female";
-    } else if (CheckGender3.isSelected()) {
-        gender = CustomerGender.getText().trim();
-    }
-
-    String status = "Active";
-
-    try (BufferedWriter writer = new BufferedWriter(
-        new FileWriter("D:\\USER BACKUP\\Documents\\NetBeansProjects\\apu-medical-centre1\\src\\txt\\profile.txt", true))) {
-        writer.write(Staffid + "," + Role + "," + name + "," + password + "," + gender + "," + email + "," + phone + "," + age + "," + status);
-        writer.newLine();
-    writer.flush();
-        JOptionPane.showMessageDialog(this, "Customer "+ name +" saved successfully!");
-    } catch (IOException ex) {
-        JOptionPane.showMessageDialog(this, "Error saving file: " + ex.getMessage());
-    }
-}
-    
-    // Use to auto generate customerid
-    private String generateStaffID() {
-    File file = new File("D:\\USER BACKUP\\Documents\\NetBeansProjects\\apu-medical-centre1\\src\\txt\\profile.txt");
-    int maxCustomerId = 0;
-
-    if (file.exists()) {
-        try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
-            String line;
-            while ((line = reader.readLine()) != null) {
-                String[] parts = line.split(",");
-                if (parts.length > 0 && parts[0].startsWith("C")) {
-                    try {
-                        int num = Integer.parseInt(parts[0].substring(1));
-                        if (num > maxCustomerId) {
-                            maxCustomerId = num;
-                        }
-                    } catch (NumberFormatException ignored) {
-                        
-                    }
-                }
-            }
-        } catch (IOException e) {
-            JOptionPane.showMessageDialog(this, "Error:" + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-        }
-    }
-    return "C" + (maxCustomerId + 1);
-}
-   
+}          
 }
