@@ -31,6 +31,7 @@ public class CreateAppointment extends JDialog {
     private AppointmentsManagement refresh;
     Color defaultColor = Color.WHITE;  
     Color hoverColor = Color.LIGHT_GRAY;
+    Date currentDate = new Date();
     
     
         public CreateAppointment(AppointmentsManagement refresh) {  
@@ -102,24 +103,57 @@ public class CreateAppointment extends JDialog {
         createBtn.setBounds(110, 210, 120, 60);
         createBtn.setFont(createBtn.getFont().deriveFont(20f));
         createBtn.addActionListener(e ->{
-                try{
+                try {
                     String docterid = (String) DocterName.getSelectedItem();
                     Date selectedDate = dateChooser.getDate();
+                    String selectedTime = (String) Time.getSelectedItem();
+
                     if (docterid == null || docterid.equals("No doctor available")) {
-                        JOptionPane.showMessageDialog(this,"Docter ID can't be Empty","Invalid Input",JOptionPane.ERROR_MESSAGE);
+                        JOptionPane.showMessageDialog(this, "Doctor ID can't be empty", "Invalid Input", JOptionPane.ERROR_MESSAGE);
                         return;
                     }
                     if (selectedDate == null) {
-                        JOptionPane.showMessageDialog(this,"DATE can't be Empty","Invalid Input",JOptionPane.ERROR_MESSAGE);
+                        JOptionPane.showMessageDialog(this, "Date can't be empty", "Invalid Input", JOptionPane.ERROR_MESSAGE);
                         return;
                     }
+                    if (selectedTime == null) {
+                        JOptionPane.showMessageDialog(this, "Time can't be empty", "Invalid Input", JOptionPane.ERROR_MESSAGE);
+                        return;
+                    }
+
+                    // get current time
+                    java.time.LocalDateTime now = java.time.LocalDateTime.now();
+
+                    // combine the date and time become localtime
+                    java.time.LocalDate selectedLocalDate = selectedDate.toInstant()
+                            .atZone(java.time.ZoneId.systemDefault())
+                            .toLocalDate();
+
+                    // divided "HH" and "mm"
+                    String[] timeParts = selectedTime.split(":");
+                    int hour = Integer.parseInt(timeParts[0]);
+                    int minute = Integer.parseInt(timeParts[1]);
+
+                    java.time.LocalDateTime selectedDateTime = selectedLocalDate.atTime(hour, minute);
+
+                    // check the select time is lower the current time
+                    if (selectedDateTime.isBefore(now)) {
+                        JOptionPane.showMessageDialog(this, 
+                            "Invalid Time, can't choose that early than current time",
+                            "Invalid Date & Time",
+                            JOptionPane.ERROR_MESSAGE);
+                        return; 
+                    }
+
+   
                     saveappointment();
                     refresh.refreshAppointmentTable();
                     dispose();
-                }catch(Exception ex){
-                JOptionPane.showMessageDialog(this, ex.getMessage(), "Invalid Input", JOptionPane.ERROR_MESSAGE);
-                }             
-        });
+
+                } catch (Exception ex) {
+                    JOptionPane.showMessageDialog(this, ex.getMessage(), "Invalid Input", JOptionPane.ERROR_MESSAGE);
+                }
+            });
         add(createBtn);
       
         
