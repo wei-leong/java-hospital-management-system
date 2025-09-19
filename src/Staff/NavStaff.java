@@ -23,7 +23,7 @@ public class NavStaff extends BasicNav{
     private final String customerManagementStr = "Customer Management";
     
     private final AppointmentsManagement Appointment = new AppointmentsManagement();
-    private final String AppointmentStr = "Create Appointment";
+    private final String AppointmentStr = "Appointment Management";
     
     private final FinanceReport report = new FinanceReport();
     private final String reportStr = "Finance Report";
