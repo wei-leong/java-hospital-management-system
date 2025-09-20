@@ -13,7 +13,7 @@ import java.util.List;
  * @author Wlhoe
  */
 public class RevenueActions extends FileActions {
-
+    
     private static final int idx_id = 0;
     private static final int idx_amount = 1;
     private static final int idx_date = 2;
