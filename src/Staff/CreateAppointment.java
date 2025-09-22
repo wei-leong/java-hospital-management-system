@@ -1,5 +1,6 @@
 package Staff;
 
+import Class.Appointment;
 import Class.DocterAction;
 import static Staff.AddCustomer.applyHoverEffect;
 import Staff.AppointmentsManagement;
@@ -32,10 +33,12 @@ public class CreateAppointment extends JDialog {
     Color defaultColor = Color.WHITE;  
     Color hoverColor = Color.LIGHT_GRAY;
     Date currentDate = new Date();
+    private String[] staffDetails;
     
     
-        public CreateAppointment(AppointmentsManagement refresh) {  
+        public CreateAppointment(AppointmentsManagement refresh, String[] staffDetails) {  
         this.refresh = refresh;
+        this.staffDetails = staffDetails;
         setTitle("Create Appointment");
         setSize(500, 350);
         setModal(true);  
@@ -104,48 +107,16 @@ public class CreateAppointment extends JDialog {
         createBtn.setFont(createBtn.getFont().deriveFont(20f));
         createBtn.addActionListener(e ->{
                 try {
-                    String docterid = (String) DocterName.getSelectedItem();
-                    Date selectedDate = dateChooser.getDate();
-                    String selectedTime = (String) Time.getSelectedItem();
-
-                    if (docterid == null || docterid.equals("No doctor available")) {
-                        JOptionPane.showMessageDialog(this, "Doctor ID can't be empty", "Invalid Input", JOptionPane.ERROR_MESSAGE);
-                        return;
-                    }
-                    if (selectedDate == null) {
-                        JOptionPane.showMessageDialog(this, "Date can't be empty", "Invalid Input", JOptionPane.ERROR_MESSAGE);
-                        return;
-                    }
-                    if (selectedTime == null) {
-                        JOptionPane.showMessageDialog(this, "Time can't be empty", "Invalid Input", JOptionPane.ERROR_MESSAGE);
-                        return;
-                    }
-
-                    // get current time
-                    java.time.LocalDateTime now = java.time.LocalDateTime.now();
-
-                    // combine the date and time become localtime
-                    java.time.LocalDate selectedLocalDate = selectedDate.toInstant()
-                            .atZone(java.time.ZoneId.systemDefault())
-                            .toLocalDate();
-
-                    // divided "HH" and "mm"
-                    String[] timeParts = selectedTime.split(":");
-                    int hour = Integer.parseInt(timeParts[0]);
-                    int minute = Integer.parseInt(timeParts[1]);
-
-                    java.time.LocalDateTime selectedDateTime = selectedLocalDate.atTime(hour, minute);
-
-                    // check the select time is lower the current time
-                    if (selectedDateTime.isBefore(now)) {
-                        JOptionPane.showMessageDialog(this, 
-                            "Invalid Time, can't choose that early than current time",
-                            "Invalid Date & Time",
-                            JOptionPane.ERROR_MESSAGE);
-                        return; 
-                    }
-
-   
+                    Appointment appointment = new Appointment();
+                    appointment.setDoctorId((String) DocterName.getSelectedItem());
+                    appointment.setDate(dateChooser.getDate());
+                    appointment.setTime((String) Time.getSelectedItem());
+                    
+                    //verify invalid data like doctor id can't be empty
+                    if (!validateAppointment(appointment)) {
+                    return; 
+                 }
+  
                     saveappointment();
                     refresh.refreshAppointmentTable();
                     dispose();
@@ -204,6 +175,7 @@ public class CreateAppointment extends JDialog {
     String Appointmentid = generateAppointmentID();
     String customerid = (String) CustomerName.getSelectedItem();
     String docterid = (String) DocterName.getSelectedItem();
+    String staffid = staffDetails[0];
     String Astatus = "ongoing";
     String Pstatus = "pending";
     String paymentid = generaPaymentID();
@@ -219,8 +191,8 @@ public class CreateAppointment extends JDialog {
     String datetime = dateStr + " " + time;
     
     try (BufferedWriter writer = new BufferedWriter(
-        new FileWriter("D:\\USER BACKUP\\Documents\\NetBeansProjects\\apu-medical-centre1\\src\\txt\\appointment.txt", true))) {
-        writer.write(Appointmentid + "," + docterid + "," + customerid + "," + datetime + "," + Astatus + "," + paymentid + "," + commentid);
+        new FileWriter("D:\\USER BACKUP\\Documents\\NetBeansProjects\\apu-medical-centre\\src\\txt\\appointment.txt", true))) {
+        writer.write(Appointmentid + "," + docterid + "," + staffid + "," + customerid + "," + datetime + "," + Astatus + "," + paymentid + "," + commentid);
         writer.newLine();
         writer.flush();
         JOptionPane.showMessageDialog(this, "Appointment "+ Appointmentid +" Create successfully!");
@@ -229,7 +201,7 @@ public class CreateAppointment extends JDialog {
     }
     
     try (BufferedWriter writer = new BufferedWriter(
-        new FileWriter("D:\\USER BACKUP\\Documents\\NetBeansProjects\\apu-medical-centre1\\src\\txt\\payment.txt", true))) {
+        new FileWriter("D:\\USER BACKUP\\Documents\\NetBeansProjects\\apu-medical-centre\\src\\txt\\payment.txt", true))) {
         writer.write(paymentid + "," + amount + "," + dateStr + "," + Pstatus);
         writer.newLine();
         writer.flush();
@@ -237,10 +209,54 @@ public class CreateAppointment extends JDialog {
         JOptionPane.showMessageDialog(this, "Error saving file: " + ex.getMessage());
     }
 }
+        
+        //The function use to check empty and combine date&time for create appointment
+        private boolean validateAppointment(Appointment appointment) {
+        // Check doctor ID
+        if (appointment.getDoctorId() == null || appointment.getDoctorId().equals("No doctor available")) {
+            JOptionPane.showMessageDialog(this,
+                "Doctor ID can't be empty",
+                "Invalid Input",
+                JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
+
+        // Check date
+        if (appointment.getDate() == null) {
+            JOptionPane.showMessageDialog(this,
+                "Date can't be empty",
+                "Invalid Input",
+                JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
+
+        // check time
+        if (appointment.getTime() == null) {
+            JOptionPane.showMessageDialog(this,
+                "Time can't be empty",
+                "Invalid Input",
+                JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
+
+        // Check the choose time is not early than current time and get current time
+        java.time.LocalDateTime now = java.time.LocalDateTime.now();
+        java.time.LocalDateTime selectedDateTime = appointment.getCombinedDateTime();
+
+        if (selectedDateTime.isBefore(now)) {
+            JOptionPane.showMessageDialog(this,
+                "Invalid Time, can't choose earlier than current time",
+                "Invalid Date & Time",
+                JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
+
+        return true; 
+    }
     
     //Use to generate a unique id for each appointment
     private String generateAppointmentID() {
-    File file = new File("D:\\USER BACKUP\\Documents\\NetBeansProjects\\apu-medical-centre1\\src\\txt\\appointment.txt");
+    File file = new File("D:\\USER BACKUP\\Documents\\NetBeansProjects\\apu-medical-centre\\src\\txt\\appointment.txt");
     int maxAppointmentId = 0;
 
     if (file.exists()) {
@@ -296,7 +312,7 @@ public class CreateAppointment extends JDialog {
         List<String> validCustomers = new ArrayList<>();
 
         // read appointment.txt for checking who of the customer have an appointment status is "ongoing" (that is not suitable in the comboBox)
-        try (BufferedReader br = new BufferedReader(new FileReader("D:\\USER BACKUP\\Documents\\NetBeansProjects\\apu-medical-centre1\\src\\txt\\appointment.txt"))) {
+        try (BufferedReader br = new BufferedReader(new FileReader("D:\\USER BACKUP\\Documents\\NetBeansProjects\\apu-medical-centre\\src\\txt\\appointment.txt"))) {
             String line;
             while ((line = br.readLine()) != null) {
                 String[] parts = line.split(",");
@@ -313,7 +329,7 @@ public class CreateAppointment extends JDialog {
         }
 
         // read profile.txt to find all the customer, staff id is start from C
-        try (BufferedReader br = new BufferedReader(new FileReader("D:\\USER BACKUP\\Documents\\NetBeansProjects\\JavaAssignment\\apu-medical-centre\\src\\txt\\profile.txt"))) {
+        try (BufferedReader br = new BufferedReader(new FileReader("D:\\USER BACKUP\\Documents\\NetBeansProjects\\apu-medical-centre\\src\\txt\\profile.txt"))) {
             String line;
             while ((line = br.readLine()) != null) {
                 String[] parts = line.split(",");
@@ -344,7 +360,7 @@ public class CreateAppointment extends JDialog {
         
     //Generate Payment ID
         private String generaPaymentID() {
-        File file = new File("D:\\USER BACKUP\\Documents\\NetBeansProjects\\apu-medical-centre1\\src\\txt\\payment.txt");
+        File file = new File("D:\\USER BACKUP\\Documents\\NetBeansProjects\\apu-medical-centre\\src\\txt\\payment.txt");
         int maxPaymentId = 0;
 
         if (file.exists()) {

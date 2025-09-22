@@ -22,7 +22,7 @@ public class NavStaff extends BasicNav{
     private final CustomerManagement customerManagement;
     private final String customerManagementStr = "Customer Management";
     
-    private final AppointmentsManagement Appointment = new AppointmentsManagement();
+    private final AppointmentsManagement Appointment;
     private final String AppointmentStr = "Appointment Management";
     
     private final FinanceReport report = new FinanceReport();
@@ -44,6 +44,7 @@ public class NavStaff extends BasicNav{
         
         // Initialize pages that needs staffDetails
         this.customerManagement = new CustomerManagement(staffDetails);
+        this.Appointment = new AppointmentsManagement(staffDetails);
         
         // Add Page
         addPage(dashboardStr, dashboard, _iconDashboard);
