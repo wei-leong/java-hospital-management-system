@@ -13,7 +13,7 @@ public class CustomerAction {
         //Function about save New Customer Profile Information into txt file
         public void saveProfileInformation(String staffId, String role, String name, String password,
                                        String gender, String email, String phone, Integer age, String status, Component parent) {
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter("D:\\USER BACKUP\\Documents\\NetBeansProjects\\apu-medical-centre1\\src\\txt\\profile.txt", true))) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter("D:\\USER BACKUP\\Documents\\NetBeansProjects\\apu-medical-centre\\src\\txt\\profile.txt", true))) {
             writer.write(staffId + "," + role + "," + name + "," + password + "," + gender + "," + email + "," + phone + "," + age + "," + status);
             writer.newLine();
             writer.flush();
@@ -25,7 +25,7 @@ public class CustomerAction {
         
     // Use to auto generate customerid
     public String generateStaffID() {
-    File file = new File("D:\\USER BACKUP\\Documents\\NetBeansProjects\\apu-medical-centre1\\src\\txt\\profile.txt");
+    File file = new File("D:\\USER BACKUP\\Documents\\NetBeansProjects\\apu-medical-centre\\src\\txt\\profile.txt");
         int maxCustomerId = 0;
 
         if (file.exists()) {
