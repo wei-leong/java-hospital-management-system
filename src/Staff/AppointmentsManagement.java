@@ -22,8 +22,12 @@ public class AppointmentsManagement extends JPanel{
     private JTable table;
     Staff appointmenttable = new Staff();
     private JButton AddCustomerbtn;
+    private final Staff StaffActions;
+    private String[] ownProfile;
             
-    public AppointmentsManagement() {
+    public AppointmentsManagement(String[] ownProfile) {
+    this.ownProfile = ownProfile;  
+    this.StaffActions = new Staff(ownProfile);
     setLayout(new BorderLayout());
         JPanel filters = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 5));
         filters.setBackground(Color.WHITE);
@@ -47,7 +51,7 @@ public class AppointmentsManagement extends JPanel{
         
         //Call out Create Appointment Function
         btnAdd.addActionListener(e -> {
-            CreateAppointment dialog = new CreateAppointment(AppointmentsManagement.this);
+            CreateAppointment dialog = new CreateAppointment(AppointmentsManagement.this,ownProfile);
             dialog.setLocationRelativeTo(this);
             dialog.setVisible(true);
         });
@@ -170,7 +174,7 @@ public class AppointmentsManagement extends JPanel{
         if (model == null) return;
         model.setRowCount(0);  // clear all of the old data
 
-        try (BufferedReader br = new BufferedReader(new FileReader("D:\\USER BACKUP\\Documents\\NetBeansProjects\\JavaAssignment\\apu-medical-centre\\src\\txt\\appointment.txt"))) {
+        try (BufferedReader br = new BufferedReader(new FileReader("D:\\USER BACKUP\\Documents\\NetBeansProjects\\apu-medical-centre\\src\\txt\\appointment.txt"))) {
             String line;
             while ((line = br.readLine()) != null) {
                 // if the line is empty, keep continue the function
@@ -180,18 +184,19 @@ public class AppointmentsManagement extends JPanel{
                 String[] row = line.split(",");
 
                 // make sure the lenght of the data is biggest than 4
-                if (row.length >= 4) {
-
-                    Object[] newRow = {
-                        row[0].trim(),  
-                        row[1].trim(),  
-                        row[2].trim(),
-                        row[3].trim(),
-                        row[4].trim(),
-                        ""              
-                    };
-                    model.addRow(newRow);
-                }
+                if (row.length < 5) {
+                System.out.println("Invalid line skipped: " + line);
+                continue; 
+             }
+                
+                String appointmentId = row[0].trim();
+                String doctorId = row[1].trim();
+                String customerId = row[3].trim();
+                String dateTime = row[4].trim();
+                String status = row[5].trim();
+                
+                Object[] newRow = { appointmentId, doctorId, customerId, dateTime, status, "" };
+                model.addRow(newRow);
             }
         } catch (IOException e) {
             JOptionPane.showMessageDialog(this, 
@@ -202,7 +207,7 @@ public class AppointmentsManagement extends JPanel{
     
     //This function use to delete the data i delete form table on the appoint txt file
     private void removeAppointmentFromFile(String appointmentId) {
-        String filePath = "D:\\USER BACKUP\\Documents\\NetBeansProjects\\JavaAssignment\\apu-medical-centre\\src\\txt\\appointment.txt";
+        String filePath = "D:\\USER BACKUP\\Documents\\NetBeansProjects\\apu-medical-centre\\src\\txt\\appointment.txt";
         List<String> lines = new ArrayList<>();
 
         try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
