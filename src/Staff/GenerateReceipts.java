@@ -11,6 +11,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Set;
@@ -101,20 +103,22 @@ public class GenerateReceipts extends JDialog{
         
     //Function about save receipts into txt file
     private void savereceipts() {
+        Path appointmentPath = Paths.get("src", "txt", "appointment.txt");
+        Path receiptPath = Paths.get("src", "txt", "receipt.txt");
         String receiptid = generateReceiptsID();
         String appointmentid = (String) Appointmentid.getSelectedItem();
         String paymentid = null;
 
         // read appointment.txt to find the payment id
         try (BufferedReader br = new BufferedReader(
-                new FileReader("D:\\USER BACKUP\\Documents\\NetBeansProjects\\JavaAssignment\\apu-medical-centre\\src\\txt\\appointment.txt"))) {
+                new FileReader(appointmentPath.toFile()))) {
             String line;
             while ((line = br.readLine()) != null) {
                 String[] parts = line.split(",");
                 if (parts.length >= 6) {
                     String currentAppointmentId = parts[0].trim(); 
                     if (currentAppointmentId.equals(appointmentid)) {
-                        paymentid = parts[5].trim(); 
+                        paymentid = parts[6].trim(); 
                         break;
                     }
                 }
@@ -131,8 +135,7 @@ public class GenerateReceipts extends JDialog{
         }
 
         // save in the receipt.txt
-        try (BufferedWriter writer = new BufferedWriter(
-            new FileWriter("D:\\USER BACKUP\\Documents\\NetBeansProjects\\JavaAssignment\\apu-medical-centre\\src\\txt\\receipt.txt", true))) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(receiptPath.toFile(),true))) {
             writer.write(receiptid + "," + appointmentid + "," + paymentid);
             writer.newLine();
             writer.flush();
@@ -147,7 +150,8 @@ public class GenerateReceipts extends JDialog{
     
     //Generate a specific id for each receipts
     private String generateReceiptsID() {
-    File file = new File("D:\\USER BACKUP\\Documents\\NetBeansProjects\\JavaAssignment\\apu-medical-centre\\src\\txt\\receipt.txt");
+    Path receiptPath = Paths.get("src", "txt", "receipt.txt");
+    File file = receiptPath.toFile();
     int maxreceiptId = 0;
 
     if (file.exists()) {
@@ -173,18 +177,20 @@ public class GenerateReceipts extends JDialog{
     return "R" + (maxreceiptId + 1);
 }
     private void loadAppointments() {
+        Path appointmentPath = Paths.get("src", "txt", "appointment.txt");
+        Path receiptPath = Paths.get("src", "txt", "receipt.txt");
      Set<String> completedAppointments = new HashSet<>();
      Set<String> appointmentsWithReceipt = new HashSet<>();
      List<String> validAppointments = new ArrayList<>();
 
      // read appointment.txt find the appoint status is complete (use to generate receipts)
-     try (BufferedReader br = new BufferedReader(new FileReader("D:\\USER BACKUP\\Documents\\NetBeansProjects\\JavaAssignment\\apu-medical-centre\\src\\txt\\appointment.txt"))) {
+     try (BufferedReader br = new BufferedReader(new FileReader(appointmentPath.toFile()))) {
          String line;
          while ((line = br.readLine()) != null) {
              String[] parts = line.split(",");
              if (parts.length >= 5) {
                  String appointmentId = parts[0].trim();
-                 String status = parts[4].trim();     
+                 String status = parts[5].trim();     
                  if (status.equalsIgnoreCase("complete")) {
                      completedAppointments.add(appointmentId);
                  }
@@ -195,7 +201,7 @@ public class GenerateReceipts extends JDialog{
      }
 
      // read receipt.txt find the appointment that already have receipts
-     try (BufferedReader br = new BufferedReader(new FileReader("D:\\USER BACKUP\\Documents\\NetBeansProjects\\JavaAssignment\\apu-medical-centre\\src\\txt\\receipt.txt"))) {
+     try (BufferedReader br = new BufferedReader(new FileReader(receiptPath.toFile()))) {
          String line;
          while ((line = br.readLine()) != null) {
              String[] parts = line.split(",");
@@ -218,7 +224,7 @@ public class GenerateReceipts extends JDialog{
      // fill in the comboBox
         Appointmentid.removeAllItems();
         if (validAppointments.isEmpty()) {
-            Appointmentid.addItem("No available customer");
+            Appointmentid.addItem("No available Appointment");
         } else {
             for (String c : validAppointments) {
                 Appointmentid.addItem(c);

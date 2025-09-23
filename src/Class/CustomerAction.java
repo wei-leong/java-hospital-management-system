@@ -7,13 +7,17 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import javax.swing.JOptionPane;
 
 public class CustomerAction {
+    
         //Function about save New Customer Profile Information into txt file
         public void saveProfileInformation(String staffId, String role, String name, String password,
                                        String gender, String email, String phone, Integer age, String status, Component parent) {
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter("D:\\USER BACKUP\\Documents\\NetBeansProjects\\apu-medical-centre\\src\\txt\\profile.txt", true))) {
+        Path profilePath = Paths.get("src", "txt", "profile.txt");
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(profilePath.toFile(),true))) {
             writer.write(staffId + "," + role + "," + name + "," + password + "," + gender + "," + email + "," + phone + "," + age + "," + status);
             writer.newLine();
             writer.flush();
@@ -25,7 +29,8 @@ public class CustomerAction {
         
     // Use to auto generate customerid
     public String generateStaffID() {
-    File file = new File("D:\\USER BACKUP\\Documents\\NetBeansProjects\\apu-medical-centre\\src\\txt\\profile.txt");
+        Path profilePath = Paths.get("src", "txt", "profile.txt");
+    File file = profilePath.toFile();
         int maxCustomerId = 0;
 
         if (file.exists()) {
@@ -40,7 +45,7 @@ public class CustomerAction {
                                 maxCustomerId = num;
                             }
                         } catch (NumberFormatException ignored) {
-                            // 忽略无法解析的行
+                    
                         }
                     }
                 }

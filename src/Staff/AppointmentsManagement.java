@@ -9,6 +9,8 @@ import java.awt.event.ItemEvent;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.ArrayList;
 import javax.swing.border.Border;
@@ -171,17 +173,18 @@ public class AppointmentsManagement extends JPanel{
     
     //Use for refresh the appointment showing table
     public void refreshAppointmentTable() {
+        Path appointmentPath = Paths.get("src", "txt", "appointment.txt");
         if (model == null) return;
         model.setRowCount(0);  // clear all of the old data
 
-        try (BufferedReader br = new BufferedReader(new FileReader("D:\\USER BACKUP\\Documents\\NetBeansProjects\\apu-medical-centre\\src\\txt\\appointment.txt"))) {
+        try (BufferedReader br = new BufferedReader(new FileReader(appointmentPath.toFile()))) {
             String line;
             while ((line = br.readLine()) != null) {
                 // if the line is empty, keep continue the function
                 if (line.trim().isEmpty()) continue;
 
                 // all the data is use "," to save
-                String[] row = line.split(",");
+                String[] row = line.split("\\s*,\\s*");
 
                 // make sure the lenght of the data is biggest than 4
                 if (row.length < 5) {
@@ -207,10 +210,10 @@ public class AppointmentsManagement extends JPanel{
     
     //This function use to delete the data i delete form table on the appoint txt file
     private void removeAppointmentFromFile(String appointmentId) {
-        String filePath = "D:\\USER BACKUP\\Documents\\NetBeansProjects\\apu-medical-centre\\src\\txt\\appointment.txt";
+        Path appointmentPath = Paths.get("src", "txt", "appointment.txt");
         List<String> lines = new ArrayList<>();
 
-        try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
+        try (BufferedReader br = new BufferedReader(new FileReader(appointmentPath.toFile()))) {
             String line;
             while ((line = br.readLine()) != null) {
                 if (!line.startsWith(appointmentId + ",")) { 
@@ -221,7 +224,7 @@ public class AppointmentsManagement extends JPanel{
             e.printStackTrace();
         }
 
-        try (java.io.FileWriter fw = new java.io.FileWriter(filePath)) {
+        try (java.io.FileWriter fw = new java.io.FileWriter(appointmentPath.toFile(),true)) {
             for (String l : lines) {
                 fw.write(l + System.lineSeparator());
             }
