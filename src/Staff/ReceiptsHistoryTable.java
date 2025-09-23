@@ -14,6 +14,8 @@ import java.awt.event.ItemEvent;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -141,12 +143,14 @@ public class ReceiptsHistoryTable extends JPanel{
     
     //Use to refresh the receipts showing table
     public void refreshreceiptsTable() {
+        Path paymentPath = Paths.get("src", "txt", "payment.txt");
+        Path receiptPath = Paths.get("src", "txt", "receipt.txt");
         if (model == null) return;
         model.setRowCount(0);  // clear old data
 
         // read payment.txt top get amount
         Map<String, String> paymentMap = new HashMap<>();
-        try (BufferedReader br = new BufferedReader(new FileReader("D:\\USER BACKUP\\Documents\\NetBeansProjects\\JavaAssignment\\apu-medical-centre\\src\\txt\\payment.txt"))) {
+        try (BufferedReader br = new BufferedReader(new FileReader(paymentPath.toFile()))) {
             String line;
             while ((line = br.readLine()) != null) {
                 if (line.trim().isEmpty()) continue;
@@ -164,7 +168,7 @@ public class ReceiptsHistoryTable extends JPanel{
         }
 
         // read receipt.txt to get receipt id, appointment id, payment id
-        try (BufferedReader br = new BufferedReader(new FileReader("D:\\USER BACKUP\\Documents\\NetBeansProjects\\JavaAssignment\\apu-medical-centre\\src\\txt\\receipt.txt"))) {
+        try (BufferedReader br = new BufferedReader(new FileReader(receiptPath.toFile()))) {
             String line;
             while ((line = br.readLine()) != null) {
                 if (line.trim().isEmpty()) continue;

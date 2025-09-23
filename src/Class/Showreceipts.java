@@ -3,6 +3,8 @@ package Class;
 import javax.swing.*;
 import java.awt.*;
 import java.io.*;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -54,12 +56,13 @@ public class Showreceipts extends JDialog {
     
     //This function use to load the medician 
     private void loadReceiptItems(String receiptId) {
+        Path medicinePath = Paths.get("src", "txt", "medicine.txt");
+        Path receiptPath = Paths.get("src", "txt", "receipt.txt");
         List<String> items = new ArrayList<>();
 
         // read medician.txt and put it into hashmap
         Map<String, String[]> medicineMap = new HashMap<>();
-        try (BufferedReader br = new BufferedReader(new FileReader(
-            "D:\\USER BACKUP\\Documents\\NetBeansProjects\\JavaAssignment\\apu-medical-centre\\src\\txt\\medicine.txt"))) {
+        try (BufferedReader br = new BufferedReader(new FileReader(medicinePath.toFile()))) {
             String line;
             while ((line = br.readLine()) != null) {
                 String[] parts = line.split(",");
@@ -77,8 +80,7 @@ public class Showreceipts extends JDialog {
         }
 
         // read receipt.txt to get the medician id, and check the map, what id is what item
-        try (BufferedReader br = new BufferedReader(new FileReader(
-            "D:\\USER BACKUP\\Documents\\NetBeansProjects\\JavaAssignment\\apu-medical-centre\\src\\txt\\receipt_item.txt"))) {
+        try (BufferedReader br = new BufferedReader(new FileReader(receiptPath.toFile()))) {
             String line;
             while ((line = br.readLine()) != null) {
                 String[] parts = line.split(",");
@@ -117,13 +119,14 @@ public class Showreceipts extends JDialog {
     }
     
     private void loadTotalPayment(String receiptId) {
+        Path receiptPath = Paths.get("src", "txt", "receipt.txt");
+        Path paymentPath = Paths.get("src", "txt", "payment.txt");
         String appointmentId = null;
         String paymentId = null;
         String amount = "N/A";
 
         //read receipt.txt to get appoinment and payment id
-        try (BufferedReader br = new BufferedReader(new FileReader(
-            "D:\\USER BACKUP\\Documents\\NetBeansProjects\\JavaAssignment\\apu-medical-centre\\src\\txt\\receipt.txt"))) {
+        try (BufferedReader br = new BufferedReader(new FileReader(receiptPath.toFile()))) {
             String line;
             while ((line = br.readLine()) != null) {
                 String[] parts = line.split(",");
@@ -141,8 +144,7 @@ public class Showreceipts extends JDialog {
 
         // use payment id to check the amount in payment.txt
         if (paymentId != null) {
-            try (BufferedReader br = new BufferedReader(new FileReader(
-                "D:\\USER BACKUP\\Documents\\NetBeansProjects\\JavaAssignment\\apu-medical-centre\\src\\txt\\payment.txt"))) {
+            try (BufferedReader br = new BufferedReader(new FileReader(paymentPath.toFile()))) {
                 String line;
                 while ((line = br.readLine()) != null) {
                     String[] parts = line.split(",");

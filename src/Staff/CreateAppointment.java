@@ -15,6 +15,8 @@ import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.DocumentFilter;
 import com.toedter.calendar.JDateChooser;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -106,6 +108,11 @@ public class CreateAppointment extends JDialog {
         createBtn.setBounds(110, 210, 120, 60);
         createBtn.setFont(createBtn.getFont().deriveFont(20f));
         createBtn.addActionListener(e ->{
+            
+                String selectedDoctorId = (String) DocterName.getSelectedItem();
+                Date selectedDate = dateChooser.getDate();
+                String selectedTime = (String) Time.getSelectedItem();
+                
                 try {
                     Appointment appointment = new Appointment();
                     appointment.setDoctorId((String) DocterName.getSelectedItem());
@@ -116,6 +123,15 @@ public class CreateAppointment extends JDialog {
                     if (!validateAppointment(appointment)) {
                     return; 
                  }
+                    
+                    //Before saving,check the docter id, is it on the same date and time have a appointment or not         
+                    if (DocterAction.hasOngoingAppointment(selectedDoctorId, selectedDate, selectedTime)) {
+                        JOptionPane.showMessageDialog(this,
+                                "This doctor already has an appointment at This time. Please choose another doctor or Date&Time.",
+                                "Appointment Conflict",
+                                JOptionPane.WARNING_MESSAGE);
+                        return; 
+                    }
   
                     saveappointment();
                     refresh.refreshAppointmentTable();
@@ -145,6 +161,7 @@ public class CreateAppointment extends JDialog {
             btn.setFocusPainted(false); 
             applyHoverEffect(btn, defaultColor, hoverColor);
         }
+        refreshDoctorCombo();
     }
         public boolean isSaved() {
             return saved;
@@ -172,6 +189,8 @@ public class CreateAppointment extends JDialog {
         
     //Function about save New Appointment into txt file
     private void saveappointment() {
+    Path appointmentPath = Paths.get("src", "txt", "appointment.txt");
+    Path paymentPath = Paths.get("src", "txt", "payment.txt");
     String Appointmentid = generateAppointmentID();
     String customerid = (String) CustomerName.getSelectedItem();
     String docterid = (String) DocterName.getSelectedItem();
@@ -191,7 +210,7 @@ public class CreateAppointment extends JDialog {
     String datetime = dateStr + " " + time;
     
     try (BufferedWriter writer = new BufferedWriter(
-        new FileWriter("D:\\USER BACKUP\\Documents\\NetBeansProjects\\apu-medical-centre\\src\\txt\\appointment.txt", true))) {
+        new FileWriter(appointmentPath.toFile(),true))) {
         writer.write(Appointmentid + "," + docterid + "," + staffid + "," + customerid + "," + datetime + "," + Astatus + "," + paymentid + "," + commentid);
         writer.newLine();
         writer.flush();
@@ -201,7 +220,7 @@ public class CreateAppointment extends JDialog {
     }
     
     try (BufferedWriter writer = new BufferedWriter(
-        new FileWriter("D:\\USER BACKUP\\Documents\\NetBeansProjects\\apu-medical-centre\\src\\txt\\payment.txt", true))) {
+        new FileWriter(paymentPath.toFile(),true))) {
         writer.write(paymentid + "," + amount + "," + dateStr + "," + Pstatus);
         writer.newLine();
         writer.flush();
@@ -256,7 +275,8 @@ public class CreateAppointment extends JDialog {
     
     //Use to generate a unique id for each appointment
     private String generateAppointmentID() {
-    File file = new File("D:\\USER BACKUP\\Documents\\NetBeansProjects\\apu-medical-centre\\src\\txt\\appointment.txt");
+        Path appointmentPath = Paths.get("src", "txt", "appointment.txt");
+    File file = appointmentPath.toFile();
     int maxAppointmentId = 0;
 
     if (file.exists()) {
@@ -294,7 +314,7 @@ public class CreateAppointment extends JDialog {
         DocterName.removeAllItems();
 
         // Use the DocterFitterManagement class to do the fitter docter function
-        java.util.List<String> availableDoctors = DocterAction.getAvailableDoctors(selectedDate, selectedTime);
+        List<String> availableDoctors = DocterAction.getAvailableDoctors(selectedDate, selectedTime);
         
         //if no docter availble in that time show "No Available Docter"
         if (availableDoctors.isEmpty()) {
@@ -308,17 +328,19 @@ public class CreateAppointment extends JDialog {
         
         //Use to load customer name that is suitable (No appointment, because one customer just have on appointment)
         private void loadCustomers() {
+        Path profilePath = Paths.get("src", "txt", "profile.txt");
+        Path appointmentPath = Paths.get("src", "txt", "appointment.txt");
         Set<String> customersWithOngoing = new HashSet<>();
         List<String> validCustomers = new ArrayList<>();
 
         // read appointment.txt for checking who of the customer have an appointment status is "ongoing" (that is not suitable in the comboBox)
-        try (BufferedReader br = new BufferedReader(new FileReader("D:\\USER BACKUP\\Documents\\NetBeansProjects\\apu-medical-centre\\src\\txt\\appointment.txt"))) {
+        try (BufferedReader br = new BufferedReader(new FileReader(appointmentPath.toFile()))) {
             String line;
             while ((line = br.readLine()) != null) {
                 String[] parts = line.split(",");
-                if (parts.length >= 5) {
-                    String customerId = parts[2].trim();  
-                    String status = parts[4].trim();    
+                if (parts.length >= 8) {
+                    String customerId = parts[3].trim();  
+                    String status = parts[5].trim();    
                     if (status.equalsIgnoreCase("ongoing")) {
                         customersWithOngoing.add(customerId);
                     }
@@ -329,7 +351,7 @@ public class CreateAppointment extends JDialog {
         }
 
         // read profile.txt to find all the customer, staff id is start from C
-        try (BufferedReader br = new BufferedReader(new FileReader("D:\\USER BACKUP\\Documents\\NetBeansProjects\\apu-medical-centre\\src\\txt\\profile.txt"))) {
+        try (BufferedReader br = new BufferedReader(new FileReader(profilePath.toFile()))) {
             String line;
             while ((line = br.readLine()) != null) {
                 String[] parts = line.split(",");
@@ -360,7 +382,8 @@ public class CreateAppointment extends JDialog {
         
     //Generate Payment ID
         private String generaPaymentID() {
-        File file = new File("D:\\USER BACKUP\\Documents\\NetBeansProjects\\apu-medical-centre\\src\\txt\\payment.txt");
+        Path paymentPath = Paths.get("src", "txt", "payment.txt");
+        File file = paymentPath.toFile();
         int maxPaymentId = 0;
 
         if (file.exists()) {
