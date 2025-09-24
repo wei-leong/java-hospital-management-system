@@ -2,6 +2,7 @@ package login;
 
 import Class.ImageScaler;
 import Class.Person;
+import Customer.NavCustomer;
 import Manager.NavManager;
 import Doctor.NavDoctor;
 import Staff.NavStaff;
@@ -170,6 +171,9 @@ public class LoginForm extends JFrame {
                 break;
 
             case "Customer":
+                SwingUtilities.invokeLater(()->{
+                    new NavCustomer(staffDetails).setVisible(true);
+                });
                 break;
 
             default:
