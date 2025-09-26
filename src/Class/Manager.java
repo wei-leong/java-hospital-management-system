@@ -189,8 +189,8 @@ public class Manager extends Person {
             int totalAppointments = 0;
             for (String line : lines) {
                 String[] parts = line.trim().split(",", 8);
-                LocalDateTime appointment = LocalDateTime.parse(parts[3], dateFormat);
-                if (parts.length == 8 && !appointment.isBefore(startWindow) && appointment.isBefore(endWindow) && parts[4].equals("complete")) {
+                LocalDateTime appointment = LocalDateTime.parse(parts[4], dateFormat);
+                if (parts.length == 8 && !appointment.isBefore(startWindow) && appointment.isBefore(endWindow) && parts[5].equals("complete")) {
                     totalAppointments += 1;
                 }
             }

@@ -20,7 +20,7 @@ public class ViewAppointment extends JPanel {
     private final DefaultTableModel model;
     private List<String[]> appointments = List.of();
     private final Manager managerActions = new Manager();
-    private final String[] cols = {"Appointment ID", "Doctor ID", "Customer ID", "Start", "Status"};
+    private final String[] cols = {"Appointment ID", "Doctor ID", "Staff Id","Customer ID", "Start", "Status"};
 
     public ViewAppointment() {
         setLayout(new BorderLayout(10, 10));
