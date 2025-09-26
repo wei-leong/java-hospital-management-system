@@ -129,19 +129,20 @@ public class Manager extends Person {
             List<String> lines = Files.readAllLines(appointmentData);
             for (String line : lines) {
                 String[] parts = line.trim().split(",", 8);
-                LocalDateTime appointment = LocalDateTime.parse(parts[3], dateFormat);
-                if (parts.length == 8 && !appointment.isBefore(startWindow) && appointment.isBefore(endWindow)) {
+                LocalDateTime appointment = LocalDateTime.parse(parts[4], dateFormat);
+                if (parts.length == 8 && !appointment.isBefore(startWindow) && appointment.isBefore(endWindow) && parts[5].equals("pending")) {
                     results.add(new String[]{
                         parts[0], // appointment ID
                         parts[1], // doctorId
                         parts[2], // customerId
                         parts[3], // start
-                        parts[4] // status
+                        parts[4], // status
+                        parts[5]
                     });
                 }
             }
         } catch (Exception e) {
-            System.err.println("Error reading appointment.txt: " + e.getMessage());
+            System.err.println("Error reading appointment.txt: (Appointment UI)" + e.getMessage());
         }
         return results;
     }
@@ -196,7 +197,7 @@ public class Manager extends Person {
             }
             return totalAppointments;
         } catch (Exception e) {
-            System.err.println("Error reading appointment.txt: " + e.getMessage());
+            System.err.println("Error reading appointment.txt: (Dashboard Small Widget)" + e.getMessage());
             return 0;
         }
     }
@@ -274,7 +275,7 @@ public class Manager extends Person {
             }
             return totalAppointments;
         } catch (Exception e) {
-            System.err.println("Error reading appointment.txt: " + e.getMessage());
+            System.err.println("Error reading appointment.txt: (Dashboard UI with Doctor Ranking)" + e.getMessage());
             return 0;
         }
     }
