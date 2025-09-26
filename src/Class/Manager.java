@@ -86,7 +86,8 @@ public class Manager extends Person {
     }
 
     public List<String[]> returnAppointmentsList(String range) {
-        Path appointmentData = Paths.get("src", "txt", "appointment.txt");
+        FileActions fileActions = new FileActions("appointment.txt");
+        List<String[]> allData = fileActions.returnAllDataFromFile(8);
         List<String[]> results = new ArrayList<>();
 
         // DateTime Format
@@ -126,18 +127,16 @@ public class Manager extends Person {
         }
 
         try {
-            List<String> lines = Files.readAllLines(appointmentData);
-            for (String line : lines) {
-                String[] parts = line.trim().split(",", 8);
-                LocalDateTime appointment = LocalDateTime.parse(parts[4], dateFormat);
-                if (parts.length == 8 && !appointment.isBefore(startWindow) && appointment.isBefore(endWindow) && parts[5].equals("pending")) {
+            for (String[] line : allData) {
+                LocalDateTime appointment = LocalDateTime.parse(line[4], dateFormat);
+                if (line.length == 8 && !appointment.isBefore(startWindow) && appointment.isBefore(endWindow) && line[5].equals("pending")) {
                     results.add(new String[]{
-                        parts[0], // appointment ID
-                        parts[1], // doctorId
-                        parts[2], // customerId
-                        parts[3], // start
-                        parts[4], // status
-                        parts[5]
+                        line[0], // appointment ID
+                        line[1], // doctorId
+                        line[2], // customerId
+                        line[3], // start
+                        line[4], // status
+                        line[5]
                     });
                 }
             }
@@ -148,7 +147,8 @@ public class Manager extends Person {
     }
 
     public int returnTotalAppointment(String range) {
-        Path appointmentData = Paths.get("src", "txt", "appointment.txt");
+        FileActions fileActions = new FileActions("appointment.txt");
+        List<String[]> allData = fileActions.returnAllDataFromFile(8);
         // DateTime Format
         DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
@@ -186,12 +186,10 @@ public class Manager extends Person {
         }
 
         try {
-            List<String> lines = Files.readAllLines(appointmentData);
             int totalAppointments = 0;
-            for (String line : lines) {
-                String[] parts = line.trim().split(",", 8);
-                LocalDateTime appointment = LocalDateTime.parse(parts[4], dateFormat);
-                if (parts.length == 8 && !appointment.isBefore(startWindow) && appointment.isBefore(endWindow) && parts[5].equals("complete")) {
+            for (String[] line : allData) {
+                LocalDateTime appointment = LocalDateTime.parse(line[4], dateFormat);
+                if (line.length == 8 && !appointment.isBefore(startWindow) && appointment.isBefore(endWindow) && line[5].equals("complete")) {
                     totalAppointments += 1;
                 }
             }
@@ -237,7 +235,8 @@ public class Manager extends Person {
     }
 
     public int returnDoctorTotalAppointment(String range, String doctorId) {
-        Path appointmentData = Paths.get("src", "txt", "appointment.txt");
+        FileActions fileActions = new FileActions("appointment.txt");
+        List<String[]> allData = fileActions.returnAllDataFromFile(8);
         // DateTime Format
         DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
@@ -264,12 +263,10 @@ public class Manager extends Person {
         }
 
         try {
-            List<String> lines = Files.readAllLines(appointmentData);
             int totalAppointments = 0;
-            for (String line : lines) {
-                String[] parts = line.trim().split(",", 8);
-                LocalDateTime appointment = LocalDateTime.parse(parts[4], dateFormat);
-                if (parts.length == 8 && !appointment.isBefore(startWindow) && appointment.isBefore(endWindow) && parts[5].equals("complete") && parts[1].equals(doctorId)) {
+            for (String[] line : allData) {
+                LocalDateTime appointment = LocalDateTime.parse(line[4], dateFormat);
+                if (line.length == 8 && !appointment.isBefore(startWindow) && appointment.isBefore(endWindow) && line[5].equals("complete") && line[1].equals(doctorId)) {
                     totalAppointments += 1;
                 }
             }
