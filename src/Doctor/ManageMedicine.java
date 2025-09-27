@@ -87,6 +87,8 @@ public class ManageMedicine extends JPanel {
 		buttonPanel.add(deleteButton);
 		buttonPanel.add(clearButton);
 
+		addButton.setEnabled(true);
+
 		// action listener
 		addButton.addActionListener(e -> addMedicine());
 		editButton.addActionListener(e -> editMedicine());
@@ -100,6 +102,8 @@ public class ManageMedicine extends JPanel {
 
 		add(southPanel, BorderLayout.SOUTH);
 
+		addButton.setEnabled(true);
+
 		// table selection listener to populate the form
 		medicineTable.getSelectionModel().addListSelectionListener(e -> {
 			if (!e.getValueIsAdjusting()) {
@@ -108,6 +112,7 @@ public class ManageMedicine extends JPanel {
 					idField.setText((String) tableModel.getValueAt(selectedRow, 0));
 					nameField.setText((String) tableModel.getValueAt(selectedRow, 1));
 					priceField.setText((String) tableModel.getValueAt(selectedRow, 2));
+					addButton.setEnabled(false);
 				}
 			}
 		});
@@ -124,81 +129,100 @@ public class ManageMedicine extends JPanel {
 
 	private void addMedicine() {
 		int confirmationResult = JOptionPane.showConfirmDialog(this, "Are you sure you want to add?", "Confirmation", JOptionPane.YES_NO_OPTION);
-			if (confirmationResult == JOptionPane.NO_OPTION) {
-				return;
-			}
-		
+		if (confirmationResult == JOptionPane.NO_OPTION) {
+			return;
+		}
+
 		String name = nameField.getText().trim();
 		String price = priceField.getText().trim();
-		
-		// check comma (not allowing comma in input field)
-		if (checkInput.checkComma(name) || checkInput.checkComma(price)) {
-			JOptionPane.showMessageDialog(this, "Input cannot contain comma(,)", "Error", JOptionPane.INFORMATION_MESSAGE);
-			return;
-		}
-		
-		if (name.isEmpty() || price.isEmpty()) {
-			JOptionPane.showMessageDialog(this, "Name and Price cannot be empty.", "Input Error", JOptionPane.ERROR_MESSAGE);
-			return;
-		}
 
-		if (!price.matches("\\d+(\\.\\d{1,2})?")) {
-			JOptionPane.showMessageDialog(this, "Price must be a valid number.", "Input Error", JOptionPane.ERROR_MESSAGE);
-			return;
-		}
+		try {
+			// check comma (not allowing comma in input field)
+			if (checkInput.checkComma(name) || checkInput.checkComma(price)) {
+				JOptionPane.showMessageDialog(this, "Input cannot contain comma(,)", "Error", JOptionPane.INFORMATION_MESSAGE);
+				return;
+			}
 
-		// let the Doctor class handle the logic
-		doctor.addMedicine(null, name, price);
-		JOptionPane.showMessageDialog(this, "Medicine added successfully!");
-		loadDataFromFile();
-		clearFields();
+			if (name.isEmpty() || price.isEmpty()) {
+				JOptionPane.showMessageDialog(this, "Name and Price cannot be empty.", "Input Error", JOptionPane.ERROR_MESSAGE);
+				return;
+			}
+
+			double validatePrice = Double.parseDouble(price);
+			if (validatePrice < 0) {
+				JOptionPane.showMessageDialog(this, "Payment Amount cannot be negative number", "Error", JOptionPane.WARNING_MESSAGE);
+				return;
+			}
+			
+			// let the Doctor class handle the logic
+			doctor.addMedicine(null, name, price);
+			JOptionPane.showMessageDialog(this, "Medicine added successfully!");
+			loadDataFromFile();
+			clearFields();
+			
+		} catch (NumberFormatException ex) {
+			JOptionPane.showMessageDialog(this,
+				"Payment amount must be a valid number.",
+				"Input Error",
+				JOptionPane.ERROR_MESSAGE);
+		}
 	}
+	
 
 	private void editMedicine() {
 		int confirmationResult = JOptionPane.showConfirmDialog(this, "Are you sure you want to edit?", "Confirmation", JOptionPane.YES_NO_OPTION);
-			if (confirmationResult == JOptionPane.NO_OPTION) {
-				return;
-			}
-		
+		if (confirmationResult == JOptionPane.NO_OPTION) {
+			return;
+		}
+
 		String oldId = idField.getText().trim();
 		String newName = nameField.getText().trim();
 		String newPrice = priceField.getText().trim();
-	
-		// check comma (not allowing comma in input field)
-		if (checkInput.checkComma(newName) || checkInput.checkComma(newPrice)) {
-			JOptionPane.showMessageDialog(this, "Input cannot contain comma(,)", "Error", JOptionPane.INFORMATION_MESSAGE);
-			return;
-		}
-		
-		if (oldId.isEmpty()) {
-			JOptionPane.showMessageDialog(this, "Please select a medicine to edit.", "Input Error", JOptionPane.ERROR_MESSAGE);
-			return;
-		}
 
-		if (newName.isEmpty() || newPrice.isEmpty()) {
-			JOptionPane.showMessageDialog(this, "Name and Price cannot be empty.", "Input Error", JOptionPane.ERROR_MESSAGE);
-			return;
+		try {
+			// check comma (not allowing comma in input field)
+			if (checkInput.checkComma(newName) || checkInput.checkComma(newPrice)) {
+				JOptionPane.showMessageDialog(this, "Input cannot contain comma(,)", "Error", JOptionPane.INFORMATION_MESSAGE);
+				return;
+			}
+
+			if (oldId.isEmpty()) {
+				JOptionPane.showMessageDialog(this, "Please select a medicine to edit.", "Input Error", JOptionPane.ERROR_MESSAGE);
+				return;
+			}
+
+			if (newName.isEmpty() || newPrice.isEmpty()) {
+				JOptionPane.showMessageDialog(this, "Name and Price cannot be empty.", "Input Error", JOptionPane.ERROR_MESSAGE);
+				return;
+			}
+
+			double validatePrice = Double.parseDouble(newPrice);
+			if (validatePrice < 0) {
+				JOptionPane.showMessageDialog(this, "Payment Amount cannot be negative number", "Error", JOptionPane.WARNING_MESSAGE);
+				return;
+			}
+
+			String newId = oldId;
+			doctor.editMedicine(oldId, newId, newName, newPrice);
+
+			JOptionPane.showMessageDialog(this, "Medicine edited successfully!");
+			loadDataFromFile();
+			clearFields();
+
+		} catch (NumberFormatException ex) {
+			JOptionPane.showMessageDialog(this,
+				"Payment amount must be a valid number.",
+				"Input Error",
+				JOptionPane.ERROR_MESSAGE);
 		}
-
-		if (!newPrice.matches("\\d+(\\.\\d{1,2})?")) {
-			JOptionPane.showMessageDialog(this, "Price must be a valid number.", "Input Error", JOptionPane.ERROR_MESSAGE);
-			return;
-		}
-
-		String newId = oldId;
-		doctor.editMedicine(oldId, newId, newName, newPrice);
-
-		JOptionPane.showMessageDialog(this, "Medicine edited successfully!");
-		loadDataFromFile();
-		clearFields();
 	}
 
 	private void deleteMedicine() {
 		int confirmationResult = JOptionPane.showConfirmDialog(this, "Are you sure you want to delete?", "Confirmation", JOptionPane.YES_NO_OPTION);
-			if (confirmationResult == JOptionPane.NO_OPTION) {
-				return;
-			}
-			
+		if (confirmationResult == JOptionPane.NO_OPTION) {
+			return;
+		}
+
 		int selectedRow = medicineTable.getSelectedRow();
 		if (selectedRow == -1) {
 			JOptionPane.showMessageDialog(this, "Please select a medicine to delete.", "No Selection", JOptionPane.WARNING_MESSAGE);
@@ -219,5 +243,6 @@ public class ManageMedicine extends JPanel {
 		nameField.setText("");
 		priceField.setText("");
 		medicineTable.clearSelection();
+		addButton.setEnabled(true);
 	}
 }

@@ -60,7 +60,7 @@ public class CheckAppointment extends JPanel {
 	}
 
 	private void loadAllData() {
-		allAppointments = doctor.returnAppointmentsList("All");
+		allAppointments = doctor.returnAppointmentsList("Today"); // show "Today" by default
 		updateTable(allAppointments);
 	}
 
@@ -155,7 +155,7 @@ public class CheckAppointment extends JPanel {
 
 	private JPanel createFilterPanel() {
 		JPanel filterPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 5));
-		String[] ranges = {"All", "Today", "This week", "This month", "This year"};
+		String[] ranges = {"Today", "This week", "This month", "This year", "All"};
 		JComboBox<String> rangeComboBox = new JComboBox<>(ranges);
 		rangeComboBox.addItemListener(e -> {
 			if (e.getStateChange() == ItemEvent.SELECTED) {
@@ -234,13 +234,17 @@ public class CheckAppointment extends JPanel {
 				
 				// check comma (not allowing comma in input field)
 				if (checkInput.checkComma(paymentAmount) || checkInput.checkComma(comment)) {
-					JOptionPane.showMessageDialog(this, "Input cannot contain comma(,)", "Error", JOptionPane.INFORMATION_MESSAGE);
+					JOptionPane.showMessageDialog(this, "Input cannot contain comma(,)", "Error", JOptionPane.WARNING_MESSAGE);
 					return;
 				}
-				
+
 				// update to txt file
 				try {
-					 double amount = Double.parseDouble(paymentAmount);
+					double validateAmount = Double.parseDouble(paymentAmount);
+					if (validateAmount < 0) {
+						JOptionPane.showMessageDialog(this, "Payment Amount cannot be negative number", "Error", JOptionPane.WARNING_MESSAGE);
+						return;
+					}
 					doctor.updateAppointment(appointmentId, paymentAmount, comment);
 
 					// refresh the table and clear fields after update successful 
