@@ -13,6 +13,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -143,6 +144,8 @@ public class Manager extends Person {
         } catch (Exception e) {
             System.err.println("Error reading appointment.txt: " + e.getMessage());
         }
+        
+        Collections.reverse(results);
         return results;
     }
 
