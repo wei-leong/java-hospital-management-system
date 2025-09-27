@@ -95,7 +95,7 @@ public class ProfileActions extends FileActions {
     }
     
     //Use to show customer Profile
-    public List<String[]> ShowCustomerProfile(String filterRole) {
+    public List<String[]> showCustomerProfile(String filterRole) {
         List<String[]> allData = returnAllDataFromFile(txt_len);
         List<String[]> filteredData = new ArrayList<>(txt_len);
 

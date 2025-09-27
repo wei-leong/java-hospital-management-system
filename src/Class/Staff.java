@@ -31,8 +31,8 @@ public class Staff extends Person{
         profileHelper.AddNewProfile(name, email, age, role, phone, idPrefix, gender);
     }
     
-        public List<String[]> returnCustomerData(String filterRole) {
-        return profileHelper.ShowCustomerProfile(filterRole);
+    public List<String[]> returnCustomerData(String filterRole) {
+        return profileHelper.showCustomerProfile(filterRole);
     }
     
     

@@ -145,7 +145,10 @@ public class LoginForm extends JFrame {
             ErrorDialog("Login Failed: Inactive Staff are not Allowed to Login.");
             return;
         }
-
+        
+        // Hide Login Form
+        this.setVisible(false);
+        
         String role = staffDetails[1];
         switch (role) {
             case "Manager":

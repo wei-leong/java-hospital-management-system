@@ -5,4 +5,4 @@ P3,400,2025-08-04,completed
 P4,400,2017-08-04,completed
 
 P5,0,2020-08-14,pending
-P6,10000,2025-09-14,pending
+P6,10000,2025-09-14,completed
