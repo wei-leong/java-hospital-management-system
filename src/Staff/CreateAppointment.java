@@ -135,6 +135,7 @@ public class CreateAppointment extends JDialog {
   
                     saveappointment();
                     refresh.refreshAppointmentTable();
+                    loadCustomers();
                     dispose();
 
                 } catch (Exception ex) {
