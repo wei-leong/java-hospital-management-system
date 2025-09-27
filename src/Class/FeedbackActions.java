@@ -37,7 +37,9 @@ public class FeedbackActions extends FileActions {
                 counts++;
             }
         }
-        return counts == 0 ? 0 : totalRating / counts;
+        double avg = counts == 0 ? 0 : totalRating / counts;
+        // round to 2 decimal places and return as double
+        return Math.round(avg * 100.0) / 100.0;
     }
 
     public List<String[]> returnRatingList(String staffId) {
@@ -77,7 +79,7 @@ public class FeedbackActions extends FileActions {
                 row[idx_rating]
             });
         }
-        
+
         Collections.reverse(results);
         return results;
     }
