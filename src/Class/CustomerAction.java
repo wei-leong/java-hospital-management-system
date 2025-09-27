@@ -55,13 +55,14 @@ public class CustomerAction {
         }
         return "C" + (maxCustomerId + 1);
     }
-    
+
+    //function with check email
     public boolean checkEmailDuplicate(String email) {
         Path profilePath = Paths.get("src", "txt", "profile.txt");
         File file = profilePath.toFile();
 
         if (!file.exists()) {
-            return false; // 如果文件不存在，表示没有重复
+            return false; 
         }
 
         try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
@@ -82,6 +83,7 @@ public class CustomerAction {
         return false;
     }
 
+    //Function with check phone number
     public boolean checkPhoneDuplicate(String phone) {
         Path profilePath = Paths.get("src", "txt", "profile.txt");
         File file = profilePath.toFile();
