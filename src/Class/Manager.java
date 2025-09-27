@@ -130,7 +130,7 @@ public class Manager extends Person {
         try {
             for (String[] line : allData) {
                 LocalDateTime appointment = LocalDateTime.parse(line[4], dateFormat);
-                if (line.length == 8 && !appointment.isBefore(startWindow) && appointment.isBefore(endWindow) && line[5].equals("pending")) {
+                if (line.length == 8 && !appointment.isBefore(startWindow) && appointment.isBefore(endWindow) && line[5].equals("ongoing")) {
                     results.add(new String[]{
                         line[0], // appointment ID
                         line[1], // doctorId
