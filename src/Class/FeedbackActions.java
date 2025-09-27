@@ -5,6 +5,7 @@
 package Class;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -76,7 +77,8 @@ public class FeedbackActions extends FileActions {
                 row[idx_rating]
             });
         }
-
+        
+        Collections.reverse(results);
         return results;
     }
 
