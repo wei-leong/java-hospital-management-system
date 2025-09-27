@@ -27,8 +27,8 @@ public class NavDoctor extends BasicNav {
 
 	private Doctor doctor;
 
-	public NavDoctor(String[] staffDetails) {
-		super("APU Medical Centre", staffDetails);
+        public NavDoctor(String[] staffDetails, JFrame loginForm){
+            super("APU Medical Centre", staffDetails, loginForm);
 
 		// define all actions dependencies here
 		FileActions appointmentFile = new FileActions("appointment.txt");

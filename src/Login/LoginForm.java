@@ -11,7 +11,6 @@ import java.awt.*;
 import static javax.swing.WindowConstants.EXIT_ON_CLOSE;
 
 public class LoginForm extends JFrame {
-
     // Fields
     private final JTextField emailField = new JTextField(20);
     private final JPasswordField passField = new JPasswordField(20);
@@ -151,28 +150,28 @@ public class LoginForm extends JFrame {
         switch (role) {
             case "Manager":
                 SwingUtilities.invokeLater(() -> {
-                    new NavManager(staffDetails).setVisible(true);
+                    new NavManager(staffDetails,this).setVisible(true);
                 });
                 dispose();  // close login window
                 break;
 
             case "Staff":
                 SwingUtilities.invokeLater(() -> {
-                    new NavStaff(staffDetails).setVisible(true);
+                    new NavStaff(staffDetails,this).setVisible(true);
                 });
                 dispose();
                 break;
 
             case "Doctor":
                 SwingUtilities.invokeLater(() -> {
-                    new NavDoctor(staffDetails).setVisible(true);
+                    new NavDoctor(staffDetails,this).setVisible(true);
                 });
                 dispose();  // close login window
                 break;
 
             case "Customer":
                 SwingUtilities.invokeLater(()->{
-                    new NavCustomer(staffDetails).setVisible(true);
+                    new NavCustomer(staffDetails,this).setVisible(true);
                 });
                 break;
 

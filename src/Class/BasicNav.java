@@ -41,6 +41,9 @@ import static javax.swing.WindowConstants.DISPOSE_ON_CLOSE;
  */
 public class BasicNav extends JFrame {
 
+    // Original Login Form
+    private final JFrame loginForm;
+
     // Own Staff Details - Used to remove own profile from StaffManagement page
     protected String[] _staffDetails;
 
@@ -77,15 +80,16 @@ public class BasicNav extends JFrame {
     // Allows quick lookup and management for sidebar button
     protected final Map<String, JButton> sidebarButtons = new LinkedHashMap<>();
 
-    public BasicNav(String windowTitle, String[] staffDetails) {
+    public BasicNav(String windowTitle, String[] staffDetails, JFrame loginForm) {
         super("APU Medical Centre");
         this._staffDetails = staffDetails;
+        this.loginForm = loginForm;
 
         setDefaultCloseOperation(DISPOSE_ON_CLOSE); // Dispose Navigation Menu
         addWindowListener(new WindowAdapter() { // Reopen Login Form
             @Override
             public void windowClosed(WindowEvent e) {
-                SwingUtilities.invokeLater(() -> new login.LoginForm().setVisible(true));
+                logout();
             }
         });
 
@@ -272,11 +276,7 @@ public class BasicNav extends JFrame {
         btnLogout.setContentAreaFilled(true);
         btnLogout.setFocusPainted(false);
         btnLogout.addActionListener(e -> {
-            // Dispose NavManager JFrame
-            SwingUtilities.getWindowAncestor(bar).dispose();
-            // Open Login Form
-            login.LoginForm login = new login.LoginForm();
-            login.setVisible(true);
+            logout();
         });
     }
 
@@ -336,5 +336,12 @@ public class BasicNav extends JFrame {
         btnProfile.setContentAreaFilled(false);
         btnProfile.setIcon(iconProfile);
         btnProfile.addActionListener(e -> showProfileDialog()); // Show Own Profile Details and Enable user to edit their own profile
+    }
+
+    protected void logout() {
+        if (loginForm != null) {
+            loginForm.setVisible(true);
+        }
+        SwingUtilities.invokeLater(this::dispose);
     }
 }

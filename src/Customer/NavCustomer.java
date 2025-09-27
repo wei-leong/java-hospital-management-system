@@ -3,6 +3,7 @@ package Customer;
 import Class.BasicNav;
 import Class.ImageScaler;
 import javax.swing.Icon;
+import javax.swing.JFrame;
 
 public class NavCustomer extends BasicNav {
 
@@ -27,8 +28,8 @@ public class NavCustomer extends BasicNav {
     private final Icon _iconComments;
     private final Icon _iconHistory;
 
-    public NavCustomer(String[] customerDetails) {
-        super("APU Medical Centre - Customer", customerDetails);
+    public NavCustomer(String[] customerDetails, JFrame loginForm) {
+        super("APU Medical Centre - Customer", customerDetails, loginForm);
 
         // Pages initialization (no customer ID needed)
         dashboard = new Dashboard();
