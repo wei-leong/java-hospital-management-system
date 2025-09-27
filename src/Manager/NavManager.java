@@ -11,6 +11,7 @@ package Manager;
 import Class.BasicNav;
 import Class.ImageScaler;
 import javax.swing.Icon;
+import javax.swing.JFrame;
 
 public class NavManager extends BasicNav {
     
@@ -34,8 +35,8 @@ public class NavManager extends BasicNav {
     private final Icon _iconFeedback;
     private final Icon _iconAppointment;
 
-    public NavManager(String[] staffDetails){
-        super("APU Medical Centre", staffDetails);
+    public NavManager(String[] staffDetails, JFrame loginForm){
+        super("APU Medical Centre", staffDetails, loginForm);
         
         // Define Page Icon
         this._iconDashboard = imgScale.returnScaledImageIcon("/image/dashboard.png", 25, 25);

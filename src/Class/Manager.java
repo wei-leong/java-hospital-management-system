@@ -87,7 +87,8 @@ public class Manager extends Person {
     }
 
     public List<String[]> returnAppointmentsList(String range) {
-        Path appointmentData = Paths.get("src", "txt", "appointment.txt");
+        FileActions fileActions = new FileActions("appointment.txt");
+        List<String[]> allData = fileActions.returnAllDataFromFile(8);
         List<String[]> results = new ArrayList<>();
 
         // DateTime Format
@@ -127,22 +128,21 @@ public class Manager extends Person {
         }
 
         try {
-            List<String> lines = Files.readAllLines(appointmentData);
-            for (String line : lines) {
-                String[] parts = line.trim().split(",", 7);
-                LocalDateTime appointment = LocalDateTime.parse(parts[3], dateFormat);
-                if (parts.length == 7 && !appointment.isBefore(startWindow) && appointment.isBefore(endWindow)) {
+            for (String[] line : allData) {
+                LocalDateTime appointment = LocalDateTime.parse(line[4], dateFormat);
+                if (line.length == 8 && !appointment.isBefore(startWindow) && appointment.isBefore(endWindow) && line[5].equals("pending")) {
                     results.add(new String[]{
-                        parts[0], // appointment ID
-                        parts[1], // doctorId
-                        parts[2], // customerId
-                        parts[3], // start
-                        parts[4] // status
+                        line[0], // appointment ID
+                        line[1], // doctorId
+                        line[2], // customerId
+                        line[3], // start
+                        line[4], // status
+                        line[5]
                     });
                 }
             }
         } catch (Exception e) {
-            System.err.println("Error reading appointment.txt: " + e.getMessage());
+            System.err.println("Error reading appointment.txt: (Appointment UI)" + e.getMessage());
         }
         
         Collections.reverse(results);
@@ -150,7 +150,8 @@ public class Manager extends Person {
     }
 
     public int returnTotalAppointment(String range) {
-        Path appointmentData = Paths.get("src", "txt", "appointment.txt");
+        FileActions fileActions = new FileActions("appointment.txt");
+        List<String[]> allData = fileActions.returnAllDataFromFile(8);
         // DateTime Format
         DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
@@ -188,18 +189,16 @@ public class Manager extends Person {
         }
 
         try {
-            List<String> lines = Files.readAllLines(appointmentData);
             int totalAppointments = 0;
-            for (String line : lines) {
-                String[] parts = line.trim().split(",", 7);
-                LocalDateTime appointment = LocalDateTime.parse(parts[3], dateFormat);
-                if (parts.length == 7 && !appointment.isBefore(startWindow) && appointment.isBefore(endWindow) && parts[4].equals("complete")) {
+            for (String[] line : allData) {
+                LocalDateTime appointment = LocalDateTime.parse(line[4], dateFormat);
+                if (line.length == 8 && !appointment.isBefore(startWindow) && appointment.isBefore(endWindow) && line[5].equals("complete")) {
                     totalAppointments += 1;
                 }
             }
             return totalAppointments;
         } catch (Exception e) {
-            System.err.println("Error reading appointment.txt: " + e.getMessage());
+            System.err.println("Error reading appointment.txt: (Dashboard Small Widget)" + e.getMessage());
             return 0;
         }
     }
@@ -239,7 +238,8 @@ public class Manager extends Person {
     }
 
     public int returnDoctorTotalAppointment(String range, String doctorId) {
-        Path appointmentData = Paths.get("src", "txt", "appointment.txt");
+        FileActions fileActions = new FileActions("appointment.txt");
+        List<String[]> allData = fileActions.returnAllDataFromFile(8);
         // DateTime Format
         DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
@@ -266,18 +266,16 @@ public class Manager extends Person {
         }
 
         try {
-            List<String> lines = Files.readAllLines(appointmentData);
             int totalAppointments = 0;
-            for (String line : lines) {
-                String[] parts = line.trim().split(",", 7);
-                LocalDateTime appointment = LocalDateTime.parse(parts[3], dateFormat);
-                if (parts.length == 7 && !appointment.isBefore(startWindow) && appointment.isBefore(endWindow) && parts[4].equals("complete") && parts[1].equals(doctorId)) {
+            for (String[] line : allData) {
+                LocalDateTime appointment = LocalDateTime.parse(line[4], dateFormat);
+                if (line.length == 8 && !appointment.isBefore(startWindow) && appointment.isBefore(endWindow) && line[5].equals("complete") && line[1].equals(doctorId)) {
                     totalAppointments += 1;
                 }
             }
             return totalAppointments;
         } catch (Exception e) {
-            System.err.println("Error reading appointment.txt: " + e.getMessage());
+            System.err.println("Error reading appointment.txt: (Dashboard UI with Doctor Ranking)" + e.getMessage());
             return 0;
         }
     }

@@ -2,13 +2,15 @@ package login;
 
 import Class.ImageScaler;
 import Class.Person;
+import Customer.NavCustomer;
 import Manager.NavManager;
+import Doctor.NavDoctor;
+import Staff.NavStaff;
 import javax.swing.*;
 import java.awt.*;
 import static javax.swing.WindowConstants.EXIT_ON_CLOSE;
 
 public class LoginForm extends JFrame {
-
     // Fields
     private final JTextField emailField = new JTextField(20);
     private final JPasswordField passField = new JPasswordField(20);
@@ -143,23 +145,37 @@ public class LoginForm extends JFrame {
             ErrorDialog("Login Failed: Inactive Staff are not Allowed to Login.");
             return;
         }
-
+        
+        // Hide Login Form
+        this.setVisible(false);
+        
         String role = staffDetails[1];
         switch (role) {
             case "Manager":
                 SwingUtilities.invokeLater(() -> {
-                    new NavManager(staffDetails).setVisible(true);
+                    new NavManager(staffDetails,this).setVisible(true);
                 });
                 dispose();  // close login window
                 break;
 
             case "Staff":
+                SwingUtilities.invokeLater(() -> {
+                    new NavStaff(staffDetails,this).setVisible(true);
+                });
+                dispose();
                 break;
 
             case "Doctor":
+                SwingUtilities.invokeLater(() -> {
+                    new NavDoctor(staffDetails,this).setVisible(true);
+                });
+                dispose();  // close login window
                 break;
 
             case "Customer":
+                SwingUtilities.invokeLater(()->{
+                    new NavCustomer(staffDetails,this).setVisible(true);
+                });
                 break;
 
             default:
