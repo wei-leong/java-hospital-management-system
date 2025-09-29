@@ -80,27 +80,7 @@ public class ReceiptsHistoryTable extends JPanel{
         table.setIntercellSpacing(new Dimension(0, 10));
         
         TableStyle.applyStyle(table);
-        
-        table.addMouseListener(new java.awt.event.MouseAdapter() {
-        @Override
-        public void mouseClicked(java.awt.event.MouseEvent e) {
-            int row = table.rowAtPoint(e.getPoint());
-            int col = table.columnAtPoint(e.getPoint());
-
-            //Just can cleck the last column to use the showreceipts function
-            if (row >= 0 && col == table.getColumnCount() - 1) {
-            String receiptId = table.getValueAt(row, 0).toString();
-            
-            //show the JFrame window to let user see the receipts
-            Window parentWindow = SwingUtilities.getWindowAncestor(ReceiptsHistoryTable.this);
-            Showreceipts receiptWindow = new Showreceipts(receiptId);
-            receiptWindow.setModal(true);   
-            receiptWindow.setLocationRelativeTo(parentWindow);
-            receiptWindow.setVisible(true);
-            }
-        }
-    });
-        
+              
         //put the image icon on the column
         table.getColumnModel().getColumn(model.getColumnCount() - 1).setCellRenderer(new DefaultTableCellRenderer() {
         ImageIcon rawIcon = new ImageIcon(getClass().getResource("/image/receipts.png"));
