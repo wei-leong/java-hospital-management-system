@@ -1,9 +1,11 @@
 D1,Doctor,doctor,1234as,Male,doctor@mail.apu.com,0111111131,32,Active
 
-C1,Customer,customer,1234,Male,customer@gmail.com,0111111141,20,Active
+C1,Customer,customer,1234as,Male,customer@mail.apu.com,0111111141,20,Active
 M1,Manager,manager,1234as,Male,manager@mail.apu.com,0111111121,20,Active
 S1,Staff,staff,1234as,Male,staff@mail.apu.com,0111111231,20,Active
 M2,Manager,Alston Tan Jia Jie,12345678,Male,atjj@mail.apu.com,0187766653,18,Active
 S2,Staff,Tan Jia Jie,123456,Male,tjj@mail.apu.com,0111121231,20,Inactive
-C2,Customer,Penang TAN Jia JIe,1234as,Female,customer@gmail.com,0111111141,21,Active
+C2,Customer,Penang TAN Jia JIe,1234as,Female,penang@mail.apu.com,0111111141,21,Active
 C3,Customer,Sabah Tan Jia Jie,1234as,Male,stjj@gmail.com,0188822231,55,Inactive
+
+D2,Doctor,Niu B Ge,1234as,Male,nb@mail.apu.com,0188823334,33,Active
