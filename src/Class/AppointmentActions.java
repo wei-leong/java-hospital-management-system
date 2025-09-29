@@ -21,7 +21,6 @@ public class AppointmentActions {
 	private final IDGenerator paymentIdGenerator;
 	private final IDGenerator commentIdGenerator;
 	private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-	private final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
 	public AppointmentActions(FileActions appointmentFile, FileActions paymentFile, FileActions commentFile, IDGenerator paymentIdGenerator, IDGenerator commentIdGenerator) {
 		this.appointmentFile = appointmentFile;
@@ -37,36 +36,47 @@ public class AppointmentActions {
 		LocalDateTime startWindow;
 		LocalDateTime endWindow;
 
+		boolean boolShowComplete = false;  //only show complete appointment on the filter "all"
 		switch (range) {
 			case "Today":
+				boolShowComplete = false;
 				startWindow = currentTime.toLocalDate().atStartOfDay();
 				endWindow = startWindow.plusDays(1);
 				break;
 			case "This week":
+				boolShowComplete = false;
 				LocalDate today = currentTime.toLocalDate();
 				startWindow = today.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY)).atStartOfDay();
 				endWindow = today.with(TemporalAdjusters.nextOrSame(DayOfWeek.SUNDAY)).plusDays(1).atStartOfDay();
 				break;
 			case "This month":
+				boolShowComplete = false;
 				startWindow = currentTime.toLocalDate().withDayOfMonth(1).atStartOfDay();
 				endWindow = startWindow.plusMonths(1);
 				break;
 			case "This year":
+				boolShowComplete = false;
 				startWindow = currentTime.toLocalDate().withDayOfYear(1).atStartOfDay();
 				endWindow = startWindow.plusYears(1);
 				break;
-			default: //for "All"
+			default: // for "All"
+				boolShowComplete = true;
 				startWindow = LocalDateTime.MIN;
 				endWindow = LocalDateTime.MAX;
 				break;
 		}
 
-		List<String[]> allAppointments = appointmentFile.returnAllDataFromFile(7);
+		List<String[]> allAppointments = appointmentFile.returnAllDataFromFile(8);
 		for (String[] appointment : allAppointments) {
 			try {
-				LocalDateTime appointmentDateTime = LocalDateTime.parse(appointment[3], formatter);
+				LocalDateTime appointmentDateTime = LocalDateTime.parse(appointment[4], formatter);
 				if (appointment[1].equals(doctorId) && !appointmentDateTime.isBefore(startWindow) && appointmentDateTime.isBefore(endWindow)) {
-					filteredAppointments.add(appointment);
+					if (!appointment[5].equals("complete")) {
+						filteredAppointments.add(appointment);
+					}
+					else if (boolShowComplete && appointment[5].equals("complete")) {
+						filteredAppointments.add(appointment);
+					}
 				}
 			} catch (Exception e) {
 				System.err.println("Error parsing date for appointment: " + Arrays.toString(appointment));
@@ -76,7 +86,7 @@ public class AppointmentActions {
 	}
 
 	public void updateAppointment(String appointmentId, String payment, String comment) {
-		List<String[]> allAppointments = appointmentFile.returnAllDataFromFile(7);
+		List<String[]> allAppointments = appointmentFile.returnAllDataFromFile(8);
 		String[] oldAppointmentData = null;
 		for (String[] data : allAppointments) {
 			if (data[0].equals(appointmentId)) {
@@ -90,9 +100,9 @@ public class AppointmentActions {
 		}
 
 		String[] newAppointmentData = oldAppointmentData.clone();
-		newAppointmentData[4] = "complete";
+		newAppointmentData[5] = "complete";
 
-		String paymentId = newAppointmentData[5].trim();
+		String paymentId = newAppointmentData[6].trim();
 		if (paymentId.equalsIgnoreCase("N/A")) {
 			if (payment != null && !payment.isEmpty()) {
 				paymentId = paymentIdGenerator.generateNextId();
@@ -111,13 +121,13 @@ public class AppointmentActions {
 				}
 			}
 		}
-		newAppointmentData[5] = paymentId;
+		newAppointmentData[6] = paymentId;
 
-		String commentId = newAppointmentData[6].trim();
+		String commentId = newAppointmentData[7].trim();
 		if (commentId.equalsIgnoreCase("null")) {
 			if (comment != null && !comment.isEmpty()) {
 				commentId = commentIdGenerator.generateNextId();
-				String[] newCommentData = {commentId, comment, newAppointmentData[2]};
+				String[] newCommentData = {commentId, comment, newAppointmentData[3]};
 				commentFile.addRowToFile(newCommentData);
 			}
 		} else {
@@ -125,15 +135,15 @@ public class AppointmentActions {
 			for (String[] data : allCommentData) {
 				if (data[0].equals(commentId)) {
 					String[] newCommentData = data.clone();
-					newCommentData[2] = comment;
+					newCommentData[1] = comment;
 					commentFile.editRowFromFile(3, data, newCommentData);
 					break;
 				}
 			}
 		}
-		newAppointmentData[6] = commentId;
+		newAppointmentData[7] = commentId;
 
-		appointmentFile.editRowFromFile(7, oldAppointmentData, newAppointmentData);
+		appointmentFile.editRowFromFile(8, oldAppointmentData, newAppointmentData);
 	}
 
 	public Map<String, String> getPaymentDataMap() {

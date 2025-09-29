@@ -55,4 +55,65 @@ public class CustomerAction {
         }
         return "C" + (maxCustomerId + 1);
     }
+
+    //function with check email
+    public boolean checkEmailDuplicate(String email) {
+        Path profilePath = Paths.get("src", "txt", "profile.txt");
+        File file = profilePath.toFile();
+
+        if (!file.exists()) {
+            return false; 
+        }
+
+        try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] parts = line.split(",");
+                if (parts.length >= 6) {
+                    String existingEmail = parts[5].trim().toLowerCase();
+                    if (existingEmail.equals(email.toLowerCase())) {
+                        return true;
+                    }
+                }
+            }
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(null, "Error reading file: " + e.getMessage(),
+                    "Error", JOptionPane.ERROR_MESSAGE);
+        }
+        return false;
+    }
+
+    //Function with check phone number
+    public boolean checkPhoneDuplicate(String phone) {
+        Path profilePath = Paths.get("src", "txt", "profile.txt");
+        File file = profilePath.toFile();
+
+        if (!file.exists()) {
+            return false; 
+        }
+
+        try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] parts = line.split(",");
+                if (parts.length >= 7) {
+                    String existingPhone = parts[6].trim();
+                    if (existingPhone.equals(phone)) {
+                        return true; 
+                    }
+                }
+            }
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(null, "Error reading file: " + e.getMessage(),
+                    "Error", JOptionPane.ERROR_MESSAGE);
+        }
+        return false;
+    }
+    
+    public boolean EmailFormat(String email) {
+    if (email == null || email.trim().isEmpty()) {
+        return false;
+    }
+    return email.toLowerCase().endsWith("@mail.apu.com");
+}
 }

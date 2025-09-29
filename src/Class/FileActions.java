@@ -32,6 +32,7 @@ public class FileActions {
         try {
             List<String> lines = Files.readAllLines(fileData);
             for (String line : lines) {
+                if (line == null || line.trim().isEmpty()) continue;
                 String[] parts = line.trim().split(",", fileLength);
                 results.add(parts);
             }

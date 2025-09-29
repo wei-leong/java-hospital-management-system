@@ -13,7 +13,7 @@ import java.util.List;
  * @author Wlhoe
  */
 public class RevenueActions extends FileActions {
-
+    
     private static final int idx_id = 0;
     private static final int idx_amount = 1;
     private static final int idx_date = 2;
@@ -32,9 +32,11 @@ public class RevenueActions extends FileActions {
         for (String[] row : allData) {
             double amount = Double.parseDouble(row[idx_amount]);
             LocalDate date = LocalDate.parse(row[idx_date], df);
-            if (date.getYear() == year) {
-                int m = date.getMonthValue() - 1; // Jan=0, Feb=1, …
-                totals[m] += amount;
+            if (row[3].equals("completed")) {
+                if (date.getYear() == year) {
+                    int m = date.getMonthValue() - 1; // Jan=0, Feb=1, …
+                    totals[m] += amount;
+                }
             }
 
         }
@@ -54,8 +56,10 @@ public class RevenueActions extends FileActions {
             LocalDate date = LocalDate.parse(rows[idx_date], df);
             int y = date.getYear();
             int idx = y - startYear;      // 2016→0, 2017→1, …, 2025→9
-            if (0 <= idx && idx < span) {
-                totals[idx] += amount;
+            if (rows[3].equals("completed")) {
+                if (0 <= idx && idx < span) {
+                    totals[idx] += amount;
+                }
             }
         }
         return totals;

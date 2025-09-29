@@ -2,6 +2,7 @@ package Doctor;
 
 import Class.FileActions;
 import Class.Doctor;
+import Class.CheckInput;
 import javax.swing.*;
 import java.awt.*;
 import java.time.format.DateTimeFormatter;
@@ -26,6 +27,7 @@ public class DoctorWorkTime extends JPanel {
 	private String doctorId;
 
 	private Doctor doctor;
+	private CheckInput checkInput;
 
 	private static final DateTimeFormatter INPUT_FORMATTER = DateTimeFormatter.ofPattern("HHmm");
 	private static final DateTimeFormatter OUTPUT_FORMATTER = DateTimeFormatter.ofPattern("HH:mm");
@@ -34,6 +36,7 @@ public class DoctorWorkTime extends JPanel {
 	public DoctorWorkTime(String[] staffDetails, Doctor doctor) {
 		this.doctorId = staffDetails[0];
 		this.doctor = doctor;
+		this.checkInput = new CheckInput();
 		
 		setLayout(new BorderLayout());
 		setBackground(Color.WHITE);
@@ -94,9 +97,21 @@ public class DoctorWorkTime extends JPanel {
 	}
 
 	private void saveWorkTime() {
+		int confirmationResult = JOptionPane.showConfirmDialog(this, "Are you sure you want to save?", "Confirmation", JOptionPane.YES_NO_OPTION);
+			if (confirmationResult == JOptionPane.NO_OPTION) {
+				return;
+			}
+
 		String newStartTimeInput = startTimeField.getText().trim();
 		String newEndTimeInput = endTimeField.getText().trim();
-
+		
+		// check comma (not allowing comma in input field)
+		if (checkInput.checkComma(newStartTimeInput) || checkInput.checkComma(newEndTimeInput)) {
+			JOptionPane.showMessageDialog(this, "Input cannot contain comma(,)", "Error", JOptionPane.INFORMATION_MESSAGE);
+			return;
+		}
+		
+		// check empty text field
 		if (newStartTimeInput.isEmpty() || newEndTimeInput.isEmpty()) {
 			JOptionPane.showMessageDialog(this, "Please fill in both start and end times.", "Missing Input", JOptionPane.WARNING_MESSAGE);
 			return;

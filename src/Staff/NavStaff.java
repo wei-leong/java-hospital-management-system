@@ -33,8 +33,8 @@ public class NavStaff extends BasicNav{
     private final Icon _iconfinancereport;
     private final Icon _iconAppointment;
 
-    public NavStaff(String[] staffDetails){
-        super("APU Medical Centre", staffDetails);
+    public NavStaff(String[] staffDetails, JFrame loginForm){
+        super("APU Medical Centre", staffDetails, loginForm);
 
         // Define Page Icon
         this._iconDashboard = imgScale.returnScaledImageIcon("/image/dashboard.png", 25, 25);

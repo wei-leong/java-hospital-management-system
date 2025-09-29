@@ -106,7 +106,7 @@ public class AddCustomer extends JDialog {
         add(ageLabel);
         
         //ComboBox for choose age
-        Integer[] ages = {1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,96,97,98,99,100};
+        Integer[] ages = {0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,96,97,98,99,100};
         comboBox = new JComboBox<>(ages);
         comboBox.setBounds(175, 285,75, 40); 
         comboBox.setBackground(Color.WHITE);
@@ -194,6 +194,7 @@ public class AddCustomer extends JDialog {
         CheckGender1 = new JRadioButton("Male");
         CheckGender1.setBounds(175, 240, 80, 30); 
         CheckGender1.setBackground(Color.WHITE);
+        CheckGender1.setSelected(true);
         add(CheckGender1);  
 
         CheckGender2 = new JRadioButton("Female");
@@ -227,6 +228,10 @@ public class AddCustomer extends JDialog {
                     JOptionPane.showMessageDialog(this, "Phone number must be 10 digits.", "Invalid Input", JOptionPane.ERROR_MESSAGE);
                     return;
                 }
+                if (action.checkPhoneDuplicate(phone)) {
+                    JOptionPane.showMessageDialog(this, "This phone number already exists.", "Duplicate Phone", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
                 String name = CustomerName.getText().trim();
                 if (check.checkComma(name)){
                     JOptionPane.showMessageDialog(this, "Name cannot have (,).", "Invalid Input", JOptionPane.ERROR_MESSAGE);
@@ -243,6 +248,14 @@ public class AddCustomer extends JDialog {
                 }
                 if (email.isEmpty()){
                     JOptionPane.showMessageDialog(this, "Email can't be Empty","Invalid Input",JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+                if (action.checkEmailDuplicate(email)) {
+                    JOptionPane.showMessageDialog(this, "This email already exists.", "Duplicate Email", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+                if (!action.EmailFormat(email)) {
+                    JOptionPane.showMessageDialog(this, "Email must end with @mail.apu.com", "Invalid Email Format", JOptionPane.ERROR_MESSAGE);
                     return;
                 }
                 String password = CustomerPasswords.getText().trim();

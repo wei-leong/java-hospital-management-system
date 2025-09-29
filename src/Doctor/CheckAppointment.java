@@ -12,6 +12,7 @@ import javax.swing.*;
 import java.awt.event.ActionListener;
 import Class.FileActions;
 import Class.Doctor;
+import Class.CheckInput;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
@@ -20,7 +21,7 @@ public class CheckAppointment extends JPanel {
 	// GUI component
 	private JTable appointmentTable;
 	private DefaultTableModel tableModel;
-	private JLabel appointIdLabel, doctorIdLabel, customerIdLabel, startTimeLabel,
+	private JLabel appointIdLabel, doctorIdLabel, staffIdLabel, customerIdLabel, startTimeLabel,
 		statusLabel, paymentIdLabel, commentIdLabel;
 	private JButton updateButton;
 	private JTextField paymentField;
@@ -30,9 +31,11 @@ public class CheckAppointment extends JPanel {
 	private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
 	private Doctor doctor;
+	private CheckInput checkInput;
 
 	public CheckAppointment(String[] ownProfile, Doctor doctor) {
 		this.doctor = doctor;
+		this.checkInput = new CheckInput();
 		setLayout(new BorderLayout(10, 10));
 		setBackground(Color.WHITE);
 
@@ -57,7 +60,7 @@ public class CheckAppointment extends JPanel {
 	}
 
 	private void loadAllData() {
-		allAppointments = doctor.returnAppointmentsList("All");
+		allAppointments = doctor.returnAppointmentsList("Today"); // show "Today" by default
 		updateTable(allAppointments);
 	}
 
@@ -68,8 +71,8 @@ public class CheckAppointment extends JPanel {
 		Map<String, String> commentMap = doctor.getCommentDetails();
 
 		for (String[] row : data) {
-			String paymentId = row[5];
-			String commentId = row[6];
+			String paymentId = row[6];
+			String commentId = row[7];
 			String paymentAmount = paymentMap.getOrDefault(paymentId, "N/A");
 			String commentMessage = commentMap.getOrDefault(commentId, "N/A");
 
@@ -80,6 +83,7 @@ public class CheckAppointment extends JPanel {
 				row[2],
 				row[3],
 				row[4],
+				row[5],
 				paymentAmount, // use amount instead of the ID
 				commentMessage // use message instead of the ID
 			};
@@ -87,25 +91,25 @@ public class CheckAppointment extends JPanel {
 		}
 	}
 
-	private void updateAppointment() {
-		int selectedRow = appointmentTable.getSelectedRow();
-		if (selectedRow == -1) {
-			JOptionPane.showMessageDialog(this, "Please select an appointment to update.", "No Selection", JOptionPane.WARNING_MESSAGE);
-			return;
-		}
-
-		String appointmentId = (String) tableModel.getValueAt(selectedRow, 0);
-		String payment = paymentField.getText().trim();
-		String comment = commentField.getText().trim();
-
-		doctor.updateAppointment(appointmentId, payment, comment);
-		JOptionPane.showMessageDialog(this, "Appointment updated successfully!");
-		loadAllData();
-	}
+//	private void updateAppointment() {
+//		int selectedRow = appointmentTable.getSelectedRow();
+//		if (selectedRow == -1) {
+//			JOptionPane.showMessageDialog(this, "Please select an ganniniajibaileh appointment to update.", "No Selection", JOptionPane.WARNING_MESSAGE);
+//			return;
+//		}
+//
+//		String appointmentId = (String) tableModel.getValueAt(selectedRow, 0);
+//		String payment = paymentField.getText().trim();
+//		String comment = commentField.getText().trim();
+//
+//		doctor.updateAppointment(appointmentId, payment, comment);
+//		JOptionPane.showMessageDialog(this, "Appointment updated successfully!");
+//		loadAllData();
+//	}
 
 	private JPanel createTablePanel() {
 		JPanel tablePanel = new JPanel(new BorderLayout());
-		String[] columnNames = {"Appointment ID", "Doctor ID", "Customer ID", "Start Time", "Status", "Payment Amount", "Comment Message"};
+		String[] columnNames = {"Appointment ID", "Doctor ID",  "Staff ID","Customer ID", "Start Time", "Status", "Payment Amount", "Comment Message"};
 		tableModel = new DefaultTableModel(columnNames, 0) {
 			@Override
 			public boolean isCellEditable(int row, int column) {
@@ -125,15 +129,17 @@ public class CheckAppointment extends JPanel {
 					if (selectedRow != -1) {
 						appointIdLabel.setText("Appointment ID: " + tableModel.getValueAt(selectedRow, 0));
 						doctorIdLabel.setText("Doctor ID: " + tableModel.getValueAt(selectedRow, 1));
-						customerIdLabel.setText("Customer ID: " + tableModel.getValueAt(selectedRow, 2));
-						startTimeLabel.setText("Start Time: " + tableModel.getValueAt(selectedRow, 3));
-						statusLabel.setText("Status: " + tableModel.getValueAt(selectedRow, 4));
-						paymentIdLabel.setText("Payment Amount: " + tableModel.getValueAt(selectedRow, 5));
-						commentIdLabel.setText("Comment Message: " + tableModel.getValueAt(selectedRow, 6));
+						staffIdLabel.setText("Staff ID:" + tableModel.getValueAt(selectedRow, 2));
+						customerIdLabel.setText("Customer ID: " + tableModel.getValueAt(selectedRow, 3));
+						startTimeLabel.setText("Start Time: " + tableModel.getValueAt(selectedRow, 4));
+						statusLabel.setText("Status: " + tableModel.getValueAt(selectedRow, 5));
+						paymentIdLabel.setText("Payment Amount: " + tableModel.getValueAt(selectedRow, 6));
+						commentIdLabel.setText("Comment Message: " + tableModel.getValueAt(selectedRow, 7));
 					} else {
 						// clear the labels if no row is selected
 						appointIdLabel.setText("Appointment ID:");
 						doctorIdLabel.setText("Doctor ID:");
+						staffIdLabel.setText("Staff ID:");
 						customerIdLabel.setText("Customer ID:");
 						startTimeLabel.setText("Start Time:");
 						statusLabel.setText("Status:");
@@ -149,7 +155,7 @@ public class CheckAppointment extends JPanel {
 
 	private JPanel createFilterPanel() {
 		JPanel filterPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 5));
-		String[] ranges = {"All", "Today", "This week", "This month", "This year"};
+		String[] ranges = {"Today", "This week", "This month", "This year", "All"};
 		JComboBox<String> rangeComboBox = new JComboBox<>(ranges);
 		rangeComboBox.addItemListener(e -> {
 			if (e.getStateChange() == ItemEvent.SELECTED) {
@@ -169,6 +175,7 @@ public class CheckAppointment extends JPanel {
 
 		appointIdLabel = new JLabel("Appointment ID:");
 		doctorIdLabel = new JLabel("Doctor ID:");
+		staffIdLabel = new JLabel("Staff ID:");
 		customerIdLabel = new JLabel("Customer ID:");
 		startTimeLabel = new JLabel("Start Time:");
 		statusLabel = new JLabel("Status:");
@@ -177,6 +184,7 @@ public class CheckAppointment extends JPanel {
 
 		detailPanel.add(appointIdLabel);
 		detailPanel.add(doctorIdLabel);
+		detailPanel.add(staffIdLabel);
 		detailPanel.add(customerIdLabel);
 		detailPanel.add(startTimeLabel);
 		detailPanel.add(statusLabel);
@@ -203,9 +211,13 @@ public class CheckAppointment extends JPanel {
 		updatePanel.add(updateButton);
 
 		updateButton.addActionListener(e -> {
+			int confirmationResult = JOptionPane.showConfirmDialog(this, "Are you sure you want to update?", "Confirmation", JOptionPane.YES_NO_OPTION);
+			if (confirmationResult == JOptionPane.NO_OPTION) {
+				return;
+			}
 			int selectedRow = appointmentTable.getSelectedRow();
 			if (selectedRow != -1) {
-				String appointmentStatus = tableModel.getValueAt(selectedRow, 4).toString();
+				String appointmentStatus = tableModel.getValueAt(selectedRow, 5).toString();
 
 				// to prevent updating appointments that are completed
 				if (appointmentStatus.equalsIgnoreCase("complete")) {
@@ -218,11 +230,21 @@ public class CheckAppointment extends JPanel {
 
 				String appointmentId = tableModel.getValueAt(selectedRow, 0).toString();
 				String paymentAmount = paymentField.getText();
-				String comment = commentField.getText();
+				String comment = commentField.getText().trim();
+				
+				// check comma (not allowing comma in input field)
+				if (checkInput.checkComma(paymentAmount) || checkInput.checkComma(comment)) {
+					JOptionPane.showMessageDialog(this, "Input cannot contain comma(,)", "Error", JOptionPane.WARNING_MESSAGE);
+					return;
+				}
 
-				// validate the payment amount input
+				// update to txt file
 				try {
-					double amount = Double.parseDouble(paymentAmount);
+					double validateAmount = Double.parseDouble(paymentAmount);
+					if (validateAmount < 0) {
+						JOptionPane.showMessageDialog(this, "Payment Amount cannot be negative number", "Error", JOptionPane.WARNING_MESSAGE);
+						return;
+					}
 					doctor.updateAppointment(appointmentId, paymentAmount, comment);
 
 					// refresh the table and clear fields after update successful 

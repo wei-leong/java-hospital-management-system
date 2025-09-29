@@ -27,8 +27,8 @@ public class NavDoctor extends BasicNav {
 
 	private Doctor doctor;
 
-	public NavDoctor(String[] staffDetails) {
-		super("APU Medical Centre", staffDetails);
+	public NavDoctor(String[] staffDetails, JFrame loginForm) {
+		super("APU Medical Centre", staffDetails, loginForm);
 
 		// define all actions dependencies here
 		FileActions appointmentFile = new FileActions("appointment.txt");
@@ -67,5 +67,11 @@ public class NavDoctor extends BasicNav {
 		addPage(doctorWorkTimeStr, doctorWorkTime, _iconWorkTime);
 		addPage(manageMedicineStr, manageMedicine, _iconMedicine);
 		addPage(viewFeedbackStr, viewFeedback, _iconFeedback);
+
+		// Default page
+		titleChanger(checkAppointmentStr);
+		cards.show(content, checkAppointmentStr);
+
+		setVisible(true);
 	}
 }

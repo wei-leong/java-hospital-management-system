@@ -48,7 +48,7 @@ public class ProfileActions extends FileActions {
         }
 
         String newId = id + (maxId + 1);
-        String password = newId + newPhone;
+        String password = "1234as";
 
         String[] newStaff = {
             newId,
@@ -74,6 +74,11 @@ public class ProfileActions extends FileActions {
             if (row.length == 9 && row[idx_id].equals(ownProfile[0])) {
                 continue;
             }
+            
+            // Filter Out Super Manager
+            if (row.length == 9 && row[idx_id].equals("M1")) {
+                continue;
+            }
 
             if (row.length == 9 && row[idx_role].equals("Customer")) {
                 continue;
@@ -95,7 +100,7 @@ public class ProfileActions extends FileActions {
     }
     
     //Use to show customer Profile
-    public List<String[]> ShowCustomerProfile(String filterRole) {
+    public List<String[]> showCustomerProfile(String filterRole) {
         List<String[]> allData = returnAllDataFromFile(txt_len);
         List<String[]> filteredData = new ArrayList<>(txt_len);
 

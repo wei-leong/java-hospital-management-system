@@ -211,25 +211,56 @@ public class AppointmentsManagement extends JPanel{
     //This function use to delete the data i delete form table on the appoint txt file
     private void removeAppointmentFromFile(String appointmentId) {
         Path appointmentPath = Paths.get("src", "txt", "appointment.txt");
-        List<String> lines = new ArrayList<>();
+        Path paymentPath = Paths.get("src", "txt", "payment.txt");
+        List<String> updatedAppointments = new ArrayList<>();
+        List<String> updatedPayments = new ArrayList<>();
+        String paymentIdToDelete = null;
 
         try (BufferedReader br = new BufferedReader(new FileReader(appointmentPath.toFile()))) {
             String line;
+            //Use to detact the appointment that is need to delete, and check the payment id
             while ((line = br.readLine()) != null) {
-                if (!line.startsWith(appointmentId + ",")) { 
-                    lines.add(line); // keep the data of the line is not delete
+                if (line.startsWith(appointmentId + ",")) {
+                    String[] parts = line.split(",");
+                    if (parts.length >= 7) {  
+                        paymentIdToDelete = parts[6].trim(); 
+                    }
+                } else {
+                    updatedAppointments.add(line); //Keep appointment data that is dont want to delete
                 }
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
 
-        try (java.io.FileWriter fw = new java.io.FileWriter(appointmentPath.toFile(),true)) {
-            for (String l : lines) {
-                fw.write(l + System.lineSeparator());
+            try (java.io.FileWriter fw = new java.io.FileWriter(appointmentPath.toFile(), false)) { 
+                for (String l : updatedAppointments) {
+                    fw.write(l + System.lineSeparator());
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
+        
+        if (paymentIdToDelete != null) {
+            try (BufferedReader br = new BufferedReader(new FileReader(paymentPath.toFile()))) {
+                String line;
+                while ((line = br.readLine()) != null) {
+                    if (!line.startsWith(paymentIdToDelete + ",")) {
+                        updatedPayments.add(line);
+                    }
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            try (java.io.FileWriter fw = new java.io.FileWriter(paymentPath.toFile(), false)) {
+                for (String l : updatedPayments) {
+                    fw.write(l + System.lineSeparator());
+                }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+            
     }
+}
 }
