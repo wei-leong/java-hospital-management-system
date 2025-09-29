@@ -24,6 +24,14 @@ public class Person extends ProfileActions implements PersonActions{
         this._password = password;
     }
     
+    // Getter and Setter for email
+    public String getEmail() {return _email;}
+    public void setEmail(String email) {this._email = email;}
+
+    // Getter and Setter for password
+    public String getPassword() {return _password;}
+    public void setPassword(String password) {this._password = password;}
+    
     public Person(){
         
     }

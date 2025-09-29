@@ -2,4 +2,3 @@ D1,Doctor,doctor,1234as,Male,doctor@mail.apu.com,0111111131,20,Active
 C1,Customer,customer,1234,Male,customer@gmail.com,0111111141,20,Active
 M1,Manager,manager,1234as,Male,manager@mail.apu.com,0111111121,25,Active
 S1,Staff,staff,123456,Male,staff@mail.apu.com,0111111231,20,Active
-

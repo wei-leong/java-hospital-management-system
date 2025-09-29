@@ -48,7 +48,7 @@ public class ProfileActions extends FileActions {
         }
 
         String newId = id + (maxId + 1);
-        String password = newId + newPhone;
+        String password = "1234as";
 
         String[] newStaff = {
             newId,
@@ -72,6 +72,11 @@ public class ProfileActions extends FileActions {
 
         for (String[] row : allData) {
             if (row.length == 9 && row[idx_id].equals(ownProfile[0])) {
+                continue;
+            }
+            
+            // Filter Out Super Manager
+            if (row.length == 9 && row[idx_id].equals("M1")) {
                 continue;
             }
 

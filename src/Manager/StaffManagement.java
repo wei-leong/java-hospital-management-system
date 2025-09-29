@@ -26,12 +26,12 @@ public class StaffManagement extends JPanel {
 
     public StaffManagement(String[] ownProfile) {
         managerActions = new Manager(ownProfile);
-        
+
         // JPanel Settings
         setLayout(new BorderLayout(10, 10));
         setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         setBackground(Color.WHITE);
-        
+
         add(northSection(), BorderLayout.NORTH);// Staff Filter Options and Table Heading
 
         // Build Table 
@@ -41,10 +41,10 @@ public class StaffManagement extends JPanel {
                 return false;
             }
         };
-        
+
         add(staffData(), BorderLayout.CENTER);// Staff Data 
     }
-    
+
     // Checkbox for Staff Filter Options ( All , Staff , Doctor, Manager )
     private JPanel tagBarSection() {
         JPanel tagBar = new JPanel(new BorderLayout(8, 0));
@@ -106,9 +106,9 @@ public class StaffManagement extends JPanel {
 
         return tagBar;
     }
-    
+
     // Table Header for Staff Data( Staff ID, StaffRole, StaffName, Email, Age , ... )
-    private JPanel tableHeader(){
+    private JPanel tableHeader() {
         // Column Headers
         JPanel headerBar = new JPanel(new GridLayout(1, cols.length, 8, 0));
         headerBar.setBackground(Color.WHITE);
@@ -122,7 +122,7 @@ public class StaffManagement extends JPanel {
         }
         return headerBar;
     }
-    
+
     // UI : Place Staff Role Filter options and Table Heading in northSection adn render at top of Jpanel
     private JPanel northSection() {
         JPanel northWrapper = new JPanel();
@@ -133,7 +133,7 @@ public class StaffManagement extends JPanel {
 
         return northWrapper;
     }
-    
+
     // Return Staff Data table with the filtered Staff Role
     private JScrollPane staffData() {
         for (JCheckBox chb : boxes) {
@@ -224,11 +224,12 @@ public class StaffManagement extends JPanel {
         // Inactive User
         miInact.addActionListener(evt -> {
             int row = table.getSelectedRow();
+
             String[] oldData = staffData.get(row);
             String[] newData = Arrays.copyOf(oldData, oldData.length);
-            newData[newData.length - 1] = "Inactive"; 
+            newData[newData.length - 1] = "Inactive";
 
-            managerActions.InactiveStaff(oldData,newData);
+            managerActions.InactiveStaff(oldData, newData);
             refreshTable();
         });
 

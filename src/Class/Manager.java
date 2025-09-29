@@ -13,6 +13,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -129,7 +130,7 @@ public class Manager extends Person {
         try {
             for (String[] line : allData) {
                 LocalDateTime appointment = LocalDateTime.parse(line[4], dateFormat);
-                if (line.length == 8 && !appointment.isBefore(startWindow) && appointment.isBefore(endWindow) && line[5].equals("pending")) {
+                if (line.length == 8 && !appointment.isBefore(startWindow) && appointment.isBefore(endWindow) && line[5].equals("ongoing")) {
                     results.add(new String[]{
                         line[0], // appointment ID
                         line[1], // doctorId
@@ -143,6 +144,8 @@ public class Manager extends Person {
         } catch (Exception e) {
             System.err.println("Error reading appointment.txt: (Appointment UI)" + e.getMessage());
         }
+        
+        Collections.reverse(results);
         return results;
     }
 
