@@ -74,6 +74,11 @@ public class ProfileActions extends FileActions {
             if (row.length == 9 && row[idx_id].equals(ownProfile[0])) {
                 continue;
             }
+            
+            // Filter Out Super Manager
+            if (row.length == 9 && row[idx_id].equals("M1")) {
+                continue;
+            }
 
             if (row.length == 9 && row[idx_role].equals("Customer")) {
                 continue;
