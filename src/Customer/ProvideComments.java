@@ -1,5 +1,6 @@
 package Customer;
 
+import Class.CheckInput;
 import Class.FileActions;
 import Class.IDGenerator;
 
@@ -14,8 +15,8 @@ public class ProvideComments extends JPanel {
     private final String customerId;
     private final JComboBox<String> appointmentDropdown;
     private final JComboBox<Integer> ratingDropdown;
-    private final JComboBox<String> targetDropdown; // NEW: Feedback target
-    private final JTextArea messageArea;
+    private final JComboBox<String> targetDropdown;
+    private final JTextField messageField; // CHANGED: JTextArea -> JTextField
     private final JButton submitButton;
 
     private final FileActions appointmentFile;
@@ -27,12 +28,10 @@ public class ProvideComments extends JPanel {
         setLayout(new BorderLayout(10, 10));
         setBackground(Color.WHITE);
 
-        // Title
         JLabel title = new JLabel("Provide Feedback", SwingConstants.CENTER);
         title.setFont(new Font("Arial", Font.BOLD, 18));
         add(title, BorderLayout.NORTH);
 
-        // Panel for form fields
         JPanel formPanel = new JPanel(new GridLayout(5, 2, 10, 10));
         formPanel.setBorder(BorderFactory.createEmptyBorder(20, 40, 20, 40));
         formPanel.setBackground(Color.WHITE);
@@ -40,22 +39,15 @@ public class ProvideComments extends JPanel {
         appointmentFile = new FileActions("appointment.txt");
         feedbackFile = new FileActions("feedback.txt");
 
-        // Dropdown: Appointments for this customer
         appointmentDropdown = new JComboBox<>();
         loadAppointments();
 
-        // Dropdown: Rating 1–5
         ratingDropdown = new JComboBox<>(new Integer[]{1, 2, 3, 4, 5});
-
-        // Dropdown: Feedback target (Doctor/Staff)
         targetDropdown = new JComboBox<>(new String[]{"Doctor", "Staff"});
 
-        // Text area: Message
-        messageArea = new JTextArea(3, 20);
-        messageArea.setLineWrap(true);
-        messageArea.setWrapStyleWord(true);
+        // CHANGED: Single-line input instead of multi-line
+        messageField = new JTextField();
 
-        // Add form fields
         formPanel.add(new JLabel("Select Appointment:"));
         formPanel.add(appointmentDropdown);
 
@@ -66,26 +58,23 @@ public class ProvideComments extends JPanel {
         formPanel.add(ratingDropdown);
 
         formPanel.add(new JLabel("Message:"));
-        formPanel.add(new JScrollPane(messageArea));
+        formPanel.add(messageField);
 
         add(formPanel, BorderLayout.CENTER);
 
-        // Submit button
         submitButton = new JButton("Submit Feedback");
         submitButton.addActionListener(e -> submitFeedback());
         add(submitButton, BorderLayout.SOUTH);
     }
 
     private void loadAppointments() {
-        List<String[]> appointments = appointmentFile.returnAllDataFromFile(8); // appointment now has 8 fields
+        List<String[]> appointments = appointmentFile.returnAllDataFromFile(8);
 
-        // Only show appointments belonging to this customer
         List<String[]> customerAppointments = appointments.stream()
-                .filter(appt -> appt[3].equals(customerId)) // index 3 = customer id
+                .filter(appt -> appt[3].equals(customerId))
                 .collect(Collectors.toList());
 
         for (String[] appt : customerAppointments) {
-            // Show "AppointmentID (DoctorID/StaffID - Date)"
             String display = appt[0] + " (Doctor: " + appt[1] + ", Staff: " + appt[2] + " - " + appt[4] + ")";
             appointmentDropdown.addItem(display);
         }
@@ -98,9 +87,8 @@ public class ProvideComments extends JPanel {
         }
 
         String selectedAppt = (String) appointmentDropdown.getSelectedItem();
-        String apptId = selectedAppt.split(" ")[0]; // extract appointment ID
+        String apptId = selectedAppt.split(" ")[0];
 
-        // Retrieve appointment data for the selected ID
         List<String[]> appointments = appointmentFile.returnAllDataFromFile(8);
         String[] selectedApptRow = appointments.stream()
                 .filter(appt -> appt[0].equals(apptId))
@@ -112,28 +100,37 @@ public class ProvideComments extends JPanel {
             return;
         }
 
-        // Choose Doctor or Staff based on dropdown
         String target = (String) targetDropdown.getSelectedItem();
         String targetId = target.equals("Doctor") ? selectedApptRow[1] : selectedApptRow[2];
 
         int rating = (int) ratingDropdown.getSelectedItem();
-        String message = messageArea.getText().trim();
+        String message = messageField.getText().trim();
         String date = LocalDate.now().toString();
+
+        CheckInput checker = new CheckInput();
 
         if (message.isEmpty()) {
             JOptionPane.showMessageDialog(this, "Please enter a feedback message.");
             return;
         }
 
-        // Generate feedback ID
+        if (checker.checkComma(message)) {
+            JOptionPane.showMessageDialog(this, "Message cannot contain commas (,).");
+            return;
+        }
+
         IDGenerator idGen = new IDGenerator("F", "feedback.txt");
         String feedbackId = idGen.generateNextId();
 
-        // Save: [feedback id], [customer id], [rating], [message], [staff/doctor id], [date]
+        if (!checker.checkUnique(feedbackId, "feedback.txt", 6, 0)) {
+            JOptionPane.showMessageDialog(this, "Generated feedback ID already exists. Please try again.");
+            return;
+        }
+
         String[] newFeedback = {feedbackId, customerId, String.valueOf(rating), message, targetId, date};
         feedbackFile.addRowToFile(newFeedback);
 
         JOptionPane.showMessageDialog(this, "Feedback submitted successfully for " + target + "!");
-        messageArea.setText(""); // clear message after submission
+        messageField.setText("");
     }
 }
