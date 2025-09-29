@@ -21,7 +21,6 @@ public class AppointmentActions {
 	private final IDGenerator paymentIdGenerator;
 	private final IDGenerator commentIdGenerator;
 	private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-	private final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
 	public AppointmentActions(FileActions appointmentFile, FileActions paymentFile, FileActions commentFile, IDGenerator paymentIdGenerator, IDGenerator commentIdGenerator) {
 		this.appointmentFile = appointmentFile;
@@ -37,25 +36,31 @@ public class AppointmentActions {
 		LocalDateTime startWindow;
 		LocalDateTime endWindow;
 
+		boolean boolShowComplete = false;  //only show complete appointment on the filter "all"
 		switch (range) {
 			case "Today":
+				boolShowComplete = false;
 				startWindow = currentTime.toLocalDate().atStartOfDay();
 				endWindow = startWindow.plusDays(1);
 				break;
 			case "This week":
+				boolShowComplete = false;
 				LocalDate today = currentTime.toLocalDate();
 				startWindow = today.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY)).atStartOfDay();
 				endWindow = today.with(TemporalAdjusters.nextOrSame(DayOfWeek.SUNDAY)).plusDays(1).atStartOfDay();
 				break;
 			case "This month":
+				boolShowComplete = false;
 				startWindow = currentTime.toLocalDate().withDayOfMonth(1).atStartOfDay();
 				endWindow = startWindow.plusMonths(1);
 				break;
 			case "This year":
+				boolShowComplete = false;
 				startWindow = currentTime.toLocalDate().withDayOfYear(1).atStartOfDay();
 				endWindow = startWindow.plusYears(1);
 				break;
-			default: //for "All"
+			default: // for "All"
+				boolShowComplete = true;
 				startWindow = LocalDateTime.MIN;
 				endWindow = LocalDateTime.MAX;
 				break;
@@ -66,7 +71,12 @@ public class AppointmentActions {
 			try {
 				LocalDateTime appointmentDateTime = LocalDateTime.parse(appointment[4], formatter);
 				if (appointment[1].equals(doctorId) && !appointmentDateTime.isBefore(startWindow) && appointmentDateTime.isBefore(endWindow)) {
-					filteredAppointments.add(appointment);
+					if (!appointment[5].equals("complete")) {
+						filteredAppointments.add(appointment);
+					}
+					else if (boolShowComplete && appointment[5].equals("complete")) {
+						filteredAppointments.add(appointment);
+					}
 				}
 			} catch (Exception e) {
 				System.err.println("Error parsing date for appointment: " + Arrays.toString(appointment));

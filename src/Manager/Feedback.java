@@ -52,8 +52,8 @@ public class Feedback extends JPanel {
 
         double staffAvg = managerActions.FeedbackSummary("S");
         double doctorAvg = managerActions.FeedbackSummary("D");
-        summaryBlocks.add(makeAverageBlock(String.valueOf(staffAvg), "To Doctor"));
-        summaryBlocks.add(makeAverageBlock(String.valueOf(doctorAvg), "To Staff"));
+        summaryBlocks.add(makeAverageBlock(String.valueOf(staffAvg), "To Staff"));
+        summaryBlocks.add(makeAverageBlock(String.valueOf(doctorAvg), "To Doctor"));
         return summaryBlocks;
     }
 
