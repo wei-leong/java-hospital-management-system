@@ -12,7 +12,7 @@ public class EditStaff extends JFrame {
     private final JTextField nameField = new JTextField(20);
     private final JTextField emailField = new JTextField(20);
     private final JTextField passField = new JTextField(20);
-    private final JSpinner ageField = new JSpinner(new SpinnerNumberModel(18, 16, 100, 1));
+    private final JSpinner ageField = new JSpinner(new SpinnerNumberModel(20, 20, 60, 1));
     private final JTextField phoneField = new JTextField(20);
     private final JRadioButton rbM = new JRadioButton("Male");
     private final JRadioButton rbF = new JRadioButton("Female");
