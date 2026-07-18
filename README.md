@@ -9,10 +9,9 @@
 The Hospital Management System is a comprehensive, role-based desktop application engineered to digitize clinic workflows. It handles the entire patient lifecycle, from appointment scheduling and medicine inventory to financial receipt generation and staff management. 
 
 <div align="center">
-  <!-- TODO: Replace with your actual app screenshots -->
-  <img src="https://via.placeholder.com/400x300.png?text=Login+&+RBAC" alt="Login Interface" width="400"/>
+  <img src="./docx/assets/java_login.png" alt="Java Login Interface" width="400"/>
   &nbsp;&nbsp;&nbsp;&nbsp;
-  <img src="https://via.placeholder.com/400x300.png?text=Manager+Dashboard" alt="Manager Dashboard" width="400"/>
+  <img src="./docx/assets/staff_management.png" alt="Staff Management Dashboard" width="400"/>
 </div>
 
 ---
